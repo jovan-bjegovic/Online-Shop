@@ -44,23 +44,31 @@ namespace OnlineShop.Services
             return _categories;
         }
 
-        public Category? FindCategory(int id, List<Category>? list = null)
+        public Category? FindCategory(int id)
         {
-            list ??= _categories;
+            return FindCategoryRecursive(id, _categories);
+        }
+
+        private Category? FindCategoryRecursive(int id, List<Category> list)
+        {
             foreach (Category cat in list)
             {
                 if (cat.Id == id)
                     return cat;
 
-                Category? found = FindCategory(id, cat.Subcategories);
-                if (found != null)
+                if (cat.Subcategories is { Count: > 0 })
                 {
-                    return found;
+                    Category? found = FindCategoryRecursive(id, cat.Subcategories);
+                    if (found != null)
+                    {
+                        return found;
+                    }
                 }
             }
 
             return null;
         }
+
 
         public int GetMaxId(List<Category> list)
         {

@@ -8,12 +8,7 @@ namespace OnlineShop.Controllers
     [Route("admin/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly CategoryService _service;
-
-        public CategoriesController(CategoryService service)
-        {
-            _service = new CategoryService();
-        }
+        private readonly CategoryService _service = new CategoryService();
 
         [HttpGet]
         public IActionResult GetCategories()
@@ -25,23 +20,38 @@ namespace OnlineShop.Controllers
         public IActionResult GetCategoryById(int id)
         {
             var category = _service.FindCategory(id);
-            return category is not null
-                ? Ok(category)
-                : NotFound($"Category with id: {id} not found.");
+
+            if (category is not null)
+            {
+                return Ok(category);
+            }
+
+            return NotFound(new Response<object>(
+                statusCode: StatusCodes.Status404NotFound, 
+                message: $"Category with id {id} not found."
+                
+            ));
         }
+
 
         [HttpPost]
         public IActionResult Create(Category newCategory)
         {
             if (string.IsNullOrWhiteSpace(newCategory.Title) || string.IsNullOrWhiteSpace(newCategory.Code))
             {
-                return BadRequest(new { message = "Unique code or title are missing" });
+                return BadRequest(new Response<object>(
+                    StatusCodes.Status400BadRequest,
+                    "Unique code or title are missing"
+                ));
             }
 
             var allCategories = _service.GetAll();
             if (allCategories.Any(c => c.Code.Equals(newCategory.Code, StringComparison.OrdinalIgnoreCase)))
             {
-                return BadRequest(new { message = "Code must be unique" });
+                return BadRequest(new Response<object>(
+                    StatusCodes.Status400BadRequest,
+                    "Code must be unique"
+                ));
             }
 
             var newId = _service.GetMaxId(allCategories) + 1;
@@ -52,7 +62,10 @@ namespace OnlineShop.Controllers
                 var parent = _service.FindCategory(newCategory.ParentCategoryId.Value);
                 if (parent is null)
                 {
-                    return NotFound($"ParentId {newCategory.ParentCategoryId} not found.");
+                    return NotFound(new Response<object>(
+                        StatusCodes.Status404NotFound,
+                        $"Parent category with id {newCategory.ParentCategoryId.Value} not found."
+                    ));
                 }
                 parent.Subcategories.Add(newCategory);
             }
@@ -61,7 +74,15 @@ namespace OnlineShop.Controllers
                 allCategories.Add(newCategory);
             }
 
-            return Created($"/admin/categories/{newCategory.Id}", newCategory);
+            return Created(
+                $"/admin/categories/{newCategory.Id}",
+                new Response<Category>(
+                    StatusCodes.Status201Created,
+                    "Category created successfully",
+                    newCategory
+                )
+            );
+
         }
 
 
@@ -71,31 +92,46 @@ namespace OnlineShop.Controllers
             var category = _service.FindCategory(id);
             if (category is null)
             {
-                return NotFound(new { message = $"Category with id: {id} not found." });
+                return NotFound(new Response<object>(
+                    StatusCodes.Status404NotFound,
+                    $"Category with id {id} not found."
+                ));
             }
                 
             if (string.IsNullOrWhiteSpace(updated.Title) || string.IsNullOrWhiteSpace(updated.Code))
             {
-                return BadRequest(new { message = "Title and unique code are required." });
+                return BadRequest(new Response<object>(
+                    StatusCodes.Status400BadRequest,
+                    "Unique code or title are missing"
+                ));
             }
 
             if (_service.CodeExistsInList(_service.GetAll(), updated.Code, id))
             {
-                return BadRequest(new { message = "Code must be unique." });
+                return BadRequest(new Response<object>(
+                    StatusCodes.Status400BadRequest,
+                    "Code must be unique")
+                );
             }
 
             if (category.ParentCategoryId.HasValue)
             {
                 if (!updated.ParentCategoryId.HasValue)
                 {
-                    return BadRequest(new { message = "parentCategoryId is required for subcategories." });
+                    return BadRequest(new Response<object>(
+                        StatusCodes.Status400BadRequest,
+                        "parentCategoryId is required for subcategories"
+                    ));
                 }
             }
             else
             {
                 if (updated.ParentCategoryId.HasValue)
                 {
-                    return BadRequest(new { message = "Root categories must not include parentCategoryId." });
+                    return BadRequest(new Response<object>(
+                        StatusCodes.Status400BadRequest,
+                        "Root categories must not include parentCategoryId"
+                    ));
                 }
             }
 
@@ -114,8 +150,14 @@ namespace OnlineShop.Controllers
         {
             var removed = _service.RemoveCategory(id);
             return removed
-                ? Ok(new { message = $"Category with id: {id} deleted successfully." })
-                : NotFound($"Category with id: {id} not found.");
+                ? Ok(new Response<object>(
+                    StatusCodes.Status200OK,
+                    $"Category with id: {id} deleted successfully."
+                ))
+                : NotFound(new Response<object>(
+                    StatusCodes.Status404NotFound,
+                    $"Category with id: {id} not found."
+                ));
         }
     }
 }
