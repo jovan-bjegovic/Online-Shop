@@ -12,12 +12,14 @@ namespace OnlineShop.Controllers
 
         public CategoriesController(CategoryService service)
         {
-            _service = service;
+            _service = new CategoryService();
         }
 
         [HttpGet]
-        public IActionResult GetCategories() =>
-            Ok(_service.GetAll());
+        public IActionResult GetCategories()
+        {
+            return Ok(_service.GetAll());
+        }
 
         [HttpGet("{id:int}")]
         public IActionResult GetCategoryById(int id)
@@ -49,8 +51,9 @@ namespace OnlineShop.Controllers
             {
                 var parent = _service.FindCategory(newCategory.ParentCategoryId.Value);
                 if (parent is null)
+                {
                     return NotFound($"ParentId {newCategory.ParentCategoryId} not found.");
-
+                }
                 parent.Subcategories.Add(newCategory);
             }
             else
@@ -67,8 +70,10 @@ namespace OnlineShop.Controllers
         {
             var category = _service.FindCategory(id);
             if (category is null)
+            {
                 return NotFound(new { message = $"Category with id: {id} not found." });
-
+            }
+                
             if (string.IsNullOrWhiteSpace(updated.Title) || string.IsNullOrWhiteSpace(updated.Code))
             {
                 return BadRequest(new { message = "Title and unique code are required." });
@@ -82,18 +87,22 @@ namespace OnlineShop.Controllers
             if (category.ParentCategoryId.HasValue)
             {
                 if (!updated.ParentCategoryId.HasValue)
+                {
                     return BadRequest(new { message = "parentCategoryId is required for subcategories." });
+                }
             }
             else
             {
                 if (updated.ParentCategoryId.HasValue)
+                {
                     return BadRequest(new { message = "Root categories must not include parentCategoryId." });
+                }
             }
 
             category.Title = updated.Title;
             category.Code = updated.Code;
-            category.Description = updated.Description;   // may be null
-            category.Subcategories = updated.Subcategories; // may be null
+            category.Description = updated.Description;
+            category.Subcategories = updated.Subcategories;
             category.ParentCategoryId = updated.ParentCategoryId;
 
             return Ok(category);

@@ -39,19 +39,24 @@ namespace OnlineShop.Services
             };
         }
 
-        public List<Category> GetAll() => _categories;
+        public List<Category> GetAll()
+        {
+            return _categories;
+        }
 
         public Category? FindCategory(int id, List<Category>? list = null)
         {
             list ??= _categories;
-            foreach (var cat in list)
+            foreach (Category cat in list)
             {
                 if (cat.Id == id)
                     return cat;
 
-                var found = FindCategory(id, cat.Subcategories);
+                Category? found = FindCategory(id, cat.Subcategories);
                 if (found != null)
+                {
                     return found;
+                }
             }
 
             return null;
@@ -59,11 +64,14 @@ namespace OnlineShop.Services
 
         public int GetMaxId(List<Category> list)
         {
-            if (!list.Any()) return 0;
+            if (!list.Any())
+            {
+                return 0;
+            }
 
             int max = list.Max(c => c.Id);
 
-            foreach (var cat in list)
+            foreach (Category cat in list)
             {
                 int subMax = GetMaxId(cat.Subcategories);
                 if (subMax > max)
@@ -77,14 +85,14 @@ namespace OnlineShop.Services
         {
             list ??= _categories;
 
-            var category = list.FirstOrDefault(c => c.Id == id);
+            Category? category = list.FirstOrDefault(c => c.Id == id);
             if (category != null)
             {
                 list.Remove(category);
                 return true;
             }
 
-            foreach (var cat in list)
+            foreach (Category cat in list)
             {
                 if (RemoveCategory(id, cat.Subcategories))
                     return true;
@@ -95,7 +103,7 @@ namespace OnlineShop.Services
         
         public bool CodeExistsInList(List<Category> categories, string code, int excludeId)
         {
-            foreach (var c in categories)
+            foreach (Category c in categories)
             {
                 if (c.Id != excludeId && string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
                     return true;
