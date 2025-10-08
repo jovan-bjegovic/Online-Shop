@@ -13,23 +13,32 @@ namespace OnlineShop.Controllers
         [HttpGet]
         public IActionResult GetCategories()
         {
-            return Ok(_service.GetAll());
+            List<Category> categories = _service.GetAll();
+            return Ok(new Response<List<Category>>(
+                StatusCodes.Status200OK,
+                "Categories retrieved successfully",
+                categories
+            ));
         }
+
 
         [HttpGet("{id:int}")]
         public IActionResult GetCategoryById(int id)
         {
-            var category = _service.FindCategory(id);
+            Category category = _service.FindCategory(id);
 
             if (category is not null)
             {
-                return Ok(category);
+                return Ok(new Response<Category>(
+                    StatusCodes.Status200OK,
+                    "Category retrieved successfully",
+                    category
+                ));
             }
 
             return NotFound(new Response<object>(
                 statusCode: StatusCodes.Status404NotFound, 
                 message: $"Category with id {id} not found."
-                
             ));
         }
 
@@ -141,7 +150,11 @@ namespace OnlineShop.Controllers
             category.Subcategories = updated.Subcategories;
             category.ParentCategoryId = updated.ParentCategoryId;
 
-            return Ok(category);
+            return Ok(new Response<Category>(
+                StatusCodes.Status201Created,
+                "Category updated successfully",
+                category
+            ));
         }
 
 
