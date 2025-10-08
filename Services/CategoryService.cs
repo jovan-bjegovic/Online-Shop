@@ -92,5 +92,20 @@ namespace OnlineShop.Services
 
             return false;
         }
+        
+        public bool CodeExistsInList(List<Category> categories, string code, int excludeId)
+        {
+            foreach (var c in categories)
+            {
+                if (c.Id != excludeId && string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (CodeExistsInList(c.Subcategories, code, excludeId))
+                    return true;
+            }
+            return false;
+        }
+
+        
     }
 }

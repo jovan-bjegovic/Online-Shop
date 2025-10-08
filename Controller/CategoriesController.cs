@@ -25,77 +25,88 @@ namespace OnlineShop.Controllers
             var category = _service.FindCategory(id);
             return category is not null
                 ? Ok(category)
-                : NotFound($"Category {id} not found.");
+                : NotFound($"Category with id: {id} not found.");
         }
 
         [HttpPost]
         public IActionResult Create(Category newCategory)
         {
-            var newId = _service.GetMaxId(_service.GetAll()) + 1;
+            if (string.IsNullOrWhiteSpace(newCategory.Title) || string.IsNullOrWhiteSpace(newCategory.Code))
+            {
+                return BadRequest(new { message = "Unique code or title are missing" });
+            }
+
+            var allCategories = _service.GetAll();
+            if (allCategories.Any(c => c.Code.Equals(newCategory.Code, StringComparison.OrdinalIgnoreCase)))
+            {
+                return BadRequest(new { message = "Code must be unique" });
+            }
+
+            var newId = _service.GetMaxId(allCategories) + 1;
             newCategory.Id = newId;
 
             if (newCategory.ParentCategoryId.HasValue)
             {
                 var parent = _service.FindCategory(newCategory.ParentCategoryId.Value);
                 if (parent is null)
-                    return NotFound($"Parent {newCategory.ParentCategoryId} not found.");
+                    return NotFound($"ParentId {newCategory.ParentCategoryId} not found.");
 
                 parent.Subcategories.Add(newCategory);
             }
             else
             {
-                _service.GetAll().Add(newCategory);
+                allCategories.Add(newCategory);
             }
 
             return Created($"/admin/categories/{newCategory.Id}", newCategory);
         }
+
 
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, Category updated)
         {
             var category = _service.FindCategory(id);
             if (category is null)
-                return NotFound($"Category {id} not found.");
+                return NotFound(new { message = $"Category with id: {id} not found." });
 
-            if (!string.IsNullOrEmpty(updated.Title))
-                category.Title = updated.Title;
-
-            if (!string.IsNullOrEmpty(updated.Code))
-                category.Code = updated.Code;
-
-            if (!string.IsNullOrEmpty(updated.Description))
-                category.Description = updated.Description;
-
-            if (updated.ParentCategoryId.HasValue && updated.ParentCategoryId != category.ParentCategoryId)
+            if (string.IsNullOrWhiteSpace(updated.Title) || string.IsNullOrWhiteSpace(updated.Code))
             {
-                if (category.ParentCategoryId.HasValue)
-                {
-                    var oldParent = _service.FindCategory(category.ParentCategoryId.Value);
-                    oldParent?.Subcategories.Remove(category);
-                }
-                else
-                {
-                    _service.GetAll().Remove(category);
-                }
-
-                var newParent = _service.FindCategory(updated.ParentCategoryId.Value);
-                if (newParent is null)
-                    return BadRequest($"Parent {updated.ParentCategoryId} not found.");
-
-                newParent.Subcategories.Add(category);
-                category.ParentCategoryId = newParent.Id;
+                return BadRequest(new { message = "Title and unique code are required." });
             }
+
+            if (_service.CodeExistsInList(_service.GetAll(), updated.Code, id))
+            {
+                return BadRequest(new { message = "Code must be unique." });
+            }
+
+            if (category.ParentCategoryId.HasValue)
+            {
+                if (!updated.ParentCategoryId.HasValue)
+                    return BadRequest(new { message = "parentCategoryId is required for subcategories." });
+            }
+            else
+            {
+                if (updated.ParentCategoryId.HasValue)
+                    return BadRequest(new { message = "Root categories must not include parentCategoryId." });
+            }
+
+            category.Title = updated.Title;
+            category.Code = updated.Code;
+            category.Description = updated.Description;   // may be null
+            category.Subcategories = updated.Subcategories; // may be null
+            category.ParentCategoryId = updated.ParentCategoryId;
 
             return Ok(category);
         }
+
 
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
             var removed = _service.RemoveCategory(id);
             return removed
-                ? Ok(new { message = $"Category {id} deleted successfully." })
-                : NotFound($"Category {id} not found.");
+                ? Ok(new { message = $"Category with id: {id} deleted successfully." })
+                : NotFound($"Category with id: {id} not found.");
         }
     }
 }
