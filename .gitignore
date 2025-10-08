@@ -1,0 +1,16 @@
+# Ignore build results
+bin/
+obj/
+
+# Rider / VS specific
+.vs/
+.idea/
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Other
+*.cache
+*.tmp
