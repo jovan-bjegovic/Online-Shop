@@ -2,7 +2,7 @@
 using OnlineShop.Models;
 using OnlineShop.Services;
 
-namespace OnlineShop.Controllers
+namespace OnlineShop.Controller
 {
     [ApiController]
     [Route("admin/[controller]")]
@@ -25,7 +25,7 @@ namespace OnlineShop.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetCategoryById(int id)
         {
-            Category category = _service.FindCategory(id);
+            Category? category = _service.FindCategory(id);
 
             if (category is not null)
             {
@@ -63,7 +63,7 @@ namespace OnlineShop.Controllers
                 ));
             }
 
-            var newId = _service.GetMaxId(allCategories) + 1;
+            int newId = _service.CreateNewId(allCategories);
             newCategory.Id = newId;
 
             if (newCategory.ParentCategoryId.HasValue)
@@ -86,7 +86,7 @@ namespace OnlineShop.Controllers
             return Created(
                 $"/admin/categories/{newCategory.Id}",
                 new Response<Category>(
-                    StatusCodes.Status201Created,
+                    StatusCodes.Status200OK,
                     "Category created successfully",
                     newCategory
                 )
@@ -107,7 +107,7 @@ namespace OnlineShop.Controllers
                 ));
             }
                 
-            if (string.IsNullOrWhiteSpace(updated.Title) || string.IsNullOrWhiteSpace(updated.Code))
+            if (string.IsNullOrEmpty(updated.Title.Trim()) || string.IsNullOrEmpty(updated.Code.Trim()))
             {
                 return BadRequest(new Response<object>(
                     StatusCodes.Status400BadRequest,
@@ -115,12 +115,14 @@ namespace OnlineShop.Controllers
                 ));
             }
 
-            if (_service.CodeExistsInList(_service.GetAll(), updated.Code, id))
+            List<Category> categories = _service.GetAll();
+
+            if (_service.CodeExistsInList(categories, updated.Code, id))
             {
                 return BadRequest(new Response<object>(
                     StatusCodes.Status400BadRequest,
-                    "Code must be unique")
-                );
+                    "Code must be unique"
+                ));
             }
 
             if (category.ParentCategoryId.HasValue)
@@ -151,7 +153,7 @@ namespace OnlineShop.Controllers
             category.ParentCategoryId = updated.ParentCategoryId;
 
             return Ok(new Response<Category>(
-                StatusCodes.Status201Created,
+                StatusCodes.Status200OK,
                 "Category updated successfully",
                 category
             ));

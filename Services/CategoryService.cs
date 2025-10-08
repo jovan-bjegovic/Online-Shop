@@ -70,7 +70,7 @@ namespace OnlineShop.Services
         }
 
 
-        public int GetMaxId(List<Category> list)
+        public int CreateNewId(List<Category> list)
         {
             if (!list.Any())
             {
@@ -81,12 +81,12 @@ namespace OnlineShop.Services
 
             foreach (Category cat in list)
             {
-                int subMax = GetMaxId(cat.Subcategories);
+                int subMax = CreateNewId(cat.Subcategories);
                 if (subMax > max)
                     max = subMax;
             }
 
-            return max;
+            return max + 1;
         }
 
         public bool RemoveCategory(int id, List<Category>? list = null)
