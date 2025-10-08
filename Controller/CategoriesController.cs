@@ -54,7 +54,7 @@ namespace OnlineShop.Controller
                 ));
             }
 
-            var allCategories = _service.GetAll();
+            List<Category> allCategories = _service.GetAll();
             if (allCategories.Any(c => c.Code.Equals(newCategory.Code, StringComparison.OrdinalIgnoreCase)))
             {
                 return BadRequest(new Response<object>(
@@ -68,7 +68,7 @@ namespace OnlineShop.Controller
 
             if (newCategory.ParentCategoryId.HasValue)
             {
-                var parent = _service.FindCategory(newCategory.ParentCategoryId.Value);
+                Category? parent = _service.FindCategory(newCategory.ParentCategoryId.Value);
                 if (parent is null)
                 {
                     return NotFound(new Response<object>(
@@ -98,7 +98,7 @@ namespace OnlineShop.Controller
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, Category updated)
         {
-            var category = _service.FindCategory(id);
+            Category category = _service.FindCategory(id);
             if (category is null)
             {
                 return NotFound(new Response<object>(
@@ -163,7 +163,7 @@ namespace OnlineShop.Controller
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            var removed = _service.RemoveCategory(id);
+            bool removed = _service.RemoveCategory(id);
             return removed
                 ? Ok(new Response<object>(
                     StatusCodes.Status200OK,
