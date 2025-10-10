@@ -3,7 +3,7 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.Services
 {
-    public class CategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repository;
 
@@ -21,20 +21,37 @@ namespace OnlineShop.Core.Services
         {
             return _repository.FindCategory(id);
         }
-
-        public int CreateNewId(List<Category> list)
-        {
-            return _repository.CreateNewId(list);
-        }
         
         public bool RemoveCategory(int id)
         {
             return _repository.RemoveCategory(id);
         }
         
-        public bool CodeExistsInList(List<Category> list, string code, int excludeId)
+        public int CreateNewId()
         {
-            return _repository.CodeExistsInList(list, code, excludeId);
+            var categories = _repository.GetAll();
+            return categories.Any() ? categories.Max(c => c.Id) + 1 : 1;
+        }
+
+        public bool CodeExists(string code, int excludeId)
+        {
+            var categories = _repository.GetAll();
+            return CodeExistsRecursive(categories, code, excludeId);
+        }
+
+        private bool CodeExistsRecursive(List<Category> categories, string code, int excludeId)
+        {
+            foreach (var c in categories)
+            {
+                if (c.Id != excludeId && string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (c.Subcategories is { Count: > 0 } &&
+                    CodeExistsRecursive(c.Subcategories, code, excludeId))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

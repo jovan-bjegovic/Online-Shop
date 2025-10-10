@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.Services;
 
 namespace OnlineShop.Controller
 {
@@ -8,9 +8,9 @@ namespace OnlineShop.Controller
     [Route("admin/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly CategoryService _service;
+        private readonly ICategoryService _service;
 
-        public CategoriesController(CategoryService service)
+        public CategoriesController(ICategoryService service)
         {
             _service = service;
         }
@@ -66,7 +66,7 @@ namespace OnlineShop.Controller
                 ));
             }
 
-            int newId = _service.CreateNewId(allCategories);
+            int newId = _service.CreateNewId();
             newCategory.Id = newId;
 
             if (newCategory.ParentCategoryId.HasValue)
@@ -115,10 +115,8 @@ namespace OnlineShop.Controller
                     "Unique code or title are missing"
                 ));
             }
-
-            List<Category> categories = _service.GetAll();
-
-            if (_service.CodeExistsInList(categories, updated.Code, id))
+            
+            if (_service.CodeExists(updated.Code, id))
             {
                 return BadRequest(new Response<object>(
                     StatusCodes.Status400BadRequest,

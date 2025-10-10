@@ -64,18 +64,6 @@ namespace OnlineShop.Data.Repositories
             return null;
         }
 
-        public int CreateNewId(List<Category> list)
-        {
-            if (!list.Any()) return 0;
-            int max = list.Max(c => c.Id);
-            foreach (Category cat in list)
-            {
-                int subMax = CreateNewId(cat.Subcategories);
-                if (subMax > max) max = subMax;
-            }
-            return max + 1;
-        }
-
         public bool RemoveCategory(int id)
         {
             return RemoveCategoryRecursive(id, _categories);
@@ -96,19 +84,6 @@ namespace OnlineShop.Data.Repositories
                     return true;
             }
 
-            return false;
-        }
-
-
-        public bool CodeExistsInList(List<Category> categories, string code, int excludeId)
-        {
-            foreach (Category c in categories)
-            {
-                if (c.Id != excludeId && string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
-                    return true;
-                if (CodeExistsInList(c.Subcategories, code, excludeId))
-                    return true;
-            }
             return false;
         }
     }
