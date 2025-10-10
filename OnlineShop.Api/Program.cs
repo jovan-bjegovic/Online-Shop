@@ -1,10 +1,15 @@
-using OnlineShop.Services;
+using OnlineShop.Core.Interfaces;
+using OnlineShop.Core.Services;
+using OnlineShop.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<CategoryService>();
 
 var app = builder.Build();
 

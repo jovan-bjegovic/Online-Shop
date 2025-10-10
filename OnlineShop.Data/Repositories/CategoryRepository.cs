@@ -1,12 +1,13 @@
-﻿using OnlineShop.Models;
+﻿using OnlineShop.Core.Models;
+using OnlineShop.Core.Interfaces;
 
-namespace OnlineShop.Services
+namespace OnlineShop.Data.Repositories
 {
-    public class CategoryService
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly List<Category> _categories;
 
-        public CategoryService()
+        public CategoryRepository()
         {
             _categories = new List<Category>
             {
@@ -39,60 +40,43 @@ namespace OnlineShop.Services
             };
         }
 
-        public List<Category> GetAll()
-        {
-            return _categories;
-        }
+        public List<Category> GetAll() => _categories;
 
-        public Category? FindCategory(int id)
-        {
-            return FindCategoryRecursive(id, _categories);
-        }
+        public Category? FindCategory(int id) => FindCategoryRecursive(id, _categories);
 
         private Category? FindCategoryRecursive(int id, List<Category> list)
         {
             foreach (Category cat in list)
             {
-                if (cat.Id == id)
-                    return cat;
-
+                if (cat.Id == id) return cat;
                 if (cat.Subcategories is { Count: > 0 })
                 {
                     Category? found = FindCategoryRecursive(id, cat.Subcategories);
-                    if (found != null)
-                    {
-                        return found;
-                    }
+                    if (found != null) return found;
                 }
             }
-
             return null;
         }
 
-
         public int CreateNewId(List<Category> list)
         {
-            if (!list.Any())
-            {
-                return 0;
-            }
-
+            if (!list.Any()) return 0;
             int max = list.Max(c => c.Id);
-
             foreach (Category cat in list)
             {
                 int subMax = CreateNewId(cat.Subcategories);
-                if (subMax > max)
-                    max = subMax;
+                if (subMax > max) max = subMax;
             }
-
             return max + 1;
         }
 
-        public bool RemoveCategory(int id, List<Category>? list = null)
+        public bool RemoveCategory(int id)
         {
-            list ??= _categories;
+            return RemoveCategoryRecursive(id, _categories);
+        }
 
+        private bool RemoveCategoryRecursive(int id, List<Category> list)
+        {
             Category? category = list.FirstOrDefault(c => c.Id == id);
             if (category != null)
             {
@@ -102,26 +86,24 @@ namespace OnlineShop.Services
 
             foreach (Category cat in list)
             {
-                if (RemoveCategory(id, cat.Subcategories))
+                if (RemoveCategoryRecursive(id, cat.Subcategories))
                     return true;
             }
 
             return false;
         }
-        
+
+
         public bool CodeExistsInList(List<Category> categories, string code, int excludeId)
         {
             foreach (Category c in categories)
             {
                 if (c.Id != excludeId && string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
                     return true;
-
                 if (CodeExistsInList(c.Subcategories, code, excludeId))
                     return true;
             }
             return false;
         }
-
-        
     }
 }

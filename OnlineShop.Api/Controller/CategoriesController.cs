@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineShop.Models;
-using OnlineShop.Services;
+using OnlineShop.Core.Models;
+using OnlineShop.Core.Services;
 
 namespace OnlineShop.Controller
 {
@@ -8,7 +8,13 @@ namespace OnlineShop.Controller
     [Route("admin/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly CategoryService _service = new CategoryService();
+        private readonly CategoryService _service;
+
+        public CategoriesController(CategoryService service)
+        {
+            _service = service;
+        }
+
 
         [HttpGet]
         public IActionResult GetCategories()
@@ -21,12 +27,10 @@ namespace OnlineShop.Controller
             ));
         }
 
-
         [HttpGet("{id:int}")]
         public IActionResult GetCategoryById(int id)
         {
             Category? category = _service.FindCategory(id);
-
             if (category is not null)
             {
                 return Ok(new Response<Category>(
@@ -37,11 +41,10 @@ namespace OnlineShop.Controller
             }
 
             return NotFound(new Response<object>(
-                statusCode: StatusCodes.Status404NotFound, 
-                message: $"Category with id {id} not found."
+                StatusCodes.Status404NotFound, 
+                $"Category with id {id} not found."
             ));
         }
-
 
         [HttpPost]
         public IActionResult Create(Category newCategory)
@@ -91,14 +94,12 @@ namespace OnlineShop.Controller
                     newCategory
                 )
             );
-
         }
-
 
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, Category updated)
         {
-            Category category = _service.FindCategory(id);
+            Category? category = _service.FindCategory(id);
             if (category is null)
             {
                 return NotFound(new Response<object>(
@@ -158,7 +159,6 @@ namespace OnlineShop.Controller
                 category
             ));
         }
-
 
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
