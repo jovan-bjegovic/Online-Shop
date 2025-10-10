@@ -40,9 +40,15 @@ namespace OnlineShop.Data.Repositories
             };
         }
 
-        public List<Category> GetAll() => _categories;
+        public List<Category> GetAll()
+        {
+            return _categories;
+        }
 
-        public Category? FindCategory(int id) => FindCategoryRecursive(id, _categories);
+        public Category? FindCategory(int id)
+        {
+            return FindCategoryRecursive(id, _categories);
+        }
 
         private Category? FindCategoryRecursive(int id, List<Category> list)
         {

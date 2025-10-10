@@ -12,11 +12,29 @@ namespace OnlineShop.Core.Services
             _repository = repository;
         }
 
-        public List<Category> GetAll() => _repository.GetAll();
-        public Category? FindCategory(int id) => _repository.FindCategory(id);
-        public int CreateNewId(List<Category> list) => _repository.CreateNewId(list);
-        public bool RemoveCategory(int id) => _repository.RemoveCategory(id);
-        public bool CodeExistsInList(List<Category> list, string code, int excludeId) 
-            => _repository.CodeExistsInList(list, code, excludeId);
+        public List<Category> GetAll()
+        {
+            return _repository.GetAll();
+        }
+
+        public Category? FindCategory(int id)
+        {
+            return _repository.FindCategory(id);
+        }
+
+        public int CreateNewId(List<Category> list)
+        {
+            return _repository.CreateNewId(list);
+        }
+        
+        public bool RemoveCategory(int id)
+        {
+            return _repository.RemoveCategory(id);
+        }
+        
+        public bool CodeExistsInList(List<Category> list, string code, int excludeId)
+        {
+            return _repository.CodeExistsInList(list, code, excludeId);
+        }
     }
 }
