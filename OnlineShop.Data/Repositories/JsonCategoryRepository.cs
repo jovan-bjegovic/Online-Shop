@@ -4,7 +4,7 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Data.Repositories
 {
-    public class JsonCategoryRepository : BaseCategoryRepository, IWritableCategoryRepository
+    public class JsonCategoryRepository : BaseCategoryRepository, ICategoryRepository
     {
         private readonly string _filePath;
         private readonly JsonSerializerOptions _jsonOptions;
@@ -27,20 +27,20 @@ namespace OnlineShop.Data.Repositories
         public List<Category> GetAll()
         {
             string json = File.ReadAllText(_filePath);
-            var categories = JsonSerializer.Deserialize<List<Category>>(json, _jsonOptions);
+            List<Category>? categories = JsonSerializer.Deserialize<List<Category>>(json, _jsonOptions);
             return categories ?? new List<Category>();
         }
 
         public Category? FindCategory(int id)
         {
-            var categories = GetAll();
+            List<Category> categories = GetAll();
             return FindCategoryRecursive(id, categories);
         }
 
         public bool RemoveCategory(int id)
         {
-            var categories = GetAll();
-            var removed = RemoveCategoryRecursive(id, categories);
+            List<Category> categories = GetAll();
+            bool removed = RemoveCategoryRecursive(id, categories);
             if (removed)
             {
                 SaveAll(categories);
@@ -56,15 +56,18 @@ namespace OnlineShop.Data.Repositories
 
         public Category CreateCategory(Category category)
         {
-            var categories = GetAll();
+            List<Category> categories = GetAll();
             int newId = categories.Any() ? GetMaxIdRecursive(categories) + 1 : 1;
             category.Id = newId;
 
             if (category.ParentCategoryId.HasValue)
             {
-                var parent = FindCategoryRecursive(category.ParentCategoryId.Value, categories);
+                Category? parent = FindCategoryRecursive(category.ParentCategoryId.Value, categories);
                 if (parent == null)
-                    throw new KeyNotFoundException($"Parent category with id {category.ParentCategoryId.Value} not found.");
+                {
+                    throw new KeyNotFoundException(
+                        $"Parent category with id {category.ParentCategoryId.Value} not found.");
+                }
 
                 parent.Subcategories.Add(category);
             }
@@ -79,19 +82,27 @@ namespace OnlineShop.Data.Repositories
 
         public Category? UpdateCategory(int id, Category updated)
         {
-            var categories = GetAll();
-            var category = FindCategoryRecursive(id, categories);
+            List<Category> categories = GetAll();
+            Category? category = FindCategoryRecursive(id, categories);
             if (category == null)
+            {
                 return null;
+            }
 
             category.Title = updated.Title;
             category.Code = updated.Code;
             category.Description = updated.Description;
-            category.Subcategories = updated.Subcategories ?? new List<Category>();
+            category.Subcategories = updated.Subcategories;
             category.ParentCategoryId = updated.ParentCategoryId;
 
             SaveAll(categories);
             return category;
         }
+        public bool CodeExists(string code, int excludeId = -1)
+        {
+            List<Category> categories = GetAll();
+            return CodeExistsRecursive(categories, code, excludeId);
+        }
+        
     }
 }

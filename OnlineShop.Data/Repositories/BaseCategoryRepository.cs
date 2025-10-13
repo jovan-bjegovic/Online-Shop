@@ -6,7 +6,7 @@ namespace OnlineShop.Data.Repositories
     {
         private void TraverseCategories(List<Category> categories, Action<Category> action)
         {
-            foreach (var c in categories)
+            foreach (Category c in categories)
             {
                 action(c);
                 if (c.Subcategories is { Count: > 0 })
@@ -27,14 +27,14 @@ namespace OnlineShop.Data.Repositories
 
         protected bool RemoveCategoryRecursive(int id, List<Category> list)
         {
-            var category = list.FirstOrDefault(c => c.Id == id);
+            Category? category = list.FirstOrDefault(c => c.Id == id);
             if (category != null)
             {
                 list.Remove(category);
                 return true;
             }
 
-            foreach (var cat in list)
+            foreach (Category cat in list)
             {
                 if (cat.Subcategories is { Count: > 0 } &&
                     RemoveCategoryRecursive(id, cat.Subcategories))
@@ -54,5 +54,19 @@ namespace OnlineShop.Data.Repositories
             });
             return maxId;
         }
+        protected bool CodeExistsRecursive(List<Category> categories, string code, int excludeId = -1)
+        {
+            bool exists = false;
+
+            TraverseCategories(categories, c =>
+            {
+                if (exists) return;
+                if (c.Id != excludeId && string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
+                    exists = true;
+            });
+
+            return exists;
+        }
+        
     }
 }

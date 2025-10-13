@@ -17,9 +17,9 @@
       {
         "id": 3,
         "title": "gfdas",
-        "code": "fsdaasgfdhs",
+        "code": "fds",
         "description": "gafd gadf with high performance",
-        "parentCategoryId": 1,
+        "parentCategoryId": null,
         "subcategories": []
       }
     ]

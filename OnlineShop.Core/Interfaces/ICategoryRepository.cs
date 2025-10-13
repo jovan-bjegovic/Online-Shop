@@ -7,10 +7,8 @@ namespace OnlineShop.Core.Interfaces
         List<Category> GetAll();
         Category? FindCategory(int id);
         bool RemoveCategory(int id);
-    }
-    
-    public interface IWritableCategoryRepository : ICategoryRepository
-    {
+        bool CodeExists(string code, int excludeId = -1);
+        
         Category CreateCategory(Category category);
         Category? UpdateCategory(int id, Category updated);
     }
