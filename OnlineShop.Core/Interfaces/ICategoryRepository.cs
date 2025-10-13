@@ -8,7 +8,6 @@ namespace OnlineShop.Core.Interfaces
         Category? FindCategory(int id);
         bool RemoveCategory(int id);
         bool CodeExists(string code, int excludeId = -1);
-        
         Category CreateCategory(Category category);
         Category? UpdateCategory(int id, Category updated);
     }

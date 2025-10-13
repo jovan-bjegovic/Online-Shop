@@ -54,6 +54,7 @@ namespace OnlineShop.Data.Repositories
             });
             return maxId;
         }
+        
         protected bool CodeExistsRecursive(List<Category> categories, string code, int excludeId = -1)
         {
             bool exists = false;
@@ -68,5 +69,9 @@ namespace OnlineShop.Data.Repositories
             return exists;
         }
         
+        protected bool CodeExistsInList(List<Category> categories, string code, int excludeId = -1)
+        {
+            return CodeExistsRecursive(categories, code, excludeId);
+        }
     }
 }

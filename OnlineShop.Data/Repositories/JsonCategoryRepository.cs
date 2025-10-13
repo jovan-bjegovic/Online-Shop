@@ -98,10 +98,10 @@ namespace OnlineShop.Data.Repositories
             SaveAll(categories);
             return category;
         }
+        
         public bool CodeExists(string code, int excludeId = -1)
         {
-            List<Category> categories = GetAll();
-            return CodeExistsRecursive(categories, code, excludeId);
+            return CodeExistsInList(GetAll(), code, excludeId);
         }
         
     }

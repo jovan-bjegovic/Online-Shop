@@ -54,6 +54,7 @@ namespace OnlineShop.Data.Repositories
         {
             return RemoveCategoryRecursive(id, _categories);
         }
+        
         public Category CreateCategory(Category category)
         {
             int newId = _categories.Any() ? GetMaxIdRecursive(_categories) + 1 : 1;
@@ -95,12 +96,9 @@ namespace OnlineShop.Data.Repositories
             return category;
         }
         
-        
         public bool CodeExists(string code, int excludeId = -1)
         {
-            List<Category> categories = GetAll();
-            return CodeExistsRecursive(categories, code, excludeId);
+            return CodeExistsInList(GetAll(), code, excludeId);
         }
-        
     }
 }
