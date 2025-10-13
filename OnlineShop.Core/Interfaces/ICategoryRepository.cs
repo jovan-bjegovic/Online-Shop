@@ -8,4 +8,10 @@ namespace OnlineShop.Core.Interfaces
         Category? FindCategory(int id);
         bool RemoveCategory(int id);
     }
+    
+    public interface IWritableCategoryRepository : ICategoryRepository
+    {
+        Category CreateCategory(Category category);
+        Category? UpdateCategory(int id, Category updated);
+    }
 }

@@ -3,7 +3,7 @@ using OnlineShop.Core.Interfaces;
 
 namespace OnlineShop.Data.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : BaseCategoryRepository, ICategoryRepository
     {
         private readonly List<Category> _categories;
 
@@ -50,41 +50,9 @@ namespace OnlineShop.Data.Repositories
             return FindCategoryRecursive(id, _categories);
         }
 
-        private Category? FindCategoryRecursive(int id, List<Category> list)
-        {
-            foreach (Category cat in list)
-            {
-                if (cat.Id == id) return cat;
-                if (cat.Subcategories is { Count: > 0 })
-                {
-                    Category? found = FindCategoryRecursive(id, cat.Subcategories);
-                    if (found != null) return found;
-                }
-            }
-            return null;
-        }
-
         public bool RemoveCategory(int id)
         {
             return RemoveCategoryRecursive(id, _categories);
-        }
-
-        private bool RemoveCategoryRecursive(int id, List<Category> list)
-        {
-            Category? category = list.FirstOrDefault(c => c.Id == id);
-            if (category != null)
-            {
-                list.Remove(category);
-                return true;
-            }
-
-            foreach (Category cat in list)
-            {
-                if (RemoveCategoryRecursive(id, cat.Subcategories))
-                    return true;
-            }
-
-            return false;
         }
     }
 }

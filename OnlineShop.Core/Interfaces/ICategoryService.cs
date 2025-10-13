@@ -7,6 +7,6 @@ public interface ICategoryService
     List<Category> GetAll();
     Category? FindCategory(int id);
     bool RemoveCategory(int id);
-    int CreateNewId();
-    bool CodeExists(string code, int excludeId);
+    Category CreateCategory(Category newCategory);
+    Category? UpdateCategory(int id, Category updated);
 }

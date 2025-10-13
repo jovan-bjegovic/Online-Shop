@@ -49,114 +49,47 @@ namespace OnlineShop.Controller
         [HttpPost]
         public IActionResult Create(Category newCategory)
         {
-            if (string.IsNullOrWhiteSpace(newCategory.Title) || string.IsNullOrWhiteSpace(newCategory.Code))
+            try
             {
-                return BadRequest(new Response<object>(
-                    StatusCodes.Status400BadRequest,
-                    "Unique code or title are missing"
-                ));
+                var created = _service.CreateCategory(newCategory);
+                return Created($"/admin/categories/{created.Id}",
+                    new Response<Category>(StatusCodes.Status200OK, "Category created successfully", created));
             }
-
-            List<Category> allCategories = _service.GetAll();
-            if (allCategories.Any(c => c.Code.Equals(newCategory.Code, StringComparison.OrdinalIgnoreCase)))
+            catch (ArgumentException ex)
             {
-                return BadRequest(new Response<object>(
-                    StatusCodes.Status400BadRequest,
-                    "Code must be unique"
-                ));
+                return BadRequest(new Response<object>(StatusCodes.Status400BadRequest, ex.Message));
             }
-
-            int newId = _service.CreateNewId();
-            newCategory.Id = newId;
-
-            if (newCategory.ParentCategoryId.HasValue)
+            catch (InvalidOperationException ex)
             {
-                Category? parent = _service.FindCategory(newCategory.ParentCategoryId.Value);
-                if (parent is null)
-                {
-                    return NotFound(new Response<object>(
-                        StatusCodes.Status404NotFound,
-                        $"Parent category with id {newCategory.ParentCategoryId.Value} not found."
-                    ));
-                }
-                parent.Subcategories.Add(newCategory);
+                return BadRequest(new Response<object>(StatusCodes.Status400BadRequest, ex.Message));
             }
-            else
+            catch (KeyNotFoundException ex)
             {
-                allCategories.Add(newCategory);
+                return NotFound(new Response<object>(StatusCodes.Status404NotFound, ex.Message));
             }
-
-            return Created(
-                $"/admin/categories/{newCategory.Id}",
-                new Response<Category>(
-                    StatusCodes.Status200OK,
-                    "Category created successfully",
-                    newCategory
-                )
-            );
         }
 
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, Category updated)
         {
-            Category? category = _service.FindCategory(id);
-            if (category is null)
+            try
             {
-                return NotFound(new Response<object>(
-                    StatusCodes.Status404NotFound,
-                    $"Category with id {id} not found."
-                ));
-            }
-                
-            if (string.IsNullOrEmpty(updated.Title.Trim()) || string.IsNullOrEmpty(updated.Code.Trim()))
-            {
-                return BadRequest(new Response<object>(
-                    StatusCodes.Status400BadRequest,
-                    "Unique code or title are missing"
-                ));
-            }
-            
-            if (_service.CodeExists(updated.Code, id))
-            {
-                return BadRequest(new Response<object>(
-                    StatusCodes.Status400BadRequest,
-                    "Code must be unique"
-                ));
-            }
+                var category = _service.UpdateCategory(id, updated);
+                if (category == null)
+                    return NotFound(new Response<object>(StatusCodes.Status404NotFound, $"Category {id} not found."));
 
-            if (category.ParentCategoryId.HasValue)
-            {
-                if (!updated.ParentCategoryId.HasValue)
-                {
-                    return BadRequest(new Response<object>(
-                        StatusCodes.Status400BadRequest,
-                        "parentCategoryId is required for subcategories"
-                    ));
-                }
+                return Ok(new Response<Category>(StatusCodes.Status200OK, "Category updated successfully", category));
             }
-            else
+            catch (ArgumentException ex)
             {
-                if (updated.ParentCategoryId.HasValue)
-                {
-                    return BadRequest(new Response<object>(
-                        StatusCodes.Status400BadRequest,
-                        "Root categories must not include parentCategoryId"
-                    ));
-                }
+                return BadRequest(new Response<object>(StatusCodes.Status400BadRequest, ex.Message));
             }
-
-            category.Title = updated.Title;
-            category.Code = updated.Code;
-            category.Description = updated.Description;
-            category.Subcategories = updated.Subcategories;
-            category.ParentCategoryId = updated.ParentCategoryId;
-
-            return Ok(new Response<Category>(
-                StatusCodes.Status200OK,
-                "Category updated successfully",
-                category
-            ));
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new Response<object>(StatusCodes.Status400BadRequest, ex.Message));
+            }
         }
+
 
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)

@@ -53,5 +53,35 @@ namespace OnlineShop.Core.Services
 
             return false;
         }
+        
+        public Category CreateCategory(Category newCategory)
+        {
+            if (_repository is not IWritableCategoryRepository writableRepo)
+                throw new InvalidOperationException("Repository does not support writing.");
+
+            if (string.IsNullOrWhiteSpace(newCategory.Title) || string.IsNullOrWhiteSpace(newCategory.Code))
+                throw new ArgumentException("Unique code or title are missing.");
+
+            var categories = _repository.GetAll();
+
+            if (categories.Any(c => c.Code.Equals(newCategory.Code, StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidOperationException("Code must be unique.");
+
+            return writableRepo.CreateCategory(newCategory);
+        }
+
+        public Category? UpdateCategory(int id, Category updated)
+        {
+            if (_repository is not IWritableCategoryRepository writableRepo)
+                throw new InvalidOperationException("Repository does not support writing.");
+
+            if (string.IsNullOrWhiteSpace(updated.Title) || string.IsNullOrWhiteSpace(updated.Code))
+                throw new ArgumentException("Unique code or title are missing.");
+
+            if (CodeExists(updated.Code, id))
+                throw new InvalidOperationException("Code must be unique.");
+
+            return writableRepo.UpdateCategory(id, updated);
+        }
     }
 }

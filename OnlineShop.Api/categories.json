@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "title": "Laptops",
+    "code": "LAP",
+    "description": "All kinds of laptops",
+    "parentCategoryId": null,
+    "subcategories": [
+      {
+        "id": 2,
+        "title": "gfdas",
+        "code": "fewrfe",
+        "description": "gafd gadf with high performance",
+        "parentCategoryId": 1,
+        "subcategories": []
+      },
+      {
+        "id": 3,
+        "title": "gfdas",
+        "code": "fsdaasgfdhs",
+        "description": "gafd gadf with high performance",
+        "parentCategoryId": 1,
+        "subcategories": []
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "gfdas",
+    "code": "fsdaasgfdhs",
+    "description": "gafd gadf with high performance",
+    "parentCategoryId": null,
+    "subcategories": []
+  },
+  {
+    "id": 5,
+    "title": "gfdas",
+    "code": "hsdfhhgfh",
+    "description": "gafd gadf with high performance",
+    "parentCategoryId": null,
+    "subcategories": []
+  }
+]
