@@ -13,7 +13,7 @@ namespace OnlineShop.Data.Repositories
             {
                 new Category
                 {
-                    Id = 1,
+                    Id = Guid.Parse("a7c1f2c8-59b8-4a9a-b046-7d9db27dfe59"),
                     Title = "Laptops",
                     Code = "LAP",
                     Description = "All types of laptops",
@@ -21,19 +21,19 @@ namespace OnlineShop.Data.Repositories
                     {
                         new Category
                         {
-                            Id = 2,
+                            Id = Guid.Parse("b2e77a4c-fb52-4d9d-b0d0-91a2c367e7de"),
                             Title = "Office",
                             Code = "OFF",
                             Description = "Laptops for office use",
-                            ParentCategoryId = 1
+                            ParentCategoryId = Guid.Parse("a7c1f2c8-59b8-4a9a-b046-7d9db27dfe59")
                         },
                         new Category
                         {
-                            Id = 3,
+                            Id = Guid.Parse("c4a7d1f6-226b-47b2-8b65-3f6d56d6c241"),
                             Title = "Gaming",
                             Code = "GAM",
                             Description = "Gaming laptops with high performance",
-                            ParentCategoryId = 1
+                            ParentCategoryId = Guid.Parse("a7c1f2c8-59b8-4a9a-b046-7d9db27dfe59")
                         }
                     }
                 }
@@ -45,20 +45,19 @@ namespace OnlineShop.Data.Repositories
             return _categories;
         }
 
-        public Category? FindCategory(int id)
+        public Category? FindCategory(Guid id)
         {
             return FindCategoryRecursive(id, _categories);
         }
 
-        public bool RemoveCategory(int id)
+        public bool RemoveCategory(Guid id)
         {
             return RemoveCategoryRecursive(id, _categories);
         }
         
         public Category CreateCategory(Category category)
         {
-            int newId = _categories.Any() ? GetMaxIdRecursive(_categories) + 1 : 1;
-            category.Id = newId;
+            category.Id = Guid.NewGuid();
 
             if (category.ParentCategoryId.HasValue)
             {
@@ -79,7 +78,7 @@ namespace OnlineShop.Data.Repositories
             return category;
         }
 
-        public Category? UpdateCategory(int id, Category updated)
+        public Category? UpdateCategory(Guid id, Category updated)
         {
             Category? category = FindCategoryRecursive(id, _categories);
             if (category == null)
@@ -96,9 +95,9 @@ namespace OnlineShop.Data.Repositories
             return category;
         }
         
-        public bool CodeExists(string code, int excludeId = -1)
+        public bool CodeExists(string code)
         {
-            return CodeExistsInList(GetAll(), code, excludeId);
+            return CodeExistsInList(GetAll(), code);
         }
     }
 }

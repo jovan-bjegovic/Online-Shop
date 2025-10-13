@@ -5,10 +5,10 @@ namespace OnlineShop.Core.Interfaces
     public interface ICategoryRepository
     {
         List<Category> GetAll();
-        Category? FindCategory(int id);
-        bool RemoveCategory(int id);
-        bool CodeExists(string code, int excludeId = -1);
+        Category? FindCategory(Guid id);
+        bool RemoveCategory(Guid id);
+        bool CodeExists(string code);
         Category CreateCategory(Category category);
-        Category? UpdateCategory(int id, Category updated);
+        Category? UpdateCategory(Guid id, Category updated);
     }
 }

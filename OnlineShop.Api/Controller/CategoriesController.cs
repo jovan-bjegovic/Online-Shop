@@ -27,8 +27,8 @@ namespace OnlineShop.Controller
             ));
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult GetCategoryById(int id)
+        [HttpGet("{id:guid}")]
+        public IActionResult GetCategoryById(Guid id)
         {
             Category? category = _service.FindCategory(id);
             if (category is not null)
@@ -51,7 +51,7 @@ namespace OnlineShop.Controller
         {
             try
             {
-                var created = _service.CreateCategory(newCategory);
+                Category created = _service.CreateCategory(newCategory);
                 return Created($"/admin/categories/{created.Id}",
                     new Response<Category>(StatusCodes.Status200OK, "Category created successfully", created));
             }
@@ -69,12 +69,12 @@ namespace OnlineShop.Controller
             }
         }
 
-        [HttpPut("{id:int}")]
-        public IActionResult Update(int id, Category updated)
+        [HttpPut("{id:guid}")]
+        public IActionResult Update(Guid id, Category updated)
         {
             try
             {
-                var category = _service.UpdateCategory(id, updated);
+                Category category = _service.UpdateCategory(id, updated);
                 if (category == null)
                     return NotFound(new Response<object>(StatusCodes.Status404NotFound, $"Category {id} not found."));
 
@@ -91,8 +91,8 @@ namespace OnlineShop.Controller
         }
 
 
-        [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id:guid}")]
+        public IActionResult Delete(Guid id)
         {
             bool removed = _service.RemoveCategory(id);
             return removed

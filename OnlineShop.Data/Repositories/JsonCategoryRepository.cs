@@ -31,13 +31,13 @@ namespace OnlineShop.Data.Repositories
             return categories ?? new List<Category>();
         }
 
-        public Category? FindCategory(int id)
+        public Category? FindCategory(Guid id)
         {
             List<Category> categories = GetAll();
             return FindCategoryRecursive(id, categories);
         }
 
-        public bool RemoveCategory(int id)
+        public bool RemoveCategory(Guid id)
         {
             List<Category> categories = GetAll();
             bool removed = RemoveCategoryRecursive(id, categories);
@@ -57,8 +57,7 @@ namespace OnlineShop.Data.Repositories
         public Category CreateCategory(Category category)
         {
             List<Category> categories = GetAll();
-            int newId = categories.Any() ? GetMaxIdRecursive(categories) + 1 : 1;
-            category.Id = newId;
+            category.Id = Guid.NewGuid();
 
             if (category.ParentCategoryId.HasValue)
             {
@@ -80,7 +79,7 @@ namespace OnlineShop.Data.Repositories
             return category;
         }
 
-        public Category? UpdateCategory(int id, Category updated)
+        public Category? UpdateCategory(Guid id, Category updated)
         {
             List<Category> categories = GetAll();
             Category? category = FindCategoryRecursive(id, categories);
@@ -99,9 +98,9 @@ namespace OnlineShop.Data.Repositories
             return category;
         }
         
-        public bool CodeExists(string code, int excludeId = -1)
+        public bool CodeExists(string code)
         {
-            return CodeExistsInList(GetAll(), code, excludeId);
+            return CodeExistsInList(GetAll(), code);
         }
         
     }

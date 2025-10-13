@@ -14,7 +14,7 @@ namespace OnlineShop.Data.Repositories
             }
         }
 
-        protected Category? FindCategoryRecursive(int id, List<Category> list)
+        protected Category? FindCategoryRecursive(Guid id, List<Category> list)
         {
             Category? found = null;
             TraverseCategories(list, c =>
@@ -25,7 +25,7 @@ namespace OnlineShop.Data.Repositories
             return found;
         }
 
-        protected bool RemoveCategoryRecursive(int id, List<Category> list)
+        protected bool RemoveCategoryRecursive(Guid id, List<Category> list)
         {
             Category? category = list.FirstOrDefault(c => c.Id == id);
             if (category != null)
@@ -43,35 +43,24 @@ namespace OnlineShop.Data.Repositories
 
             return false;
         }
-
-        protected int GetMaxIdRecursive(List<Category> categories)
-        {
-            int maxId = 0;
-            TraverseCategories(categories, c =>
-            {
-                if (c.Id > maxId)
-                    maxId = c.Id;
-            });
-            return maxId;
-        }
         
-        protected bool CodeExistsRecursive(List<Category> categories, string code, int excludeId = -1)
+        protected bool CodeExistsRecursive(List<Category> categories, string code)
         {
             bool exists = false;
 
             TraverseCategories(categories, c =>
             {
                 if (exists) return;
-                if (c.Id != excludeId && string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
                     exists = true;
             });
 
             return exists;
         }
         
-        protected bool CodeExistsInList(List<Category> categories, string code, int excludeId = -1)
+        protected bool CodeExistsInList(List<Category> categories, string code)
         {
-            return CodeExistsRecursive(categories, code, excludeId);
+            return CodeExistsRecursive(categories, code);
         }
     }
 }

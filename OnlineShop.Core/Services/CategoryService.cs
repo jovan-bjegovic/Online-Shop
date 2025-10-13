@@ -17,20 +17,14 @@ namespace OnlineShop.Core.Services
             return _repository.GetAll();
         }
 
-        public Category? FindCategory(int id)
+        public Category? FindCategory(Guid id)
         {
             return _repository.FindCategory(id);
         }
         
-        public bool RemoveCategory(int id)
+        public bool RemoveCategory(Guid id)
         {
             return _repository.RemoveCategory(id);
-        }
-        
-        public int CreateNewId()
-        {
-            List<Category> categories = _repository.GetAll();
-            return categories.Any() ? categories.Max(c => c.Id) + 1 : 1;
         }
         
         public Category CreateCategory(Category newCategory)
@@ -55,7 +49,7 @@ namespace OnlineShop.Core.Services
             return _repository.CreateCategory(newCategory);
         }
 
-        public Category? UpdateCategory(int id, Category updated)
+        public Category? UpdateCategory(Guid id, Category updated)
         {
             if (string.IsNullOrWhiteSpace(updated.Title) || string.IsNullOrWhiteSpace(updated.Code))
             {
