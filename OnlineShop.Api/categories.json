@@ -7,14 +7,6 @@
     "parentCategoryId": null,
     "subcategories": [
       {
-        "id": "b2e77a4c-fb52-4d9d-b0d0-91a2c367e7de",
-        "title": "gfdas",
-        "code": "fewrfe",
-        "description": "gafd gadf with high performance",
-        "parentCategoryId": "a7c1f2c8-59b8-4a9a-b046-7d9db27dfe59",
-        "subcategories": []
-      },
-      {
         "id": "c4a7d1f6-226b-47b2-8b65-3f6d56d6c241",
         "title": "gfdas",
         "code": "fds",

@@ -29,38 +29,11 @@ namespace OnlineShop.Core.Services
         
         public Category CreateCategory(Category newCategory)
         {
-            if (string.IsNullOrWhiteSpace(newCategory.Title) || string.IsNullOrWhiteSpace(newCategory.Code))
-            {
-                throw new ArgumentException("Unique code or title are missing.");
-            }
-
-            if (_repository.CodeExists(newCategory.Code))
-            {
-                throw new InvalidOperationException("Code must be unique.");
-            }
-
-            List<Category> categories = _repository.GetAll();
-
-            if (categories.Any(c => c.Code.Equals(newCategory.Code, StringComparison.OrdinalIgnoreCase)))
-            {
-                throw new InvalidOperationException("Code must be unique.");
-            }
-
             return _repository.CreateCategory(newCategory);
         }
 
         public Category? UpdateCategory(Guid id, Category updated)
         {
-            if (string.IsNullOrWhiteSpace(updated.Title) || string.IsNullOrWhiteSpace(updated.Code))
-            {
-                throw new ArgumentException("Unique code or title are missing.");
-            }
-
-            if (_repository.CodeExists(updated.Code))
-            {
-                throw new InvalidOperationException("Code must be unique.");
-            }
-
             return _repository.UpdateCategory(id, updated);
         }
     }

@@ -43,8 +43,8 @@ namespace OnlineShop.Data.Repositories
 
             return false;
         }
-        
-        protected bool CodeExistsRecursive(List<Category> categories, string code)
+
+        private bool CodeExistsRecursive(List<Category> categories, string code)
         {
             bool exists = false;
 
