@@ -10,4 +10,8 @@
       <ProjectReference Include="..\OnlineShop.Core\OnlineShop.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    </ItemGroup>
+
 </Project>

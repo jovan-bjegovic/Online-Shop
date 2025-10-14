@@ -13,13 +13,14 @@ builder.Services
     .AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
 
-builder.Services.AddValidatorsFromAssemblyContaining<CategoryDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
 
 var jsonFilePath = Path.Combine(builder.Environment.ContentRootPath, "categories.json");
 builder.Services.AddSingleton<ICategoryRepository>(
     new JsonCategoryRepository(jsonFilePath)
 );
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

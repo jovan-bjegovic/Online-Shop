@@ -1,4 +1,4 @@
-﻿namespace OnlineShop.Core.Models;
+﻿namespace OnlineShop.DTOs;
 
 public class CategoryDto
 {

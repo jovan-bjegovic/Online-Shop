@@ -7,7 +7,7 @@ public interface ICategoryService
     List<Category> GetAll();
     Category? FindCategory(Guid id);
     bool RemoveCategory(Guid id);
-    Category? CreateCategory(CategoryDto newCategory);
-    Category? UpdateCategory(Guid id, CategoryDto updated);
+    Category? CreateCategory(Category? newCategory);
+    Category? UpdateCategory(Guid id, Category updated);
     bool CodeExists(string code, Guid? excludeId = null);
 }

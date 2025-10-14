@@ -21,6 +21,14 @@
         "description": "gfdggdcxsaf",
         "parentCategoryId": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
         "subcategories": []
+      },
+      {
+        "id": "97a4d5c9-75f7-4537-81ac-8cbeb019bd14",
+        "title": "qwe",
+        "code": "qwe",
+        "description": "ewq",
+        "parentCategoryId": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
+        "subcategories": []
       }
     ]
   },
@@ -37,24 +45,7 @@
         "code": "LAPfdd",
         "description": "okokdgcgfx",
         "parentCategoryId": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
-        "subcategories": [
-          {
-            "id": "e75ffaba-7cbd-48af-84b0-73b3064a9488",
-            "title": "fstre",
-            "code": "twetrgf",
-            "description": "gdcxsaf",
-            "parentCategoryId": "a23c448e-3539-4319-8009-fa5516882e4e",
-            "subcategories": []
-          },
-          {
-            "id": "8da60f62-0fe0-4b7c-b083-b6c06103cc60",
-            "title": "fhgfstre",
-            "code": "twetrregf",
-            "description": "gfdggdcxsaf",
-            "parentCategoryId": "a23c448e-3539-4319-8009-fa5516882e4e",
-            "subcategories": []
-          }
-        ]
+        "subcategories": []
       },
       {
         "id": "f0fcff47-2ef5-4027-aa95-ba98c6e1a594",
@@ -67,18 +58,10 @@
     ]
   },
   {
-    "id": "e05c5c9a-91c3-4944-bdfb-a3315daefb55",
-    "title": "fhgfstre",
-    "code": "tgfk",
-    "description": "gfdggdcxsaf",
-    "parentCategoryId": null,
-    "subcategories": []
-  },
-  {
-    "id": "97258b79-b907-4633-87f2-63b1ad8a526b",
-    "title": "fhgfsthgtrfre",
-    "code": "tgflk",
-    "description": "gfdggdcxsaf",
+    "id": "e48dc556-3e14-40f9-bd5c-0673e2dc0188",
+    "title": "qwe",
+    "code": "qwegf",
+    "description": "ewq",
     "parentCategoryId": null,
     "subcategories": []
   }

@@ -4,9 +4,9 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.Validators;
 
-public class CategoryDtoValidator : AbstractValidator<CategoryDto>
+public class CategoryValidator : AbstractValidator<Category>
 {
-    public CategoryDtoValidator(ICategoryService service)
+    public CategoryValidator(ICategoryService service)
     {
         RuleFor(c => c.Title)
             .NotEmpty().WithMessage("Title is required.")

@@ -1,84 +1,83 @@
 ﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 
-namespace OnlineShop.Core.Services
+namespace OnlineShop.Core.Services;
+
+public class CategoryService : ICategoryService
 {
-    public class CategoryService : ICategoryService
+    private readonly ICategoryRepository repository;
+
+    public CategoryService(ICategoryRepository repository)
     {
-        private readonly ICategoryRepository repository;
+        this.repository = repository;
+    }
 
-        public CategoryService(ICategoryRepository repository)
-        {
-            this.repository = repository;
-        }
+    public List<Category> GetAll()
+    {
+        return repository.GetAll();
+    }
 
-        public List<Category> GetAll()
-        {
-            return repository.GetAll();
-        }
-
-        public Category? FindCategory(Guid id)
-        {
-            return repository.FindCategory(id);
-        }
+    public Category? FindCategory(Guid id)
+    {
+        return repository.FindCategory(id);
+    }
         
-        public bool RemoveCategory(Guid id)
-        {
-            return repository.RemoveCategory(id);
-        }
-        
-        public Category CreateCategory(CategoryDto newCategory)
-        {
-            if (CodeExists(newCategory.Code))
-            {
-                throw new ArgumentException($"A category with code '{newCategory.Code}' already exists.");
-            }
+    public bool RemoveCategory(Guid id)
+    {
+        return repository.RemoveCategory(id);
+    }
             
-            return repository.CreateCategory(newCategory);
-        }
-
-        public Category? UpdateCategory(Guid id, CategoryDto updated)
+    public Category? CreateCategory(Category? newCategory)
+    {
+        if (CodeExists(newCategory.Code))
         {
-            Category? existing = repository.FindCategory(id);
-            if (existing == null)
-            {
-                return null;
-            }
-
-            if (CodeExists(updated.Code, id))
-            {
-                throw new InvalidOperationException($"A category with code '{updated.Code}' already exists.");
-            }
-
-            return repository.UpdateCategory(id, updated);
+            throw new ArgumentException($"A category with code '{newCategory.Code}' already exists.");
         }
-        public bool CodeExists(string code, Guid? excludeId = null)
-        {
-            List<Category> categories = repository.GetAll();
             
-            return CodeExistsRecursive(categories, code, excludeId );
+        return repository.CreateCategory(newCategory);
+    }
+
+    public Category? UpdateCategory(Guid id, Category updated)
+    {
+        Category? existing = repository.FindCategory(id);
+        if (existing == null)
+        {
+            return null;
         }
 
-        private bool CodeExistsRecursive(List<Category> categories, string code, Guid? excludeId = null)
+        if (CodeExists(updated.Code, id))
         {
-            foreach (var category in categories)
-            {
-                if (excludeId.HasValue && category.Id == excludeId.Value){
-                    continue;
-                }
+            throw new InvalidOperationException($"A category with code '{updated.Code}' already exists.");
+        }
 
-                if (string.Equals(category.Code, code, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
+        return repository.UpdateCategory(id, updated);
+    }
+    public bool CodeExists(string code, Guid? excludeId = null)
+    {
+        List<Category> categories = repository.GetAll();
+            
+        return CodeExistsRecursive(categories, code, excludeId );
+    }
 
-                if (CodeExistsRecursive(category.Subcategories, code, excludeId))
-                {
-                    return true;
-                }
+    private bool CodeExistsRecursive(List<Category> categories, string code, Guid? excludeId = null)
+    {
+        foreach (var category in categories)
+        {
+            if (excludeId.HasValue && category.Id == excludeId.Value){
+                continue;
             }
 
-            return false;
+            if (string.Equals(category.Code, code, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (CodeExistsRecursive(category.Subcategories, code, excludeId))
+            {
+                return true;
+            }
         }
+
+        return false;
     }
 }
