@@ -138,12 +138,5 @@ namespace OnlineShop.Data.Repositories
 
             return category;
         }
-
-        public bool CodeExists(string code)
-        {
-            List<Category> categories = GetAll();
-            return CodeExistsInternal(categories, code);
-        }
-        
     }
 }

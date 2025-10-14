@@ -100,9 +100,5 @@ namespace OnlineShop.Data.Repositories
 
             return category;
         }
-        public bool CodeExists(string code)
-        {
-            return CodeExistsInternal(categories, code);
-        }
     }
 }

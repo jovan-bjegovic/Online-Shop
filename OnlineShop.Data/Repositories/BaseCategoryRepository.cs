@@ -48,31 +48,5 @@ namespace OnlineShop.Data.Repositories
             return false;
         }
 
-        private bool CodeExistsRecursive(List<Category> categories, string code)
-        {
-            bool exists = false;
-
-            TraverseCategories(categories, c =>
-            {
-                if (exists)
-                {
-                    return;
-                }
-
-                if (string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
-                {
-                    exists = true;
-                }
-            });
-
-            return exists;
-        }
-        
-        protected bool CodeExistsInternal(List<Category> categories, string code)
-        {
-
-            return CodeExistsRecursive(categories, code);
-        }
-
     }
 }

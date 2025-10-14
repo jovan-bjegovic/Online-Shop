@@ -6,7 +6,7 @@ namespace OnlineShop.Core.Validators;
 
 public class CategoryDtoValidator : AbstractValidator<CategoryDto>
 {
-    public CategoryDtoValidator(ICategoryRepository repository)
+    public CategoryDtoValidator(ICategoryService service)
     {
         RuleFor(c => c.Title)
             .NotEmpty().WithMessage("Title is required.")
@@ -15,7 +15,6 @@ public class CategoryDtoValidator : AbstractValidator<CategoryDto>
         RuleFor(c => c.Code)
             .NotEmpty().WithMessage("Code is required.")
             .Length(2, 10).WithMessage("Code must be between 2 and 10 characters.")
-            .Must(code => !repository.CodeExists(code))
             .WithMessage("Code must be unique.");
 
         RuleFor(c => c.Description)

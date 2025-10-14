@@ -69,6 +69,14 @@ namespace OnlineShop.Controller
             
             Category created = service.CreateCategory(newCategory);
             
+            if (created == null)
+            {
+                return BadRequest(new Response<Category>(
+                    StatusCodes.Status400BadRequest,
+                    "A category with the same code already exists."
+                ));
+            }
+            
             return Created($"/admin/category/{created.Id}",
                 new Response<Category>(StatusCodes.Status200OK, "Category created successfully", created));
         }

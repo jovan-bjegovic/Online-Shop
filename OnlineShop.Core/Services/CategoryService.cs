@@ -29,6 +29,11 @@ namespace OnlineShop.Core.Services
         
         public Category CreateCategory(CategoryDto newCategory)
         {
+            if (CodeExists(newCategory.Code))
+            {
+                return null;
+            }
+            
             return repository.CreateCategory(newCategory);
         }
 
@@ -40,13 +45,36 @@ namespace OnlineShop.Core.Services
                 return null;
             }
 
-            if (repository.CodeExists(updated.Code) && !string.Equals(existing.Code, updated.Code, StringComparison.OrdinalIgnoreCase))
+            if (CodeExists(updated.Code) && !string.Equals(existing.Code, updated.Code, StringComparison.OrdinalIgnoreCase))
             {
-                throw new InvalidOperationException($"A category with code '{updated.Code}' already exists.");
+                return null;
             }
 
             return repository.UpdateCategory(id, updated);
         }
+        public bool CodeExists(string code)
+        {
+            List<Category> categories = repository.GetAll();
+            
+            return CodeExistsRecursive(categories, code);
+        }
 
+        private bool CodeExistsRecursive(List<Category> categories, string code)
+        {
+            foreach (var category in categories)
+            {
+                if (string.Equals(category.Code, code, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+                if (CodeExistsRecursive(category.Subcategories, code))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
