@@ -56,30 +56,46 @@ namespace OnlineShop.Controller
         }
 
         [HttpPost]
-        public IActionResult Create(CategoryDto categoryDto)
+        public IActionResult Create(CategoryDto? categoryDto)
         {
-            
-            CategoryDto newCategory = new CategoryDto
+            try
             {
-                Title = categoryDto.Title,
-                Code = categoryDto.Code,
-                Description = categoryDto.Description,
-                ParentCategoryId = categoryDto.ParentCategoryId
-            };
-            
-            Category created = service.CreateCategory(newCategory);
-            
-            if (created == null)
+                Category created = service.CreateCategory(categoryDto);
+
+                return Created(
+                    $"/admin/category/{created.Id}",
+                    new Response<Category>(
+                        StatusCodes.Status201Created,
+                        "Category created successfully",
+                        created
+                    )
+                );
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(new Response<Category>(
                     StatusCodes.Status400BadRequest,
-                    "A category with the same code already exists."
+                    ex.Message
                 ));
             }
-            
-            return Created($"/admin/category/{created.Id}",
-                new Response<Category>(StatusCodes.Status200OK, "Category created successfully", created));
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new Response<Category>(
+                    StatusCodes.Status404NotFound,
+                    ex.Message
+                ));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new Response<Category>(
+                        StatusCodes.Status500InternalServerError,
+                        "An unexpected error occurred while creating the category."
+                    ));
+            }
         }
+
 
         [HttpPut("{id:guid}")]
         public IActionResult Update(Guid id, CategoryDto category)

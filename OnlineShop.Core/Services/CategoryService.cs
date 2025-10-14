@@ -31,7 +31,7 @@ namespace OnlineShop.Core.Services
         {
             if (CodeExists(newCategory.Code))
             {
-                return null;
+                throw new ArgumentException($"A category with code '{newCategory.Code}' already exists.");
             }
             
             return repository.CreateCategory(newCategory);
@@ -45,30 +45,34 @@ namespace OnlineShop.Core.Services
                 return null;
             }
 
-            if (CodeExists(updated.Code) && !string.Equals(existing.Code, updated.Code, StringComparison.OrdinalIgnoreCase))
+            if (CodeExists(updated.Code, id))
             {
-                return null;
+                throw new InvalidOperationException($"A category with code '{updated.Code}' already exists.");
             }
 
             return repository.UpdateCategory(id, updated);
         }
-        public bool CodeExists(string code)
+        public bool CodeExists(string code, Guid? excludeId = null)
         {
             List<Category> categories = repository.GetAll();
             
-            return CodeExistsRecursive(categories, code);
+            return CodeExistsRecursive(categories, code, excludeId );
         }
 
-        private bool CodeExistsRecursive(List<Category> categories, string code)
+        private bool CodeExistsRecursive(List<Category> categories, string code, Guid? excludeId = null)
         {
             foreach (var category in categories)
             {
+                if (excludeId.HasValue && category.Id == excludeId.Value){
+                    continue;
+                }
+
                 if (string.Equals(category.Code, code, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
 
-                if (CodeExistsRecursive(category.Subcategories, code))
+                if (CodeExistsRecursive(category.Subcategories, code, excludeId))
                 {
                     return true;
                 }

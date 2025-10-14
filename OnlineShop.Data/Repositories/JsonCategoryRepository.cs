@@ -108,11 +108,11 @@ namespace OnlineShop.Data.Repositories
                 if (category.ParentCategoryId.HasValue)
                 {
                     Category? oldParent = FindCategoryRecursive(category.ParentCategoryId.Value, categories);
-                    oldParent?.Subcategories.Remove(category);
+                    oldParent?.Subcategories.RemoveAll(c => c.Id == category.Id);
                 }
                 else
                 {
-                    categories.Remove(category);
+                    categories.RemoveAll(c => c.Id == category.Id);
                 }
 
                 if (updated.ParentCategoryId.HasValue)
@@ -135,8 +135,8 @@ namespace OnlineShop.Data.Repositories
             }
 
             SaveAll(categories);
-
             return category;
         }
+
     }
 }

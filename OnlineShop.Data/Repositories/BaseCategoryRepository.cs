@@ -10,7 +10,9 @@ namespace OnlineShop.Data.Repositories
             {
                 action(c);
                 if (c.Subcategories is { Count: > 0 })
+                {
                     TraverseCategories(c.Subcategories, action);
+                }
             }
         }
 
@@ -20,7 +22,9 @@ namespace OnlineShop.Data.Repositories
             TraverseCategories(list, c =>
             {
                 if (found == null && c.Id == id)
+                {
                     found = c;
+                }
             });
             
             return found;
