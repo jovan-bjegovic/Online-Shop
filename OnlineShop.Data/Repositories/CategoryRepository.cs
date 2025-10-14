@@ -55,9 +55,16 @@ namespace OnlineShop.Data.Repositories
             return RemoveCategoryRecursive(id, categories);
         }
         
-        public Category CreateCategory(Category category)
+        public Category CreateCategory(CategoryDto categoryDto)
         {
-            category.Id = Guid.NewGuid();
+            Category category = new Category
+            {
+                Id = Guid.NewGuid(),
+                Title = categoryDto.Title,
+                Code = categoryDto.Code,
+                Description = categoryDto.Description,
+                ParentCategoryId = categoryDto.ParentCategoryId
+            };
 
             if (category.ParentCategoryId.HasValue)
             {
@@ -78,7 +85,7 @@ namespace OnlineShop.Data.Repositories
             return category;
         }
 
-        public Category? UpdateCategory(Guid id, Category updated)
+        public Category? UpdateCategory(Guid id, CategoryDto updated)
         {
             Category? category = FindCategoryRecursive(id, categories);
             if (category == null)

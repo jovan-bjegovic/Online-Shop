@@ -51,16 +51,23 @@ namespace OnlineShop.Data.Repositories
             return removed;
         }
 
-        public void SaveAll(List<Category> categories)
+        private void SaveAll(List<Category> categories)
         {
             string json = JsonSerializer.Serialize(categories, jsonOptions);
             File.WriteAllText(filePath, json);
         }
 
-        public Category CreateCategory(Category category)
+        public Category CreateCategory(CategoryDto categoryDto)
         {
-            List<Category> categories = GetAll();
-            category.Id = Guid.NewGuid();
+            List<Category> categories =  GetAll();
+            Category category = new Category
+            {
+                Id = Guid.NewGuid(),
+                Title = categoryDto.Title,
+                Code = categoryDto.Code,
+                Description = categoryDto.Description,
+                ParentCategoryId = categoryDto.ParentCategoryId
+            };
 
             if (category.ParentCategoryId.HasValue)
             {
@@ -83,24 +90,55 @@ namespace OnlineShop.Data.Repositories
             return category;
         }
 
-        public Category? UpdateCategory(Guid id, Category updated)
+        public Category? UpdateCategory(Guid id, CategoryDto updated)
         {
             List<Category> categories = GetAll();
             Category? category = FindCategoryRecursive(id, categories);
             if (category == null)
             {
                 return null;
-            }   
+            }
 
             category.Title = updated.Title;
             category.Code = updated.Code;
             category.Description = updated.Description;
-            category.ParentCategoryId = updated.ParentCategoryId;
+
+            if (category.ParentCategoryId != updated.ParentCategoryId)
+            {
+                if (category.ParentCategoryId.HasValue)
+                {
+                    Category? oldParent = FindCategoryRecursive(category.ParentCategoryId.Value, categories);
+                    oldParent?.Subcategories.Remove(category);
+                }
+                else
+                {
+                    categories.Remove(category);
+                }
+
+                if (updated.ParentCategoryId.HasValue)
+                {
+                    Category? newParent = FindCategoryRecursive(updated.ParentCategoryId.Value, categories);
+                    if (newParent == null)
+                    {
+                        throw new KeyNotFoundException(
+                            $"Parent category with id {updated.ParentCategoryId.Value} not found.");
+                    }
+
+                    newParent.Subcategories.Add(category);
+                }
+                else
+                {
+                    categories.Add(category);
+                }
+
+                category.ParentCategoryId = updated.ParentCategoryId;
+            }
 
             SaveAll(categories);
-            
+
             return category;
         }
+
         public bool CodeExists(string code)
         {
             List<Category> categories = GetAll();

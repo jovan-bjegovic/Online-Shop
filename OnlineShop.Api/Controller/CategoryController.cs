@@ -59,7 +59,7 @@ namespace OnlineShop.Controller
         public IActionResult Create(CategoryDto categoryDto)
         {
             
-            Category newCategory = new Category
+            CategoryDto newCategory = new CategoryDto
             {
                 Title = categoryDto.Title,
                 Code = categoryDto.Code,
@@ -74,7 +74,7 @@ namespace OnlineShop.Controller
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult Update(Guid id, Category category)
+        public IActionResult Update(Guid id, CategoryDto category)
         {
             try
             {

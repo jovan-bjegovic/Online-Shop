@@ -27,12 +27,12 @@ namespace OnlineShop.Core.Services
             return repository.RemoveCategory(id);
         }
         
-        public Category CreateCategory(Category newCategory)
+        public Category CreateCategory(CategoryDto newCategory)
         {
             return repository.CreateCategory(newCategory);
         }
 
-        public Category? UpdateCategory(Guid id, Category updated)
+        public Category? UpdateCategory(Guid id, CategoryDto updated)
         {
             Category? existing = repository.FindCategory(id);
             if (existing == null)
