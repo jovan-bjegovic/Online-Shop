@@ -6,34 +6,36 @@ namespace OnlineShop.Data.Repositories
 {
     public class JsonCategoryRepository : BaseCategoryRepository, ICategoryRepository
     {
-        private readonly string _filePath;
-        private readonly JsonSerializerOptions _jsonOptions;
+        private readonly string filePath;
+        private readonly JsonSerializerOptions jsonOptions;
 
         public JsonCategoryRepository(string filePath)
         {
-            _filePath = filePath;
-            _jsonOptions = new JsonSerializerOptions
+            this.filePath = filePath;
+            jsonOptions = new JsonSerializerOptions
             {
                 WriteIndented = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            if (!File.Exists(_filePath))
+            if (!File.Exists(filePath))
             {
-                File.WriteAllText(_filePath, "[]");
+                File.WriteAllText(filePath, "[]");
             }
         }
 
         public List<Category> GetAll()
         {
-            string json = File.ReadAllText(_filePath);
-            List<Category>? categories = JsonSerializer.Deserialize<List<Category>>(json, _jsonOptions);
+            string json = File.ReadAllText(filePath);
+            List<Category>? categories = JsonSerializer.Deserialize<List<Category>>(json, jsonOptions);
+            
             return categories ?? new List<Category>();
         }
 
         public Category? FindCategory(Guid id)
         {
             List<Category> categories = GetAll();
+            
             return FindCategoryRecursive(id, categories);
         }
 
@@ -45,13 +47,14 @@ namespace OnlineShop.Data.Repositories
             {
                 SaveAll(categories);
             }
+            
             return removed;
         }
 
         public void SaveAll(List<Category> categories)
         {
-            string json = JsonSerializer.Serialize(categories, _jsonOptions);
-            File.WriteAllText(_filePath, json);
+            string json = JsonSerializer.Serialize(categories, jsonOptions);
+            File.WriteAllText(filePath, json);
         }
 
         public Category CreateCategory(Category category)
@@ -76,6 +79,7 @@ namespace OnlineShop.Data.Repositories
             }
 
             SaveAll(categories);
+            
             return category;
         }
 
@@ -86,21 +90,21 @@ namespace OnlineShop.Data.Repositories
             if (category == null)
             {
                 return null;
-            }
+            }   
 
             category.Title = updated.Title;
             category.Code = updated.Code;
             category.Description = updated.Description;
-            category.Subcategories = updated.Subcategories;
             category.ParentCategoryId = updated.ParentCategoryId;
 
             SaveAll(categories);
+            
             return category;
         }
-        
         public bool CodeExists(string code)
         {
-            return CodeExistsInList(GetAll(), code);
+            List<Category> categories = GetAll();
+            return CodeExistsInternal(categories, code);
         }
         
     }

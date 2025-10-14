@@ -5,36 +5,48 @@ namespace OnlineShop.Core.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryRepository _repository;
+        private readonly ICategoryRepository repository;
 
         public CategoryService(ICategoryRepository repository)
         {
-            _repository = repository;
+            this.repository = repository;
         }
 
         public List<Category> GetAll()
         {
-            return _repository.GetAll();
+            return repository.GetAll();
         }
 
         public Category? FindCategory(Guid id)
         {
-            return _repository.FindCategory(id);
+            return repository.FindCategory(id);
         }
         
         public bool RemoveCategory(Guid id)
         {
-            return _repository.RemoveCategory(id);
+            return repository.RemoveCategory(id);
         }
         
         public Category CreateCategory(Category newCategory)
         {
-            return _repository.CreateCategory(newCategory);
+            return repository.CreateCategory(newCategory);
         }
 
         public Category? UpdateCategory(Guid id, Category updated)
         {
-            return _repository.UpdateCategory(id, updated);
+            Category? existing = repository.FindCategory(id);
+            if (existing == null)
+            {
+                return null;
+            }
+
+            if (repository.CodeExists(updated.Code) && !string.Equals(existing.Code, updated.Code, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"A category with code '{updated.Code}' already exists.");
+            }
+
+            return repository.UpdateCategory(id, updated);
         }
+
     }
 }

@@ -22,6 +22,7 @@ namespace OnlineShop.Data.Repositories
                 if (found == null && c.Id == id)
                     found = c;
             });
+            
             return found;
         }
 
@@ -31,6 +32,7 @@ namespace OnlineShop.Data.Repositories
             if (category != null)
             {
                 list.Remove(category);
+                
                 return true;
             }
 
@@ -38,7 +40,9 @@ namespace OnlineShop.Data.Repositories
             {
                 if (cat.Subcategories is { Count: > 0 } &&
                     RemoveCategoryRecursive(id, cat.Subcategories))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -50,17 +54,25 @@ namespace OnlineShop.Data.Repositories
 
             TraverseCategories(categories, c =>
             {
-                if (exists) return;
+                if (exists)
+                {
+                    return;
+                }
+
                 if (string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
+                {
                     exists = true;
+                }
             });
 
             return exists;
         }
         
-        protected bool CodeExistsInList(List<Category> categories, string code)
+        protected bool CodeExistsInternal(List<Category> categories, string code)
         {
+
             return CodeExistsRecursive(categories, code);
         }
+
     }
 }

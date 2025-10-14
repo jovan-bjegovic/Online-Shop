@@ -13,7 +13,7 @@ builder.Services
     .AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
 
-builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CategoryDtoValidator>();
 
 var jsonFilePath = Path.Combine(builder.Environment.ContentRootPath, "categories.json");
 builder.Services.AddSingleton<ICategoryRepository>(

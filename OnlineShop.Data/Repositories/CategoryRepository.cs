@@ -5,11 +5,11 @@ namespace OnlineShop.Data.Repositories
 {
     public class CategoryRepository : BaseCategoryRepository, ICategoryRepository
     {
-        private readonly List<Category> _categories;
+        private readonly List<Category> categories;
 
         public CategoryRepository()
         {
-            _categories = new List<Category>
+            categories = new List<Category>
             {
                 new Category
                 {
@@ -17,7 +17,7 @@ namespace OnlineShop.Data.Repositories
                     Title = "Laptops",
                     Code = "LAP",
                     Description = "All types of laptops",
-                    Subcategories = new List<Category>
+                    Subcategories =
                     {
                         new Category
                         {
@@ -42,17 +42,17 @@ namespace OnlineShop.Data.Repositories
 
         public List<Category> GetAll()
         {
-            return _categories;
+            return categories;
         }
 
         public Category? FindCategory(Guid id)
         {
-            return FindCategoryRecursive(id, _categories);
+            return FindCategoryRecursive(id, categories);
         }
 
         public bool RemoveCategory(Guid id)
         {
-            return RemoveCategoryRecursive(id, _categories);
+            return RemoveCategoryRecursive(id, categories);
         }
         
         public Category CreateCategory(Category category)
@@ -61,7 +61,7 @@ namespace OnlineShop.Data.Repositories
 
             if (category.ParentCategoryId.HasValue)
             {
-                Category? parent = FindCategoryRecursive(category.ParentCategoryId.Value, _categories);
+                Category? parent = FindCategoryRecursive(category.ParentCategoryId.Value, categories);
                 if (parent == null)
                 {
                     throw new KeyNotFoundException(
@@ -72,7 +72,7 @@ namespace OnlineShop.Data.Repositories
             }
             else
             {
-                _categories.Add(category);
+                categories.Add(category);
             }
 
             return category;
@@ -80,7 +80,7 @@ namespace OnlineShop.Data.Repositories
 
         public Category? UpdateCategory(Guid id, Category updated)
         {
-            Category? category = FindCategoryRecursive(id, _categories);
+            Category? category = FindCategoryRecursive(id, categories);
             if (category == null)
             {
                 return null;
@@ -89,15 +89,13 @@ namespace OnlineShop.Data.Repositories
             category.Title = updated.Title;
             category.Code = updated.Code;
             category.Description = updated.Description;
-            category.Subcategories = updated.Subcategories;
             category.ParentCategoryId = updated.ParentCategoryId;
 
             return category;
         }
-        
         public bool CodeExists(string code)
         {
-            return CodeExistsInList(GetAll(), code);
+            return CodeExistsInternal(categories, code);
         }
     }
 }

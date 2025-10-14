@@ -5,24 +5,7 @@
     "code": "LAP",
     "description": "All kinds of laptops",
     "parentCategoryId": null,
-    "subcategories": [
-      {
-        "id": "c4a7d1f6-226b-47b2-8b65-3f6d56d6c241",
-        "title": "gfdas",
-        "code": "fds",
-        "description": "gafd gadf with high performance",
-        "parentCategoryId": "a7c1f2c8-59b8-4a9a-b046-7d9db27dfe59",
-        "subcategories": []
-      },
-      {
-        "id": "592ca1e6-5012-4056-ad40-00d66c31ed17",
-        "title": "fdsa",
-        "code": "Avdfsvfg2",
-        "description": "ok",
-        "parentCategoryId": "a7c1f2c8-59b8-4a9a-b046-7d9db27dfe59",
-        "subcategories": []
-      }
-    ]
+    "subcategories": []
   },
   {
     "id": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
@@ -30,37 +13,22 @@
     "code": "fsdaasgfd",
     "description": "gafd gadf with high performance",
     "parentCategoryId": null,
-    "subcategories": []
+    "subcategories": [
+      {
+        "id": "a23c448e-3539-4319-8009-fa5516882e4e",
+        "title": "bhgfdss",
+        "code": "LAjnfdg",
+        "description": "okokdgcx",
+        "parentCategoryId": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
+        "subcategories": []
+      }
+    ]
   },
   {
     "id": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
     "title": "gfdas",
     "code": "sdfhhfh",
     "description": "gafd gadf with high performance",
-    "parentCategoryId": null,
-    "subcategories": []
-  },
-  {
-    "id": "aa804dbb-9a1f-4e48-a187-fe3f1bcdd5eb",
-    "title": "tregfd",
-    "code": "kkyru",
-    "description": "rkuy performance",
-    "parentCategoryId": null,
-    "subcategories": []
-  },
-  {
-    "id": "05ce9a65-e531-4ad4-8cab-577fb640b21c",
-    "title": "fdsa",
-    "code": "Avdfsvdsfg",
-    "description": "ok",
-    "parentCategoryId": null,
-    "subcategories": []
-  },
-  {
-    "id": "96ab40c6-2a8b-4704-9155-9ac6d790f025",
-    "title": "Gaming",
-    "code": "GAM",
-    "description": "Powerful gaming laptops",
     "parentCategoryId": null,
     "subcategories": []
   }
