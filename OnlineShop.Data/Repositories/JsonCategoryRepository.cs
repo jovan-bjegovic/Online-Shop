@@ -29,7 +29,7 @@ public class JsonCategoryRepository : BaseCategoryRepository, ICategoryRepositor
         string json = File.ReadAllText(filePath);
         List<Category>? categories = JsonSerializer.Deserialize<List<Category>>(json, jsonOptions);
             
-        return categories ?? new List<Category>();
+        return categories ?? [];
     }
 
     public Category? FindCategory(Guid id)

@@ -2,8 +2,8 @@
 
 public class CategoryDto
 {
-    public string Title { get; set; } = string.Empty;
-    public string Code { get; set; } = string.Empty;
-    public string? Description { get; set; }
-    public Guid? ParentCategoryId { get; set; }
+    public string Title { get; init; } = string.Empty;
+    public string Code { get; init; } = string.Empty;
+    public string? Description { get; init; }
+    public Guid? ParentCategoryId { get; init; }
 }

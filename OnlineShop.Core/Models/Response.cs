@@ -1,15 +1,8 @@
 ﻿namespace OnlineShop.Core.Models;
 
-public class Response<T>
+public class Response<T>(int statusCode, string message, T? data = default)
 {
-    public int StatusCode { get; set; }
-    public string Message { get; set; }
-    public T? Data { get; set; }
-
-    public Response(int statusCode, string message, T? data = default)
-    {
-        StatusCode = statusCode;
-        Message = message;
-        Data = data;
-    }
+    public int StatusCode { get; set; } = statusCode;
+    public string Message { get; set; } = message;
+    public T? Data { get; set; } = data;
 }

@@ -3,15 +3,8 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.Services;
 
-public class CategoryService : ICategoryService
+public class CategoryService(ICategoryRepository repository) : ICategoryService
 {
-    private readonly ICategoryRepository repository;
-
-    public CategoryService(ICategoryRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public List<Category> GetAll()
     {
         return repository.GetAll();
@@ -27,7 +20,7 @@ public class CategoryService : ICategoryService
         return repository.RemoveCategory(id);
     }
             
-    public Category? CreateCategory(Category? newCategory)
+    public Category CreateCategory(Category newCategory)
     {
         if (CodeExists(newCategory.Code))
         {
@@ -59,14 +52,10 @@ public class CategoryService : ICategoryService
         return CodeExistsRecursive(categories, code, excludeId );
     }
 
-    private bool CodeExistsRecursive(List<Category> categories, string code, Guid? excludeId = null)
+    private static bool CodeExistsRecursive(List<Category> categories, string code, Guid? excludeId = null)
     {
-        foreach (var category in categories)
+        foreach (Category category in categories.Where(category => !excludeId.HasValue || category.Id != excludeId.Value))
         {
-            if (excludeId.HasValue && category.Id == excludeId.Value){
-                continue;
-            }
-
             if (string.Equals(category.Code, code, StringComparison.OrdinalIgnoreCase))
             {
                 return true;

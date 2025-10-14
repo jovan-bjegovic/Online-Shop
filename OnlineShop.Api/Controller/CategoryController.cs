@@ -8,23 +8,14 @@ namespace OnlineShop.Controller;
 
 [ApiController]
 [Route("admin/[controller]")]
-public class CategoryController : ControllerBase
+public class CategoryController(ICategoryService service, IMapper mapper) : ControllerBase
 {
-    private readonly ICategoryService service;
-    private readonly IMapper mapper;
-
-    public CategoryController(ICategoryService service,  IMapper mapper)
-    {
-        this.service = service;
-        this.mapper = mapper;
-    }
-
     [HttpGet]
     public IActionResult GetCategories()
     {
         List<Category> categories = service.GetAll();
 
-        if (!categories.Any())
+        if (categories.Count == 0)
         {
             return NotFound(new Response<object>(
                 StatusCodes.Status404NotFound,
@@ -66,7 +57,7 @@ public class CategoryController : ControllerBase
         {
             Category category = mapper.Map<Category>(categoryDto);
             
-            Category? created = service.CreateCategory(category);
+            Category created = service.CreateCategory(category);
             
             return Created(
                 $"/admin/category/{created.Id}",

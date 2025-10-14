@@ -4,7 +4,7 @@ namespace OnlineShop.Data.Repositories;
 
 public abstract class BaseCategoryRepository
 {
-    private void TraverseCategories(List<Category> categories, Action<Category> action)
+    private static void TraverseCategories(List<Category> categories, Action<Category> action)
     {
         foreach (Category c in categories)
         {
@@ -16,7 +16,7 @@ public abstract class BaseCategoryRepository
         }
     }
 
-    protected Category? FindCategoryRecursive(Guid id, List<Category> list)
+    protected static Category? FindCategoryRecursive(Guid id, List<Category> list)
     {
         Category? found = null;
         TraverseCategories(list, c =>
@@ -30,7 +30,7 @@ public abstract class BaseCategoryRepository
         return found;
     }
 
-    protected bool RemoveCategoryRecursive(Guid id, List<Category> list)
+    protected static bool RemoveCategoryRecursive(Guid id, List<Category> list)
     {
         Category? category = list.FirstOrDefault(c => c.Id == id);
         if (category != null)
