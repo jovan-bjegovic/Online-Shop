@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
+using OnlineShop.Core.UseCases.Requests;
+using OnlineShop.Core.UseCases.Responses;
 using OnlineShop.DTOs;
 
 namespace OnlineShop.Controller;
@@ -14,12 +16,12 @@ public class CategoryController(
 {
     [HttpGet]
     public IActionResult GetAllCategories(
-        [FromServices] IUseCase<List<Category>> getAllCategoriesUseCase
+        [FromServices] IUseCase<GetAllCategoriesResponse> getAllCategoriesUseCase
         )
     {
-        List<Category> categories = getAllCategoriesUseCase.Execute();
+        GetAllCategoriesResponse response = getAllCategoriesUseCase.Execute();
 
-        if (categories.Count == 0)
+        if (response.Categories.Count == 0)
         {
             return NotFound(new Response<object>(
                 StatusCodes.Status404NotFound,
@@ -30,19 +32,19 @@ public class CategoryController(
         return Ok(new Response<List<Category>>(
             StatusCodes.Status200OK,
             "Categories retrieved successfully",
-            categories
+            response.Categories
         ));
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult GetCategory(
+    public IActionResult GetCategoryById(
         [FromRoute] Guid id, 
-        [FromServices] IUseCase<Guid, Category?> getCategoryByIdUseCase
+        [FromServices] IUseCase<GetCategoryRequest, GetCategoryResponse> getCategoryByIdUseCase
         )
     {
-        Category? category = getCategoryByIdUseCase.Execute(id);
+        GetCategoryResponse response = getCategoryByIdUseCase.Execute(new GetCategoryRequest { Id = id });
 
-        if (category == null)
+        if (response.Category == null)
         {
             return NotFound(new Response<object>(
                 StatusCodes.Status404NotFound,
@@ -53,41 +55,39 @@ public class CategoryController(
         return Ok(new Response<Category>(
             StatusCodes.Status200OK,
             "Category retrieved successfully",
-            category
+            response.Category
         ));
     }
 
     [HttpPost]
     public IActionResult Create(
-        [FromBody] CategoryDto categoryDto,
-        [FromServices] IUseCase<Category, Category> createCategoryUseCase
+        [FromBody] CreateCategoryRequest request,
+        [FromServices] IUseCase<CreateCategoryRequest, CreateCategoryResponse> CreateCategoryUseCase
         )
     {
         try
         {
-            Category category = mapper.Map<Category>(categoryDto);
-            
-            Category created = createCategoryUseCase.Execute(category);
+            var response = CreateCategoryUseCase.Execute(request);
             
             return Created(
-                $"/admin/category/{created.Id}",
-                new Response<Category>(
+                $"/admin/category/{response.Id}",
+                new Response<CreateCategoryResponse>(
                     StatusCodes.Status201Created,
                     "Category created successfully",
-                    created
+                    response
                 )
             );
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new Response<Category>(
+            return BadRequest(new Response<object>(
                 StatusCodes.Status400BadRequest,
                 ex.Message
             ));
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new Response<Category>(
+            return NotFound(new Response<object>(
                 StatusCodes.Status404NotFound,
                 ex.Message
             ));
@@ -103,18 +103,17 @@ public class CategoryController(
     }
 
     [HttpPut("{id:guid}")]
-    public IActionResult Update([FromRoute] Guid id,
-        [FromBody] CategoryDto categoryDto,
-        [FromServices] IUseCase<(Guid, Category), Category?> updateCategoryUseCase
-        )
+    public IActionResult Update(
+        [FromRoute] Guid id,
+        [FromBody] UpdateCategoryRequest request,
+        [FromServices] IUseCase<UpdateCategoryRequest, UpdateCategoryResponse> updateCategoryUseCase)
     {
         try
         {
-            var updatedEntity = mapper.Map<Category>(categoryDto);
+            request.Id = id;
+            var response = updateCategoryUseCase.Execute(request);
             
-            Category? updatedCategory = updateCategoryUseCase.Execute((id, updatedEntity));
-
-            if (updatedCategory == null)
+            if (response == null)
             {
                 return NotFound(new Response<object>(
                     StatusCodes.Status404NotFound,
@@ -122,10 +121,10 @@ public class CategoryController(
                 ));
             }
 
-            return Ok(new Response<Category>(
+            return Ok(new Response<UpdateCategoryResponse>(
                 StatusCodes.Status200OK,
                 "Category updated successfully",
-                updatedCategory
+                response
             ));
         }
         catch (InvalidOperationException ex)
@@ -138,13 +137,13 @@ public class CategoryController(
     }
 
     [HttpDelete("{id:guid}")]
-    public IActionResult Delete([FromRoute] Guid id,
-        [FromServices] IUseCase<Guid, bool> deleteCategoryUseCase
-        )
+    public IActionResult Delete(
+        [FromRoute] Guid id,
+        [FromServices] IUseCase<DeleteCategoryRequest, DeleteCategoryResponse> deleteCategoryUseCase)
     {
-        bool success = deleteCategoryUseCase.Execute(id);
-
-        if (!success)
+        var response = deleteCategoryUseCase.Execute(new DeleteCategoryRequest { Id = id });
+        
+        if (!response.Success)
         {
             return NotFound(new Response<object>(
                 StatusCodes.Status404NotFound,

@@ -1,12 +1,15 @@
 ﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
+using OnlineShop.Core.UseCases.Responses;
 
 namespace OnlineShop.Core.UseCases;
 
-public class GetAllCategoriesUseCase(ICategoryService service) : IUseCase<List<Category>>
+public class GetAllCategoriesUseCase(ICategoryRepository repository) 
+    : IUseCase<GetAllCategoriesResponse>
 {
-    public List<Category> Execute()
+    public GetAllCategoriesResponse Execute()
     {
-        return service.GetAll();
+        var categories = repository.GetAll();
+        return new GetAllCategoriesResponse { Categories = categories };
     }
 }

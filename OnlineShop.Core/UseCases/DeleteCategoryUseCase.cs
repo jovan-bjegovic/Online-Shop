@@ -1,11 +1,15 @@
 ﻿using OnlineShop.Core.Interfaces;
+using OnlineShop.Core.UseCases.Requests;
+using OnlineShop.Core.UseCases.Responses;
 
 namespace OnlineShop.Core.UseCases;
 
-public class DeleteCategoryUseCase(ICategoryService service) : IUseCase<Guid, bool>
+public class DeleteCategoryUseCase(ICategoryRepository repository) 
+    : IUseCase<DeleteCategoryRequest, DeleteCategoryResponse>
 {
-    public bool Execute(Guid id)
+    public DeleteCategoryResponse Execute(DeleteCategoryRequest request)
     {
-        return service.RemoveCategory(id);
+        bool removed = repository.RemoveCategory(request.Id);
+        return new DeleteCategoryResponse { Success = removed };
     }
 }

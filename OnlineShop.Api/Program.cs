@@ -3,8 +3,11 @@ using OnlineShop.Core.Services;
 using OnlineShop.Data.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using OnlineShop.Core.Helpers;
 using OnlineShop.Core.Models;
 using OnlineShop.Core.UseCases;
+using OnlineShop.Core.UseCases.Requests;
+using OnlineShop.Core.UseCases.Responses;
 using OnlineShop.Core.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,14 +24,13 @@ var jsonFilePath = Path.Combine(builder.Environment.ContentRootPath, "categories
 builder.Services.AddSingleton<ICategoryRepository>(
     new JsonCategoryRepository(jsonFilePath)
 );
-builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IUseCase<GetAllCategoriesResponse>, GetAllCategoriesUseCase>();
+builder.Services.AddScoped<IUseCase<CreateCategoryRequest, CreateCategoryResponse>, CreateCategoryUseCase>();
+builder.Services.AddScoped<IUseCase<UpdateCategoryRequest, UpdateCategoryResponse>, UpdateCategoryUseCase>();
+builder.Services.AddScoped<IUseCase<DeleteCategoryRequest, DeleteCategoryResponse>, DeleteCategoryUseCase>();
+builder.Services.AddScoped<IUseCase<GetCategoryRequest, GetCategoryResponse>, GetCategoryByIdUseCase>();
+builder.Services.AddScoped<CategoryHelper>();
 builder.Services.AddAutoMapper(typeof(Program));
-
-builder.Services.AddScoped<IUseCase<List<Category>>, GetAllCategoriesUseCase>();
-builder.Services.AddScoped<IUseCase<Category, Category>, CreateCategoryUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, Category), Category?>, UpdateCategoryUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, bool>, DeleteCategoryUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, Category?>, GetCategoryByIdUseCase>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
