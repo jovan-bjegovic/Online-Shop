@@ -1,0 +1,68 @@
+[
+  {
+    "id": "a7c1f2c8-59b8-4a9a-b046-7d9db27dfe59",
+    "title": "Laptops",
+    "code": "LAP",
+    "description": "All kinds of laptops",
+    "parentCategoryId": null,
+    "subcategories": []
+  },
+  {
+    "id": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
+    "title": "gfdas",
+    "code": "fsdaasgfd",
+    "description": "gafd gadf with high performance",
+    "parentCategoryId": null,
+    "subcategories": [
+      {
+        "id": "ad3f306b-8c21-4e6f-9da9-6e577918f6f8",
+        "title": "fhgfsthgtrfre",
+        "code": "tgf",
+        "description": "gfdggdcxsaf",
+        "parentCategoryId": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
+        "subcategories": []
+      },
+      {
+        "id": "97a4d5c9-75f7-4537-81ac-8cbeb019bd14",
+        "title": "qwe",
+        "code": "qwe",
+        "description": "ewq",
+        "parentCategoryId": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
+        "subcategories": []
+      }
+    ]
+  },
+  {
+    "id": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
+    "title": "gfdas",
+    "code": "sdfhhfh",
+    "description": "gafd gadf with high performance",
+    "parentCategoryId": null,
+    "subcategories": [
+      {
+        "id": "a23c448e-3539-4319-8009-fa5516882e4e",
+        "title": "bhgfdss",
+        "code": "LAPfdd",
+        "description": "okokdgcgfx",
+        "parentCategoryId": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
+        "subcategories": []
+      },
+      {
+        "id": "f0fcff47-2ef5-4027-aa95-ba98c6e1a594",
+        "title": "tre",
+        "code": "gf",
+        "description": "gd",
+        "parentCategoryId": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
+        "subcategories": []
+      }
+    ]
+  },
+  {
+    "id": "e48dc556-3e14-40f9-bd5c-0673e2dc0188",
+    "title": "qwe",
+    "code": "qwegf",
+    "description": "ewq",
+    "parentCategoryId": null,
+    "subcategories": []
+  }
+]
