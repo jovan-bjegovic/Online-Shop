@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 using OnlineShop.Core.UseCases;
 using OnlineShop.DTOs;
@@ -10,7 +9,6 @@ namespace OnlineShop.Controller;
 [ApiController]
 [Route("admin/[controller]")]
 public class CategoryController(
-        ICategoryService service, 
         IMapper mapper, 
         CreateCategoryUseCase createCategoryUseCase,
         UpdateCategoryUseCase updateCategoryUseCase,
@@ -22,7 +20,7 @@ public class CategoryController(
     [HttpGet]
     public IActionResult GetAllCategories()
     {
-        List<Category> categories = getAllCategoriesUseCase.Execute();
+        List<Category> categories = getAllCategoriesUseCase.Execute(null);
 
         if (categories.Count == 0)
         {
@@ -110,7 +108,7 @@ public class CategoryController(
         {
             var updatedEntity = mapper.Map<Category>(categoryDto);
             
-            Category? updatedCategory = updateCategoryUseCase.Execute(id, updatedEntity);
+            Category? updatedCategory = updateCategoryUseCase.Execute((id, updatedEntity));
 
             if (updatedCategory == null)
             {

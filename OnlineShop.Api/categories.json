@@ -38,14 +38,6 @@
         "description": "okokdgcgfx",
         "parentCategoryId": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
         "subcategories": []
-      },
-      {
-        "id": "f0fcff47-2ef5-4027-aa95-ba98c6e1a594",
-        "title": "tre",
-        "code": "gf",
-        "description": "gd",
-        "parentCategoryId": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
-        "subcategories": []
       }
     ]
   },
@@ -54,14 +46,6 @@
     "title": "qwe",
     "code": "qwegf",
     "description": "ewq",
-    "parentCategoryId": null,
-    "subcategories": []
-  },
-  {
-    "id": "ad3f306b-8c21-4e6f-9da9-6e577918f6f8",
-    "title": "qwe",
-    "code": "qwegfs",
-    "description": "nmhdgj",
     "parentCategoryId": null,
     "subcategories": []
   }
