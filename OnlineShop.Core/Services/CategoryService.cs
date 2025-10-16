@@ -22,27 +22,12 @@ public class CategoryService(ICategoryRepository repository) : ICategoryService
             
     public Category CreateCategory(Category newCategory)
     {
-        if (CodeExists(newCategory.Code))
-        {
-            throw new ArgumentException($"A category with code '{newCategory.Code}' already exists.");
-        }
             
         return repository.CreateCategory(newCategory);
     }
 
     public Category? UpdateCategory(Guid id, Category updated)
     {
-        Category? existing = repository.FindCategory(id);
-        if (existing == null)
-        {
-            return null;
-        }
-
-        if (CodeExists(updated.Code, id))
-        {
-            throw new InvalidOperationException($"A category with code '{updated.Code}' already exists.");
-        }
-
         return repository.UpdateCategory(id, updated);
     }
     public bool CodeExists(string code, Guid? excludeId = null)

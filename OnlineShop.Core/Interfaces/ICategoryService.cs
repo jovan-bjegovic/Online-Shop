@@ -9,4 +9,5 @@ public interface ICategoryService
     bool RemoveCategory(Guid id);
     Category CreateCategory(Category newCategory);
     Category? UpdateCategory(Guid id, Category updated);
+    bool CodeExists(string code, Guid? excludeId = null);
 }

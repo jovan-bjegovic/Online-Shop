@@ -15,14 +15,6 @@
     "parentCategoryId": null,
     "subcategories": [
       {
-        "id": "ad3f306b-8c21-4e6f-9da9-6e577918f6f8",
-        "title": "fhgfsthgtrfre",
-        "code": "tgf",
-        "description": "gfdggdcxsaf",
-        "parentCategoryId": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
-        "subcategories": []
-      },
-      {
         "id": "97a4d5c9-75f7-4537-81ac-8cbeb019bd14",
         "title": "qwe",
         "code": "qwe",
@@ -62,6 +54,14 @@
     "title": "qwe",
     "code": "qwegf",
     "description": "ewq",
+    "parentCategoryId": null,
+    "subcategories": []
+  },
+  {
+    "id": "ad3f306b-8c21-4e6f-9da9-6e577918f6f8",
+    "title": "qwe",
+    "code": "qwegfs",
+    "description": "nmhdgj",
     "parentCategoryId": null,
     "subcategories": []
   }

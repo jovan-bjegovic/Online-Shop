@@ -2,18 +2,27 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
+using OnlineShop.Core.UseCases;
 using OnlineShop.DTOs;
 
 namespace OnlineShop.Controller;
 
 [ApiController]
 [Route("admin/[controller]")]
-public class CategoryController(ICategoryService service, IMapper mapper) : ControllerBase
+public class CategoryController(
+        ICategoryService service, 
+        IMapper mapper, 
+        CreateCategoryUseCase createCategoryUseCase,
+        UpdateCategoryUseCase updateCategoryUseCase,
+        DeleteCategoryUseCase deleteCategoryUseCase,
+        GetAllCategoriesUseCase getAllCategoriesUseCase,
+        GetCategoryByIdUseCase getCategoryByIdUseCase
+    ) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetCategories()
+    public IActionResult GetAllCategories()
     {
-        List<Category> categories = service.GetAll();
+        List<Category> categories = getAllCategoriesUseCase.Execute();
 
         if (categories.Count == 0)
         {
@@ -33,7 +42,7 @@ public class CategoryController(ICategoryService service, IMapper mapper) : Cont
     [HttpGet("{id:guid}")]
     public IActionResult GetCategory(Guid id)
     {
-        Category? category = service.FindCategory(id);
+        Category? category = getCategoryByIdUseCase.Execute(id);
 
         if (category == null)
         {
@@ -57,7 +66,7 @@ public class CategoryController(ICategoryService service, IMapper mapper) : Cont
         {
             Category category = mapper.Map<Category>(categoryDto);
             
-            Category created = service.CreateCategory(category);
+            Category created = createCategoryUseCase.Execute(category);
             
             return Created(
                 $"/admin/category/{created.Id}",
@@ -101,7 +110,7 @@ public class CategoryController(ICategoryService service, IMapper mapper) : Cont
         {
             var updatedEntity = mapper.Map<Category>(categoryDto);
             
-            Category? updatedCategory = service.UpdateCategory(id, updatedEntity);
+            Category? updatedCategory = updateCategoryUseCase.Execute(id, updatedEntity);
 
             if (updatedCategory == null)
             {
@@ -129,9 +138,9 @@ public class CategoryController(ICategoryService service, IMapper mapper) : Cont
     [HttpDelete("{id:guid}")]
     public IActionResult Delete(Guid id)
     {
-        bool remove = service.RemoveCategory(id);
+        bool success = deleteCategoryUseCase.Execute(id);
 
-        if (!remove)
+        if (!success)
         {
             return NotFound(new Response<object>(
                 StatusCodes.Status404NotFound,
