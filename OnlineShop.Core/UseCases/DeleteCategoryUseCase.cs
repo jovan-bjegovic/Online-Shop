@@ -2,8 +2,7 @@
 
 namespace OnlineShop.Core.UseCases;
 
-public class DeleteCategoryUseCase(ICategoryService service)
-    : IUseCase<Guid, bool>
+public class DeleteCategoryUseCase(ICategoryService service) : IUseCase<Guid, bool>
 {
     public bool Execute(Guid id)
     {

@@ -3,6 +3,7 @@ using OnlineShop.Core.Services;
 using OnlineShop.Data.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using OnlineShop.Core.Models;
 using OnlineShop.Core.UseCases;
 using OnlineShop.Core.Validators;
 
@@ -22,11 +23,12 @@ builder.Services.AddSingleton<ICategoryRepository>(
 );
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddScoped<CreateCategoryUseCase>();
-builder.Services.AddScoped<UpdateCategoryUseCase>();
-builder.Services.AddScoped<DeleteCategoryUseCase>();
-builder.Services.AddScoped<GetAllCategoriesUseCase>();
-builder.Services.AddScoped<GetCategoryByIdUseCase>();
+
+builder.Services.AddScoped<IUseCase<List<Category>>, GetAllCategoriesUseCase>();
+builder.Services.AddScoped<IUseCase<Category, Category>, CreateCategoryUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Category), Category?>, UpdateCategoryUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, bool>, DeleteCategoryUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, Category?>, GetCategoryByIdUseCase>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

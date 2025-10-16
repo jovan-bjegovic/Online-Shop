@@ -3,8 +3,7 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.UseCases;
 
-public class UpdateCategoryUseCase(ICategoryService service)
-    : IUseCase<(Guid id, Category category), Category?>
+public class UpdateCategoryUseCase(ICategoryService service) : IUseCase<(Guid id, Category category), Category?>
 {
     public Category? Execute((Guid id, Category category) input)
     {
@@ -18,11 +17,8 @@ public class UpdateCategoryUseCase(ICategoryService service)
 
         if (service.CodeExists(updatedCategory.Code, id))
         {
-            throw new InvalidOperationException(
-                $"A category with code '{updatedCategory.Code}' already exists."
-            );
+            throw new InvalidOperationException($"A category with code '{updatedCategory.Code}' already exists.");
         }
-
         return service.UpdateCategory(id, updatedCategory);
     }
 }

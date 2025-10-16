@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.UseCases;
 using OnlineShop.DTOs;
 
 namespace OnlineShop.Controller;
@@ -9,18 +9,15 @@ namespace OnlineShop.Controller;
 [ApiController]
 [Route("admin/[controller]")]
 public class CategoryController(
-        IMapper mapper, 
-        CreateCategoryUseCase createCategoryUseCase,
-        UpdateCategoryUseCase updateCategoryUseCase,
-        DeleteCategoryUseCase deleteCategoryUseCase,
-        GetAllCategoriesUseCase getAllCategoriesUseCase,
-        GetCategoryByIdUseCase getCategoryByIdUseCase
+        IMapper mapper
     ) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAllCategories()
+    public IActionResult GetAllCategories(
+        [FromServices] IUseCase<List<Category>> getAllCategoriesUseCase
+        )
     {
-        List<Category> categories = getAllCategoriesUseCase.Execute(null);
+        List<Category> categories = getAllCategoriesUseCase.Execute();
 
         if (categories.Count == 0)
         {
@@ -38,7 +35,10 @@ public class CategoryController(
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult GetCategory(Guid id)
+    public IActionResult GetCategory(
+        [FromRoute] Guid id, 
+        [FromServices] IUseCase<Guid, Category?> getCategoryByIdUseCase
+        )
     {
         Category? category = getCategoryByIdUseCase.Execute(id);
 
@@ -58,7 +58,10 @@ public class CategoryController(
     }
 
     [HttpPost]
-    public IActionResult Create(CategoryDto? categoryDto)
+    public IActionResult Create(
+        [FromBody] CategoryDto categoryDto,
+        [FromServices] IUseCase<Category, Category> createCategoryUseCase
+        )
     {
         try
         {
@@ -91,7 +94,6 @@ public class CategoryController(
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new Response<Category>(
                     StatusCodes.Status500InternalServerError,
@@ -100,9 +102,11 @@ public class CategoryController(
         }
     }
 
-
     [HttpPut("{id:guid}")]
-    public IActionResult Update(Guid id, CategoryDto categoryDto)
+    public IActionResult Update([FromRoute] Guid id,
+        [FromBody] CategoryDto categoryDto,
+        [FromServices] IUseCase<(Guid, Category), Category?> updateCategoryUseCase
+        )
     {
         try
         {
@@ -134,7 +138,9 @@ public class CategoryController(
     }
 
     [HttpDelete("{id:guid}")]
-    public IActionResult Delete(Guid id)
+    public IActionResult Delete([FromRoute] Guid id,
+        [FromServices] IUseCase<Guid, bool> deleteCategoryUseCase
+        )
     {
         bool success = deleteCategoryUseCase.Execute(id);
 

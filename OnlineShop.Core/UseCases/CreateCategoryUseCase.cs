@@ -3,8 +3,7 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.UseCases;
 
-public class CreateCategoryUseCase(ICategoryService service) 
-    : IUseCase<Category, Category>
+public class CreateCategoryUseCase(ICategoryService service) : IUseCase<Category, Category>
 {
     public Category Execute(Category newCategory)
     {

@@ -3,10 +3,9 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.UseCases;
 
-public class GetAllCategoriesUseCase(ICategoryService service)
-    : IUseCase<object?, List<Category>>
+public class GetAllCategoriesUseCase(ICategoryService service) : IUseCase<List<Category>>
 {
-    public List<Category> Execute(object? input)
+    public List<Category> Execute()
     {
         return service.GetAll();
     }

@@ -1,6 +1,11 @@
 ﻿namespace OnlineShop.Core.Interfaces;
 
-public interface IUseCase<TInput, TOutput>
+public interface IUseCase<TRequest, TResponse>
 {
-    TOutput Execute(TInput input);
+    TResponse Execute(TRequest request);
+}
+
+public interface IUseCase<TResponse>
+{
+    TResponse Execute();
 }
