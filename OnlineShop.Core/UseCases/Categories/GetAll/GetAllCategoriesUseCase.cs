@@ -1,8 +1,7 @@
 ﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.UseCases.Responses;
 
-namespace OnlineShop.Core.UseCases;
+namespace OnlineShop.Core.UseCases.Categories.GetAll;
 
 public class GetAllCategoriesUseCase(ICategoryRepository repository) 
     : IUseCase<GetAllCategoriesResponse>
@@ -10,6 +9,7 @@ public class GetAllCategoriesUseCase(ICategoryRepository repository)
     public GetAllCategoriesResponse Execute()
     {
         List<Category> categories = repository.GetAll();
+        
         return new GetAllCategoriesResponse { Categories = categories };
     }
 }

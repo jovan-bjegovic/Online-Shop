@@ -6,15 +6,16 @@ using OnlineShop.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
 builder.Services
     .AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
 
 var jsonFilePath = Path.Combine(builder.Environment.ContentRootPath, "categories.json");
-builder.Services.AddDataAccess(jsonFilePath);
-builder.Services.AddApplicationServices();
+builder.Services
+    .AddDataAccess(jsonFilePath)
+    .AddApplicationServices()
+    .AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

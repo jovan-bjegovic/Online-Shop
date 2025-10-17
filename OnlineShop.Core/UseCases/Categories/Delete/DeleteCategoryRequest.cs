@@ -1,4 +1,4 @@
-﻿namespace OnlineShop.Core.UseCases.Requests;
+﻿namespace OnlineShop.Core.UseCases.Categories.Delete;
 
 public class DeleteCategoryRequest
 {

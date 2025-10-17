@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.UseCases.Requests;
-using OnlineShop.Core.UseCases.Responses;
+using OnlineShop.Core.UseCases.Categories.Create;
+using OnlineShop.Core.UseCases.Categories.Delete;
+using OnlineShop.Core.UseCases.Categories.Get;
+using OnlineShop.Core.UseCases.Categories.GetAll;
+using OnlineShop.Core.UseCases.Categories.Update;
 
 namespace OnlineShop.Controller;
 

@@ -1,8 +1,6 @@
 ﻿using OnlineShop.Core.Interfaces;
-using OnlineShop.Core.UseCases.Requests;
-using OnlineShop.Core.UseCases.Responses;
 
-namespace OnlineShop.Core.UseCases;
+namespace OnlineShop.Core.UseCases.Categories.Delete;
 
 public class DeleteCategoryUseCase(ICategoryRepository repository) 
     : IUseCase<DeleteCategoryRequest, DeleteCategoryResponse>
@@ -10,6 +8,7 @@ public class DeleteCategoryUseCase(ICategoryRepository repository)
     public DeleteCategoryResponse Execute(DeleteCategoryRequest request)
     {
         bool removed = repository.RemoveCategory(request.Id);
+        
         return new DeleteCategoryResponse { Success = removed };
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace OnlineShop.Core.UseCases.Responses;
+﻿namespace OnlineShop.Core.UseCases.Categories.Create;
 
 public class CreateCategoryResponse
 {

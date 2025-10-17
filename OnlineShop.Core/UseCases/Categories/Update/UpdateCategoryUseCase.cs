@@ -1,10 +1,8 @@
 ﻿using OnlineShop.Core.Helpers;
 using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.UseCases.Requests;
-using OnlineShop.Core.UseCases.Responses;
 
-namespace OnlineShop.Core.UseCases;
+namespace OnlineShop.Core.UseCases.Categories.Update;
 
 public class UpdateCategoryUseCase(
         ICategoryRepository repository,  
