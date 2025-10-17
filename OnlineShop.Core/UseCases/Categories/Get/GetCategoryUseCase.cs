@@ -5,11 +5,11 @@ using OnlineShop.Core.UseCases.Responses;
 
 namespace OnlineShop.Core.UseCases;
 
-public class GetCategoryByIdUseCase : IUseCase<GetCategoryRequest, GetCategoryResponse>
+public class GetCategoryUseCase : IUseCase<GetCategoryRequest, GetCategoryResponse>
 {
     private readonly ICategoryRepository _repository;
 
-    public GetCategoryByIdUseCase(ICategoryRepository repository)
+    public GetCategoryUseCase(ICategoryRepository repository)
     {
         _repository = repository;
     }

@@ -12,10 +12,10 @@ public class CategoryController : ControllerBase
 {
     [HttpGet]
     public IActionResult GetAllCategories(
-        [FromServices] IUseCase<GetAllCategoriesResponse> getAllCategoriesUseCase
+        [FromServices] IUseCase<GetAllCategoriesResponse> useCase
         )
     {
-        GetAllCategoriesResponse response = getAllCategoriesUseCase.Execute();
+        GetAllCategoriesResponse response = useCase.Execute();
 
         if (response.Categories.Count == 0)
         {
@@ -33,12 +33,12 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult GetCategoryById(
+    public IActionResult GetCategory(
         [FromRoute] Guid id, 
-        [FromServices] IUseCase<GetCategoryRequest, GetCategoryResponse> getCategoryByIdUseCase
+        [FromServices] IUseCase<GetCategoryRequest, GetCategoryResponse> useCase
         )
     {
-        GetCategoryResponse response = getCategoryByIdUseCase.Execute(new GetCategoryRequest { Id = id });
+        GetCategoryResponse response = useCase.Execute(new GetCategoryRequest { Id = id });
 
         if (response.Category == null)
         {
@@ -58,12 +58,12 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public IActionResult Create(
         [FromBody] CreateCategoryRequest request,
-        [FromServices] IUseCase<CreateCategoryRequest, CreateCategoryResponse> createCategoryUseCase
+        [FromServices] IUseCase<CreateCategoryRequest, CreateCategoryResponse> useCase
         )
     {
         try
         {
-            var response = createCategoryUseCase.Execute(request);
+            var response = useCase.Execute(request);
             
             return Created(
                 $"/admin/category/{response.Id}",
@@ -102,12 +102,12 @@ public class CategoryController : ControllerBase
     public IActionResult Update(
         [FromRoute] Guid id,
         [FromBody] UpdateCategoryRequest request,
-        [FromServices] IUseCase<UpdateCategoryRequest, UpdateCategoryResponse> updateCategoryUseCase)
+        [FromServices] IUseCase<UpdateCategoryRequest, UpdateCategoryResponse> useCase)
     {
         try
         {
             request.Id = id;
-            var response = updateCategoryUseCase.Execute(request);
+            var response = useCase.Execute(request);
             
             return Ok(new Response<UpdateCategoryResponse>(
                 StatusCodes.Status200OK,
@@ -127,9 +127,9 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id:guid}")]
     public IActionResult Delete(
         [FromRoute] Guid id,
-        [FromServices] IUseCase<DeleteCategoryRequest, DeleteCategoryResponse> deleteCategoryUseCase)
+        [FromServices] IUseCase<DeleteCategoryRequest, DeleteCategoryResponse> useCase)
     {
-        var response = deleteCategoryUseCase.Execute(new DeleteCategoryRequest { Id = id });
+        var response = useCase.Execute(new DeleteCategoryRequest { Id = id });
         
         if (!response.Success)
         {
