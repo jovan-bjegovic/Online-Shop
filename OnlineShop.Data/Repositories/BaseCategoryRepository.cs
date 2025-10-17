@@ -52,4 +52,16 @@ public abstract class BaseCategoryRepository
         return false;
     }
 
+    protected bool IsDescendant(Guid potentialParentId, Category category)
+    {
+        if (category.Subcategories.Count == 0) return false;
+        foreach (var sub in category.Subcategories)
+        {
+            if (sub.Id == potentialParentId || IsDescendant(potentialParentId, sub))
+                return true;
+        }
+        return false;
+    }
+
+
 }
