@@ -20,24 +20,25 @@
         "code": "qwe",
         "description": "ewq",
         "parentCategoryId": "d10e8e7a-4b37-49b9-bf45-37efb9a2895a",
-        "subcategories": []
-      }
-    ]
-  },
-  {
-    "id": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
-    "title": "gfdas",
-    "code": "sdfhhfh",
-    "description": "gafd gadf with high performance",
-    "parentCategoryId": null,
-    "subcategories": [
-      {
-        "id": "a23c448e-3539-4319-8009-fa5516882e4e",
-        "title": "bhgfdss",
-        "code": "LAPfdd",
-        "description": "okokdgcgfx",
-        "parentCategoryId": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
-        "subcategories": []
+        "subcategories": [
+          {
+            "id": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
+            "title": "gfdas",
+            "code": "sdfhhfh",
+            "description": "gafd gadf with high performance",
+            "parentCategoryId": "97a4d5c9-75f7-4537-81ac-8cbeb019bd14",
+            "subcategories": [
+              {
+                "id": "a23c448e-3539-4319-8009-fa5516882e4e",
+                "title": "bhgfdss",
+                "code": "LAPfdd",
+                "description": "okokdgcgfx",
+                "parentCategoryId": "e20fcbf1-1b2e-47ce-8d73-b6c25698718e",
+                "subcategories": []
+              }
+            ]
+          }
+        ]
       }
     ]
   },

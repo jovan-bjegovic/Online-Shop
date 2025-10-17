@@ -9,7 +9,7 @@ public class GetAllCategoriesUseCase(ICategoryRepository repository)
 {
     public GetAllCategoriesResponse Execute()
     {
-        var categories = repository.GetAll();
+        List<Category> categories = repository.GetAll();
         return new GetAllCategoriesResponse { Categories = categories };
     }
 }

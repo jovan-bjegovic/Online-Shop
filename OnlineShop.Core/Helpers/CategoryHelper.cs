@@ -14,13 +14,13 @@ public class CategoryHelper
 
     public bool CodeExists(string code, Guid? excludeId = null)
     {
-        var categories = repository.GetAll();
+        List<Category> categories = repository.GetAll();
         return CodeExistsRecursive(categories, code, excludeId);
     }
 
     private static bool CodeExistsRecursive(List<Category> categories, string code, Guid? excludeId = null)
     {
-        foreach (var category in categories.Where(c => !excludeId.HasValue || c.Id != excludeId.Value))
+        foreach (Category category in categories.Where(c => !excludeId.HasValue || c.Id != excludeId.Value))
         {
             if (string.Equals(category.Code, code, StringComparison.OrdinalIgnoreCase))
                 return true;

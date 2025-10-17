@@ -14,7 +14,7 @@ public class UpdateCategoryUseCase(
 {
     public UpdateCategoryResponse Execute(UpdateCategoryRequest request)
     {
-        var existing = repository.FindCategory(request.Id);
+        Category? existing = repository.FindCategory(request.Id);
         if (existing == null)
             throw new KeyNotFoundException($"Category with id '{request.Id}' not found.");
 

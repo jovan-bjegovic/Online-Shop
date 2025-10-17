@@ -1,18 +1,14 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 using OnlineShop.Core.UseCases.Requests;
 using OnlineShop.Core.UseCases.Responses;
-using OnlineShop.DTOs;
 
 namespace OnlineShop.Controller;
 
 [ApiController]
 [Route("admin/[controller]")]
-public class CategoryController(
-        IMapper mapper
-    ) : ControllerBase
+public class CategoryController : ControllerBase
 {
     [HttpGet]
     public IActionResult GetAllCategories(
@@ -62,12 +58,12 @@ public class CategoryController(
     [HttpPost]
     public IActionResult Create(
         [FromBody] CreateCategoryRequest request,
-        [FromServices] IUseCase<CreateCategoryRequest, CreateCategoryResponse> CreateCategoryUseCase
+        [FromServices] IUseCase<CreateCategoryRequest, CreateCategoryResponse> createCategoryUseCase
         )
     {
         try
         {
-            var response = CreateCategoryUseCase.Execute(request);
+            var response = createCategoryUseCase.Execute(request);
             
             return Created(
                 $"/admin/category/{response.Id}",
@@ -92,7 +88,7 @@ public class CategoryController(
                 ex.Message
             ));
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new Response<Category>(
@@ -113,14 +109,6 @@ public class CategoryController(
             request.Id = id;
             var response = updateCategoryUseCase.Execute(request);
             
-            if (response == null)
-            {
-                return NotFound(new Response<object>(
-                    StatusCodes.Status404NotFound,
-                    $"Category with id '{id}' not found."
-                ));
-            }
-
             return Ok(new Response<UpdateCategoryResponse>(
                 StatusCodes.Status200OK,
                 "Category updated successfully",

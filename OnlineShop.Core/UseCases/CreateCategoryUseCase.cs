@@ -18,7 +18,7 @@ public class CreateCategoryUseCase(
             throw new ArgumentException($"A category with code '{request.Code}' already exists.");
         }
         
-        var category = new Category
+        Category category = new Category
         {
             Id = Guid.NewGuid(),
             Title = request.Title,

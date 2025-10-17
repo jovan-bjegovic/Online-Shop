@@ -1,10 +1,8 @@
 using OnlineShop.Core.Interfaces;
-using OnlineShop.Core.Services;
 using OnlineShop.Data.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using OnlineShop.Core.Helpers;
-using OnlineShop.Core.Models;
 using OnlineShop.Core.UseCases;
 using OnlineShop.Core.UseCases.Requests;
 using OnlineShop.Core.UseCases.Responses;

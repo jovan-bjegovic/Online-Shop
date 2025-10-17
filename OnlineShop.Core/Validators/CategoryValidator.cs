@@ -6,7 +6,7 @@ namespace OnlineShop.Core.Validators;
 
 public abstract class CategoryValidator : AbstractValidator<Category>
 {
-    protected CategoryValidator(ICategoryService service)
+    protected CategoryValidator()
     {
         RuleFor(c => c.Title)
             .NotEmpty().WithMessage("Title is required.")

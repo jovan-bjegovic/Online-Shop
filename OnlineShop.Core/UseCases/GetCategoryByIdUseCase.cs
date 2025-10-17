@@ -16,7 +16,7 @@ public class GetCategoryByIdUseCase : IUseCase<GetCategoryRequest, GetCategoryRe
 
     public GetCategoryResponse Execute(GetCategoryRequest request)
     {
-        var category = _repository.FindCategory(request.Id);
+        Category? category = _repository.FindCategory(request.Id);
         return new GetCategoryResponse { Category = category };
     }
 }

@@ -111,6 +111,11 @@ public class JsonCategoryRepository : BaseCategoryRepository, ICategoryRepositor
 
             if (updated.ParentCategoryId.HasValue)
             {
+                
+                if (IsDescendant(updated.ParentCategoryId.Value, category))
+                {
+                    throw new InvalidOperationException("Cannot set a category's parent to its own subcategory.");
+                }
                 Category? newParent = FindCategoryRecursive(updated.ParentCategoryId.Value, categories);
                 if (newParent == null)
                 {
