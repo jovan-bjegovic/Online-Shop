@@ -4,7 +4,7 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Data.Repositories;
 
-public class DbCategoryRepository(AppDbContext context) : BaseCategoryRepository, ICategoryRepository
+public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
 {
     public List<Category> GetAll()
     {
@@ -20,39 +20,18 @@ public class DbCategoryRepository(AppDbContext context) : BaseCategoryRepository
             .FirstOrDefault(c => c.Id == id);
     }
 
-    public Category CreateCategory(Category category)
+    public void CreateCategory(Category category)
     {
         context.Categories.Add(category);
-        context.SaveChanges();
-        
-        return category;
     }
 
-    public Category? UpdateCategory(Guid id, Category updated)
+    public void UpdateCategory(Category category)
     {
-        Category? existing = context.Categories.Find(id);
-        if (existing == null)
-        {
-            return null;
-        }
-
-        context.Entry(existing).CurrentValues.SetValues(updated);
-        context.SaveChanges();
-        
-        return existing;
+        context.Categories.Update(category);
     }
 
-    public bool RemoveCategory(Guid id)
+    public void RemoveCategory(Category category)
     {
-        Category? category = context.Categories.Find(id);
-        if (category == null)
-        {
-            return false;
-        }
-
         context.Categories.Remove(category);
-        context.SaveChanges();
-        
-        return true;
     }
 }

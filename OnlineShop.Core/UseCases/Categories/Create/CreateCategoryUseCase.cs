@@ -4,9 +4,7 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.UseCases.Categories.Create;
 
-public class CreateCategoryUseCase(
-        ICategoryRepository repository, CategoryHelper categoryHelper
-    ) 
+public class CreateCategoryUseCase(IUnitOfWork unitOfWork, CategoryHelper categoryHelper)
     : IUseCase<CreateCategoryRequest, CreateCategoryResponse>
 {
     public CreateCategoryResponse Execute(CreateCategoryRequest request)
@@ -25,7 +23,8 @@ public class CreateCategoryUseCase(
             ParentCategoryId = request.ParentCategoryId
         };
 
-        repository.CreateCategory(category);
+        unitOfWork.Categories.CreateCategory(category);
+        unitOfWork.CommitAsync().GetAwaiter().GetResult();
 
         return new CreateCategoryResponse
         {

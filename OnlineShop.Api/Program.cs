@@ -11,10 +11,8 @@ builder.Services
     .AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
 
-var jsonFilePath = Path.Combine(builder.Environment.ContentRootPath, "categories.json");
-
 builder.Services
-    .AddDataAccess(builder.Configuration, jsonFilePath)
+    .AddDataAccess(builder.Configuration)
     .AddApplicationServices()
     .AddControllers();
 
