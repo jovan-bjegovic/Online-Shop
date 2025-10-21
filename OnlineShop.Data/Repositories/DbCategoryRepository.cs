@@ -24,26 +24,35 @@ public class DbCategoryRepository(AppDbContext context) : BaseCategoryRepository
     {
         context.Categories.Add(category);
         context.SaveChanges();
+        
         return category;
     }
 
     public Category? UpdateCategory(Guid id, Category updated)
     {
-        var existing = context.Categories.Find(id);
-        if (existing == null) return null;
+        Category? existing = context.Categories.Find(id);
+        if (existing == null)
+        {
+            return null;
+        }
 
         context.Entry(existing).CurrentValues.SetValues(updated);
         context.SaveChanges();
+        
         return existing;
     }
 
     public bool RemoveCategory(Guid id)
     {
-        var category = context.Categories.Find(id);
-        if (category == null) return false;
+        Category? category = context.Categories.Find(id);
+        if (category == null)
+        {
+            return false;
+        }
 
         context.Categories.Remove(category);
         context.SaveChanges();
+        
         return true;
     }
 }

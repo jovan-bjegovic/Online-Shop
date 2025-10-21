@@ -13,14 +13,14 @@ public static class DIConfiguration
         IConfiguration configuration,
         string? jsonFilePath = null)
     {
-        var dbHost = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
-        var dbPort = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5432";
-        var dbName = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "mydb";
-        var dbUser = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "postgres";
-        var dbPass = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "postgres";
 
-        var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass}";
+        string dbHost = GetEnv("POSTGRES_HOST");
+        string dbPort = GetEnv("POSTGRES_PORT");
+        string dbName = GetEnv("POSTGRES_DB");
+        string dbUser = GetEnv("POSTGRES_USER");
+        string dbPass = GetEnv("POSTGRES_PASSWORD");
 
+        string connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass}";
         if (!string.IsNullOrEmpty(connectionString))
         {
             services.AddDbContext<AppDbContext>(options =>
@@ -34,5 +34,16 @@ public static class DIConfiguration
         }
 
         return services;
+    }
+    
+    private static string GetEnv(string name)
+    {
+        string? value = Environment.GetEnvironmentVariable(name);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new InvalidOperationException($"Environment variable '{name}' is not set.");
+        }
+
+        return value;
     }
 }
