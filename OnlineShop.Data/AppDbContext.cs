@@ -11,22 +11,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         base.OnModelCreating(modelBuilder);
             
-        modelBuilder.Entity<Category>(entity =>
+        modelBuilder.Entity<Category>(category =>
         {
-            entity.HasKey(c => c.Id);
+            category.HasKey(c => c.Id);
 
-            entity.Property(c => c.Title)
+            category.Property(c => c.Title)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            entity.Property(c => c.Code)
+            category.Property(c => c.Code)
                 .IsRequired()
                 .HasMaxLength(50);
 
-            entity.Property(c => c.Description)
+            category.Property(c => c.Description)
                 .HasMaxLength(500);
 
-            entity.HasMany(c => c.Subcategories)
+            category.HasMany(c => c.Subcategories)
                 .WithOne()
                 .HasForeignKey(sc => sc.ParentCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
