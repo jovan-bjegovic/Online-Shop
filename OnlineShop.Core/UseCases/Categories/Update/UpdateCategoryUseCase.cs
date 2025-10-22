@@ -4,12 +4,15 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.UseCases.Categories.Update;
 
-public class UpdateCategoryUseCase(IUnitOfWork unitOfWork, CategoryHelper categoryHelper)
+public class UpdateCategoryUseCase(
+    ICategoryRepository repository,
+    IUnitOfWork unitOfWork, 
+    CategoryHelper categoryHelper)
     : IUseCase<UpdateCategoryRequest, UpdateCategoryResponse>
 {
     public UpdateCategoryResponse Execute(UpdateCategoryRequest request)
     {
-        Category? existing = unitOfWork.Categories.FindCategory(request.Id);
+        Category? existing = repository.FindCategory(request.Id);
         if (existing == null)
         {
             throw new KeyNotFoundException($"Category with id '{request.Id}' not found.");
@@ -25,7 +28,7 @@ public class UpdateCategoryUseCase(IUnitOfWork unitOfWork, CategoryHelper catego
         existing.Description = request.Description;
         existing.ParentCategoryId = request.ParentCategoryId;
 
-        unitOfWork.Categories.UpdateCategory(existing);
+        repository.UpdateCategory(existing);
         unitOfWork.CommitAsync().GetAwaiter().GetResult();
 
         return new UpdateCategoryResponse

@@ -26,7 +26,6 @@ public static class DIConfiguration
                 options.UseNpgsql(connectionString));
 
             services.AddScoped<ICategoryRepository, DbCategoryRepository>();
-            
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
