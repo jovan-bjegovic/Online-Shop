@@ -10,8 +10,7 @@ public static class DIConfiguration
 {
     public static IServiceCollection AddDataAccess(
         this IServiceCollection services,
-        IConfiguration configuration,
-        string? jsonFilePath = null)
+        IConfiguration configuration)
     {
 
         string dbHost = GetEnv("POSTGRES_HOST");
@@ -27,10 +26,7 @@ public static class DIConfiguration
                 options.UseNpgsql(connectionString));
 
             services.AddScoped<ICategoryRepository, DbCategoryRepository>();
-        }
-        else if (!string.IsNullOrEmpty(jsonFilePath))
-        {
-            services.AddSingleton<ICategoryRepository>(new JsonCategoryRepository(jsonFilePath));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         return services;
