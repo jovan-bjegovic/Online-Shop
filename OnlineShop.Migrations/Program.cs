@@ -1,16 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
-using OnlineShop.Core.Interfaces;
-using OnlineShop.Data.Repositories;
 
-namespace OnlineShop.Data;
+namespace OnlineShop.Migrations;
 
-public static class DIConfiguration
+class Program
 {
-    public static IServiceCollection AddDataAccess(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    static void Main()
     {
         string dbHost = GetEnv("POSTGRES_HOST");
         string dbPort = GetEnv("POSTGRES_PORT");
@@ -20,13 +15,20 @@ public static class DIConfiguration
 
         string connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass}";
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(connectionString));
+        var serviceProvider = new ServiceCollection()
+            .AddFluentMigratorCore()
+            .ConfigureRunner(rb => rb
+                .AddPostgres()
+                .WithGlobalConnectionString(connectionString)
+                .ScanIn(typeof(Program).Assembly).For.Migrations())
+            .AddLogging(lb => lb.AddFluentMigratorConsole())
+            .BuildServiceProvider();
 
-        services.AddScoped<ICategoryRepository, DbCategoryRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        using var scope = serviceProvider.CreateScope();
+        var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+        runner.MigrateUp();
 
-        return services;
+        Console.WriteLine("Migrations completed successfully.");
     }
 
     private static string GetEnv(string name)
@@ -36,7 +38,6 @@ public static class DIConfiguration
         {
             throw new InvalidOperationException($"Environment variable '{name}' is not set.");
         }
-        
         return value;
     }
 }
