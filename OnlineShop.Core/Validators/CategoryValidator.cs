@@ -10,11 +10,11 @@ public abstract class CategoryValidator : AbstractValidator<Category>
     {
         RuleFor(c => c.Title)
             .NotEmpty().WithMessage("Title is required.")
-            .MaximumLength(100).WithMessage("Title cannot exceed 100 characters.");
+            .MaximumLength(50).WithMessage("Title cannot exceed 50 characters.");
 
         RuleFor(c => c.Code)
             .NotEmpty().WithMessage("Code is required.")
-            .Length(2, 10).WithMessage("Code must be between 2 and 10 characters.")
+            .Length(2, 20).WithMessage("Code must be between 2 and 20 characters.")
             .WithMessage("Code must be unique.");
 
         RuleFor(c => c.Description)

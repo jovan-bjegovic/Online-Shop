@@ -4,10 +4,10 @@ namespace OnlineShop.Core.Interfaces;
 
 public interface ICategoryRepository
 {
-    List<Category> GetAll();
-    Category? FindCategory(Guid id);
-    void RemoveCategory(Category category);
-    void CreateCategory(Category category);
-    void UpdateCategory(Category category);
+    Task<List<Category>> GetAll();
+    Task<Category?> FindCategory(Guid id);
+    Task RemoveCategory(Category category);
+    Task CreateCategory(Category category);
+    Task UpdateCategory(Category category);
 
 }

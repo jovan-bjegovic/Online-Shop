@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.Core", "OnlineSh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.Data", "OnlineShop.Data\OnlineShop.Data.csproj", "{12D8006B-2139-457E-B81A-EA13292A8152}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.Migrations", "OnlineShop.Migrations\OnlineShop.Migrations.csproj", "{2EFC2863-D0B6-4ABA-8D1E-C2632145D037}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{12D8006B-2139-457E-B81A-EA13292A8152}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12D8006B-2139-457E-B81A-EA13292A8152}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12D8006B-2139-457E-B81A-EA13292A8152}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EFC2863-D0B6-4ABA-8D1E-C2632145D037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EFC2863-D0B6-4ABA-8D1E-C2632145D037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EFC2863-D0B6-4ABA-8D1E-C2632145D037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EFC2863-D0B6-4ABA-8D1E-C2632145D037}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
