@@ -2,10 +2,10 @@
 
 public interface IUseCase<TRequest, TResponse>
 {
-    TResponse Execute(TRequest request);
+    Task<TResponse> Execute(TRequest request);
 }
 
 public interface IUseCase<TResponse>
 {
-    TResponse Execute();
+    Task<TResponse> Execute();
 }

@@ -10,15 +10,15 @@ public class UpdateCategoryUseCase(
     CategoryHelper categoryHelper)
     : IUseCase<UpdateCategoryRequest, UpdateCategoryResponse>
 {
-    public UpdateCategoryResponse Execute(UpdateCategoryRequest request)
+    public async Task<UpdateCategoryResponse> Execute(UpdateCategoryRequest request)
     {
-        Category? existing = repository.FindCategory(request.Id);
+        Category? existing = await repository.FindCategory(request.Id);
         if (existing == null)
         {
             throw new KeyNotFoundException($"Category with id '{request.Id}' not found.");
         }
 
-        if (categoryHelper.CodeExists(request.Code, request.Id))
+        if (await categoryHelper.CodeExists(request.Code, request.Id))
         {
             throw new InvalidOperationException($"Code '{request.Code}' already exists.");
         }
@@ -28,8 +28,8 @@ public class UpdateCategoryUseCase(
         existing.Description = request.Description;
         existing.ParentCategoryId = request.ParentCategoryId;
 
-        repository.UpdateCategory(existing);
-        unitOfWork.CommitAsync().GetAwaiter().GetResult();
+        await repository.UpdateCategory(existing);
+        await unitOfWork.CommitAsync();
 
         return new UpdateCategoryResponse
         {

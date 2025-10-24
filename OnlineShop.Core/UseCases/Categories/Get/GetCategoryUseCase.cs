@@ -8,9 +8,9 @@ public class GetCategoryUseCase(
     IUnitOfWork unitOfWork)
     : IUseCase<GetCategoryRequest, GetCategoryResponse>
 {
-    public GetCategoryResponse Execute(GetCategoryRequest request)
+    public async Task<GetCategoryResponse> Execute(GetCategoryRequest request)
     {
-        Category? category = repository.FindCategory(request.Id);
+        Category? category = await repository.FindCategory(request.Id);
 
         return new GetCategoryResponse
         {

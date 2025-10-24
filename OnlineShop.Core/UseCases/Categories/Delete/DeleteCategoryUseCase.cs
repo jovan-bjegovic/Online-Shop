@@ -8,16 +8,16 @@ public class DeleteCategoryUseCase(
     IUnitOfWork unitOfWork)
     : IUseCase<DeleteCategoryRequest, DeleteCategoryResponse>
 {
-    public DeleteCategoryResponse Execute(DeleteCategoryRequest request)
+    public async Task<DeleteCategoryResponse> Execute(DeleteCategoryRequest request)
     {
-        Category? category = repository.FindCategory(request.Id);
+        Category? category = await repository.FindCategory(request.Id);
         if (category == null)
         {
             return new DeleteCategoryResponse { Success = false };
         }
 
-        repository.RemoveCategory(category);
-        unitOfWork.CommitAsync().GetAwaiter().GetResult();
+        await repository.RemoveCategory(category);
+        await unitOfWork.CommitAsync();
 
         return new DeleteCategoryResponse { Success = true };
     }

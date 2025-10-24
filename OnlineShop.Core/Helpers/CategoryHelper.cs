@@ -3,18 +3,12 @@ using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.Helpers;
 
-public class CategoryHelper
+public class CategoryHelper(ICategoryRepository repository)
 {
-    private readonly ICategoryRepository repository;
-
-    public CategoryHelper(ICategoryRepository repository)
+    public async Task<bool> CodeExists(string code, Guid? excludeId = null)
     {
-        this.repository = repository;
-    }
-
-    public bool CodeExists(string code, Guid? excludeId = null)
-    {
-        List<Category> categories = repository.GetAll();
+        List<Category> categories = await repository.GetAll();
+        
         return CodeExistsRecursive(categories, code, excludeId);
     }
 

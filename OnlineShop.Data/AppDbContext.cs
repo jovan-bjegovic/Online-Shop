@@ -17,11 +17,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
             category.Property(c => c.Title)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(50);
 
             category.Property(c => c.Code)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(20);
 
             category.Property(c => c.Description)
                 .HasMaxLength(500);

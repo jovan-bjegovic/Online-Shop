@@ -8,9 +8,9 @@ public class GetAllCategoriesUseCase(
     IUnitOfWork unitOfWork)
     : IUseCase<GetAllCategoriesResponse>
 {
-    public GetAllCategoriesResponse Execute()
+    public async Task<GetAllCategoriesResponse> Execute()
     {
-        List<Category> categories = repository.GetAll();
+        List<Category> categories = await repository.GetAll();
 
         return new GetAllCategoriesResponse
         {
