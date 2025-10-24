@@ -4,11 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace OnlineShop.Migrations;
 
-class Program
+internal class Program
 {
-    static void Main(
-        IConfiguration configuration)
+    private static void Main()
     {
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddEnvironmentVariables()
+            .Build();
+        
         string? connectionString = configuration.GetConnectionString("DefaultConnection");
         
         var serviceProvider = new ServiceCollection()
