@@ -1,5 +1,4 @@
-﻿using OnlineShop.Core.Helpers;
-using OnlineShop.Core.Interfaces;
+﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.UseCases.Categories.Update;
@@ -12,31 +11,23 @@ public class UpdateCategoryUseCase(
     public async Task<UpdateCategoryResponse> Execute(UpdateCategoryRequest request)
     {
         Category? existing = await repository.FindCategoryAsync(request.Id);
-        
-        List<Category> categories = await repository.GetAllAsync();
-        
         if (existing == null)
         {
             throw new KeyNotFoundException($"Category with id '{request.Id}' not found.");
         }
-
-        if (CategoryHelper.CodeExists(categories, request.Code, request.Id))
+        if (await repository.CodeExistsAsync(request.Code, request.Id))
         {
             throw new InvalidOperationException($"Code '{request.Code}' already exists.");
         }
-        
         if (request.ParentCategoryId.HasValue && request.ParentCategoryId.Value == request.Id)
         {
             throw new InvalidOperationException("A category cannot have itself as a parent.");
         }
-        
-        if (request.ParentCategoryId.HasValue)
+
+        if (request.ParentCategoryId.HasValue &&
+            await repository.IsCircularParentAsync(existing.Id, request.ParentCategoryId.Value))
         {
-            bool isParent = CategoryHelper.IsCircularParent(categories, existing.Id, request.ParentCategoryId.Value);
-            if (isParent)
-            {
-                throw new InvalidOperationException("Cannot set this parent. It would create a circular relationship.");
-            }
+            throw new InvalidOperationException("Cannot set this parent. It would create a circular relationship.");
         }
 
         existing.Title = request.Title;

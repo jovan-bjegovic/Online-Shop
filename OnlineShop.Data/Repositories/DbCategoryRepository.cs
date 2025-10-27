@@ -37,4 +37,36 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         context.Categories.Remove(category);
         return Task.CompletedTask;
     }
+    
+    public async Task<bool> CodeExistsAsync(string code, Guid? excludeId = null)
+    {
+        var query = context.Categories.AsQueryable();
+
+        if (excludeId.HasValue)
+        {
+            query = query.Where(c => c.Id != excludeId.Value);
+        }
+
+        return await query.AnyAsync(c => c.Code.ToLower() == code.ToLower());
+    }
+
+    public async Task<bool> IsCircularParentAsync(Guid categoryId, Guid newParentId)
+    {
+        var parentId = newParentId;
+
+        while (true)
+        {
+            if (parentId == categoryId) return true;
+
+            var parent = await context.Categories
+                .Where(c => c.Id == parentId)
+                .Select(c => c.ParentCategoryId)
+                .FirstOrDefaultAsync();
+
+            if (!parent.HasValue) break;
+            parentId = parent.Value;
+        }
+
+        return false;
+    }
 }

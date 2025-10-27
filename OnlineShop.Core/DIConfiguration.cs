@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OnlineShop.Core.Helpers;
 using OnlineShop.Core.Interfaces;
-using OnlineShop.Core.UseCases;
 using OnlineShop.Core.UseCases.Categories.Create;
 using OnlineShop.Core.UseCases.Categories.Delete;
 using OnlineShop.Core.UseCases.Categories.Get;
@@ -19,8 +17,6 @@ public static class DIConfiguration
         services.AddScoped<IUseCase<UpdateCategoryRequest, UpdateCategoryResponse>, UpdateCategoryUseCase>();
         services.AddScoped<IUseCase<DeleteCategoryRequest, DeleteCategoryResponse>, DeleteCategoryUseCase>();
         services.AddScoped<IUseCase<GetCategoryRequest, GetCategoryResponse>, GetCategoryUseCase>();
-        
-        services.AddScoped<CategoryHelper>();
 
         return services;
     }
