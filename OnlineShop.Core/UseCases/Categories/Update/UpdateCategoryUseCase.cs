@@ -13,14 +13,31 @@ public class UpdateCategoryUseCase(
     public async Task<UpdateCategoryResponse> Execute(UpdateCategoryRequest request)
     {
         Category? existing = await repository.FindCategory(request.Id);
+        
+        List<Category> categories = await repository.GetAll();
+        
         if (existing == null)
         {
             throw new KeyNotFoundException($"Category with id '{request.Id}' not found.");
         }
 
-        if (await categoryHelper.CodeExists(request.Code, request.Id))
+        if (CategoryHelper.CodeExists(categories, request.Code, request.Id))
         {
             throw new InvalidOperationException($"Code '{request.Code}' already exists.");
+        }
+        
+        if (request.ParentCategoryId.HasValue && request.ParentCategoryId.Value == request.Id)
+        {
+            throw new InvalidOperationException("A category cannot have itself as a parent.");
+        }
+        
+        if (request.ParentCategoryId.HasValue)
+        {
+            bool isParent = CategoryHelper.IsCircularParent(categories, existing.Id, request.ParentCategoryId.Value);
+            if (isParent)
+            {
+                throw new InvalidOperationException("Cannot set this parent. It would create a circular relationship.");
+            }
         }
 
         existing.Title = request.Title;

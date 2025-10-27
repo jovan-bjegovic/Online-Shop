@@ -12,7 +12,9 @@ public class CreateCategoryUseCase(
 {
     public async Task<CreateCategoryResponse> Execute(CreateCategoryRequest request)
     {
-        if (await categoryHelper.CodeExists(request.Code))
+        List<Category> categories = await repository.GetAll();
+
+        if (CategoryHelper.CodeExists(categories, request.Code))
         {
             throw new ArgumentException($"A category with code '{request.Code}' already exists.");
         }
