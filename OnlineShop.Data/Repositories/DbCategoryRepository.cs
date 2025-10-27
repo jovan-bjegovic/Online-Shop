@@ -47,23 +47,30 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
             query = query.Where(c => c.Id != excludeId.Value);
         }
 
-        return await query.AnyAsync(c => c.Code.ToLower() == code.ToLower());
+        return await query.AnyAsync(c => c.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public async Task<bool> IsCircularParentAsync(Guid categoryId, Guid newParentId)
     {
-        var parentId = newParentId;
+        Guid parentId = newParentId;
 
         while (true)
         {
-            if (parentId == categoryId) return true;
+            if (parentId == categoryId)
+            {
+                return true;
+            }
 
-            var parent = await context.Categories
-                .Where(c => c.Id == parentId)
+            Guid id = parentId;
+            Guid? parent = await context.Categories
+                .Where(c => c.Id == id)
                 .Select(c => c.ParentCategoryId)
                 .FirstOrDefaultAsync();
 
-            if (!parent.HasValue) break;
+            if (!parent.HasValue)
+            {
+                break;
+            }
             parentId = parent.Value;
         }
 
