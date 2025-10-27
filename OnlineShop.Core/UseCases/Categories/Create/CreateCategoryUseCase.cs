@@ -6,13 +6,12 @@ namespace OnlineShop.Core.UseCases.Categories.Create;
 
 public class CreateCategoryUseCase(
     ICategoryRepository repository,
-    IUnitOfWork unitOfWork, 
-    CategoryHelper categoryHelper)
+    IUnitOfWork unitOfWork)
     : IUseCase<CreateCategoryRequest, CreateCategoryResponse>
 {
     public async Task<CreateCategoryResponse> Execute(CreateCategoryRequest request)
     {
-        List<Category> categories = await repository.GetAll();
+        List<Category> categories = await repository.GetAllAsync();
 
         if (CategoryHelper.CodeExists(categories, request.Code))
         {
@@ -28,7 +27,7 @@ public class CreateCategoryUseCase(
             ParentCategoryId = request.ParentCategoryId
         };
 
-        await repository.CreateCategory(category);
+        await repository.CreateCategoryAsync(category);
         await unitOfWork.CommitAsync();
 
         return new CreateCategoryResponse

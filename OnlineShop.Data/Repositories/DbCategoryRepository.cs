@@ -6,35 +6,35 @@ namespace OnlineShop.Data.Repositories;
 
 public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
 {
-    public async Task<List<Category>> GetAll()
+    public async Task<List<Category>> GetAllAsync()
     {
         return await context.Categories
             .Include(c => c.Subcategories)
             .ToListAsync();
     }
 
-    public async Task<Category?> FindCategory(Guid id)
+    public async Task<Category?> FindCategoryAsync(Guid id)
     {
         return await context.Categories
             .Include(c => c.Subcategories)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
     
-    public async Task CreateCategory(Category category)
+    public Task CreateCategoryAsync(Category category)
     {
         context.Categories.Add(category);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public async Task UpdateCategory(Category category)
+    public Task UpdateCategoryAsync(Category category)
     {
         context.Categories.Update(category);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public async Task RemoveCategory(Category category)
+    public Task RemoveCategoryAsync(Category category)
     {
         context.Categories.Remove(category);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 }

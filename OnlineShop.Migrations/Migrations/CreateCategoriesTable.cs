@@ -9,9 +9,9 @@ public class CreateCategoriesTable : Migration
     {
         Create.Table("Categories")
             .WithColumn("Id").AsGuid().PrimaryKey()
-            .WithColumn("Title").AsString(50).NotNullable()
-            .WithColumn("Code").AsString(20).NotNullable()
-            .WithColumn("Description").AsString(500).Nullable()
+            .WithColumn("Title").AsString().NotNullable()
+            .WithColumn("Code").AsString().NotNullable()
+            .WithColumn("Description").AsString().Nullable()
             .WithColumn("ParentCategoryId").AsGuid().Nullable();
             
         Create.ForeignKey("FK_Categories_Parent")

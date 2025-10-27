@@ -10,13 +10,13 @@ public class DeleteCategoryUseCase(
 {
     public async Task<DeleteCategoryResponse> Execute(DeleteCategoryRequest request)
     {
-        Category? category = await repository.FindCategory(request.Id);
+        Category? category = await repository.FindCategoryAsync(request.Id);
         if (category == null)
         {
             return new DeleteCategoryResponse { Success = false };
         }
 
-        await repository.RemoveCategory(category);
+        await repository.RemoveCategoryAsync(category);
         await unitOfWork.CommitAsync();
 
         return new DeleteCategoryResponse { Success = true };

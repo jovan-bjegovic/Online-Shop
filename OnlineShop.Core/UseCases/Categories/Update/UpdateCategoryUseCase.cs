@@ -6,15 +6,14 @@ namespace OnlineShop.Core.UseCases.Categories.Update;
 
 public class UpdateCategoryUseCase(
     ICategoryRepository repository,
-    IUnitOfWork unitOfWork, 
-    CategoryHelper categoryHelper)
+    IUnitOfWork unitOfWork)
     : IUseCase<UpdateCategoryRequest, UpdateCategoryResponse>
 {
     public async Task<UpdateCategoryResponse> Execute(UpdateCategoryRequest request)
     {
-        Category? existing = await repository.FindCategory(request.Id);
+        Category? existing = await repository.FindCategoryAsync(request.Id);
         
-        List<Category> categories = await repository.GetAll();
+        List<Category> categories = await repository.GetAllAsync();
         
         if (existing == null)
         {
@@ -45,7 +44,7 @@ public class UpdateCategoryUseCase(
         existing.Description = request.Description;
         existing.ParentCategoryId = request.ParentCategoryId;
 
-        await repository.UpdateCategory(existing);
+        await repository.UpdateCategoryAsync(existing);
         await unitOfWork.CommitAsync();
 
         return new UpdateCategoryResponse
