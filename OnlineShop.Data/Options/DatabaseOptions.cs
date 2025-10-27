@@ -1,0 +1,6 @@
+﻿namespace OnlineShop.Data.Options;
+
+public class DatabaseOptions
+{
+    public string DefaultConnection { get; set; } = null!;
+}
