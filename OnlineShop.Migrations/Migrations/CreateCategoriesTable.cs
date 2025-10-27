@@ -2,7 +2,7 @@
 
 namespace OnlineShop.Migrations.Migrations;
 
-[Migration(1)]
+[Migration(1, "Create categories table")]
 public class CreateCategoriesTable : Migration
 {
     public override void Up()
