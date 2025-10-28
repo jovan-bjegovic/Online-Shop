@@ -2,5 +2,5 @@
 
 public class DatabaseOptions
 {
-    public string DefaultConnection { get; set; } = null!;
+    public string DefaultConnection { get; set; } = string.Empty;
 }

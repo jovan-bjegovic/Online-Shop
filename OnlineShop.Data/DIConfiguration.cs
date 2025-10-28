@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using OnlineShop.Core.Interfaces;
 using OnlineShop.Data.Options;
 using OnlineShop.Data.Repositories;
@@ -14,14 +15,12 @@ public static class DIConfiguration
         IConfiguration configuration)
     {
 
-        var dbOptions = new DatabaseOptions();
-        configuration.GetSection("ConnectionStrings").Bind(dbOptions);
-        services.AddSingleton(dbOptions);
+        services.Configure<DatabaseOptions>(configuration.GetSection("ConnectionStrings"));
 
-        services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+        services.AddDbContext<AppDbContext>((sp, options) =>
         {
-            var opts = serviceProvider.GetRequiredService<DatabaseOptions>();
-            options.UseNpgsql(opts.DefaultConnection);
+            var dbOptions = sp.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+            options.UseNpgsql(dbOptions.DefaultConnection);
         });
 
         services.AddScoped<ICategoryRepository, DbCategoryRepository>();
