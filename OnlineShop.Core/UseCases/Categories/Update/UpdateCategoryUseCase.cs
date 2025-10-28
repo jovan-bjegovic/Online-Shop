@@ -11,14 +11,17 @@ public class UpdateCategoryUseCase(
     public async Task<UpdateCategoryResponse> Execute(UpdateCategoryRequest request)
     {
         Category? existing = await repository.FindCategoryAsync(request.Id);
+        
         if (existing == null)
         {
             throw new KeyNotFoundException($"Category with id '{request.Id}' not found.");
         }
+        
         if (await repository.CodeExistsAsync(request.Code, request.Id))
         {
             throw new InvalidOperationException($"Code '{request.Code}' already exists.");
         }
+        
         if (request.ParentCategoryId.HasValue && request.ParentCategoryId.Value == request.Id)
         {
             throw new InvalidOperationException("A category cannot have itself as a parent.");

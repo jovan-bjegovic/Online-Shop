@@ -17,6 +17,7 @@ internal class Program
             string.IsNullOrEmpty(db) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password))
         {
             Console.WriteLine("ERROR: Postgres environment variables not set.");
+            
             return;
         }
 

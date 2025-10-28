@@ -36,7 +36,6 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         return children;
     }
 
-
     public async Task<Category?> FindCategoryAsync(Guid id)
     {
         List<Category> allCategories = await context.Categories.ToListAsync();
@@ -49,23 +48,25 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
 
         return category;
     }
-
     
     public Task CreateCategoryAsync(Category category)
     {
         context.Categories.Add(category);
+        
         return Task.CompletedTask;
     }
 
     public Task UpdateCategoryAsync(Category category)
     {
         context.Categories.Update(category);
+        
         return Task.CompletedTask;
     }
 
     public Task RemoveCategoryAsync(Category category)
     {
         context.Categories.Remove(category);
+        
         return Task.CompletedTask;
     }
     

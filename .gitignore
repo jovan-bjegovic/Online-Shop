@@ -20,4 +20,4 @@ obj/
 
 #appsetting
 /OnlineShop.Api/appsettings.json
-/OnlineShop.Api/appsettings.Development.json
+/OnlineShop.Api/appsettings.*.json
