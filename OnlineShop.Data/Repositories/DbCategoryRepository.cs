@@ -8,17 +8,48 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
 {
     public async Task<List<Category>> GetAllAsync()
     {
-        return await context.Categories
-            .Include(c => c.Subcategories)
-            .ToListAsync();
+        List<Category> allCategories = await context.Categories.ToListAsync();
+
+        List<Category> rootCategories = allCategories
+            .Where(c => c.ParentCategoryId == null)
+            .ToList();
+
+        foreach (Category root in rootCategories)
+        {
+            root.Subcategories = BuildSubcategories(root.Id, allCategories);
+        }
+
+        return rootCategories;
     }
+
+    private static List<Category> BuildSubcategories(Guid parentId, List<Category> allCategories)
+    {
+        List<Category> children = allCategories
+            .Where(c => c.ParentCategoryId == parentId)
+            .ToList();
+
+        foreach (Category child in children)
+        {
+            child.Subcategories = BuildSubcategories(child.Id, allCategories);
+        }
+
+        return children;
+    }
+
 
     public async Task<Category?> FindCategoryAsync(Guid id)
     {
-        return await context.Categories
-            .Include(c => c.Subcategories)
-            .FirstOrDefaultAsync(c => c.Id == id);
+        List<Category> allCategories = await context.Categories.ToListAsync();
+
+        Category? category = allCategories.FirstOrDefault(c => c.Id == id);
+        if (category == null)
+            return null;
+
+        category.Subcategories = BuildSubcategories(category.Id, allCategories);
+
+        return category;
     }
+
     
     public Task CreateCategoryAsync(Category category)
     {
@@ -47,7 +78,7 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
             query = query.Where(c => c.Id != excludeId.Value);
         }
 
-        return await query.AnyAsync(c => c.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase));
+        return await query.AnyAsync(c => c.Code.ToLower() == code.ToLower());
     }
 
     public async Task<bool> IsCircularParentAsync(Guid categoryId, Guid newParentId)
