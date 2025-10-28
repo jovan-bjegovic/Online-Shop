@@ -5,21 +5,20 @@ namespace OnlineShop.Migrations;
 
 internal class Program
 {
-    private static void Main()
+    private static void Main(string[] args)
     {
-        string? host = Environment.GetEnvironmentVariable("POSTGRES_HOST");
-        string? port = Environment.GetEnvironmentVariable("POSTGRES_PORT");
-        string? db = Environment.GetEnvironmentVariable("POSTGRES_DB");
-        string? user = Environment.GetEnvironmentVariable("POSTGRES_USER");
-        string? password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
-
-        if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port) ||
-            string.IsNullOrEmpty(db) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password))
+        if (args.Length < 5)
         {
-            Console.WriteLine("ERROR: Postgres environment variables not set.");
+            Console.WriteLine("Usage: dotnet OnlineShop.Migrations.dll <host> <port> <db> <user> <password>");
             
             return;
         }
+
+        string host = args[0];
+        string port = args[1];
+        string db = args[2];
+        string user = args[3];
+        string password = args[4];
 
         string connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
         

@@ -49,11 +49,9 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         return category;
     }
     
-    public Task CreateCategoryAsync(Category category)
+    public async Task CreateCategoryAsync(Category category)
     {
-        context.Categories.Add(category);
-        
-        return Task.CompletedTask;
+        await context.Categories.AddAsync(category);
     }
 
     public Task UpdateCategoryAsync(Category category)

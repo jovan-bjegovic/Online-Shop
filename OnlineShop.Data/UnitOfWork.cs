@@ -1,5 +1,4 @@
 ﻿using OnlineShop.Core.Interfaces;
-using OnlineShop.Data.Repositories;
 
 namespace OnlineShop.Data;
 

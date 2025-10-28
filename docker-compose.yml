@@ -23,6 +23,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    command: [
+      "${POSTGRES_HOST}",
+      "${POSTGRES_PORT}",
+      "${POSTGRES_DB}",
+      "${POSTGRES_USER}",
+      "${POSTGRES_PASSWORD}"
+    ]
 
   api:
     build:
