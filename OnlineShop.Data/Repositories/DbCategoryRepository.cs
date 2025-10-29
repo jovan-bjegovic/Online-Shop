@@ -8,45 +8,17 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
 {
     public async Task<List<Category>> GetAllAsync()
     {
-        List<Category> allCategories = await context.Categories.ToListAsync();
-
-        List<Category> rootCategories = allCategories
+        return await context.Categories
             .Where(c => c.ParentCategoryId == null)
-            .ToList();
-
-        foreach (Category root in rootCategories)
-        {
-            root.Subcategories = BuildSubcategories(root.Id, allCategories);
-        }
-
-        return rootCategories;
-    }
-
-    private static List<Category> BuildSubcategories(Guid parentId, List<Category> allCategories)
-    {
-        List<Category> children = allCategories
-            .Where(c => c.ParentCategoryId == parentId)
-            .ToList();
-
-        foreach (Category child in children)
-        {
-            child.Subcategories = BuildSubcategories(child.Id, allCategories);
-        }
-
-        return children;
+            .Include(c => c.Subcategories)
+            .ToListAsync();
     }
 
     public async Task<Category?> FindCategoryAsync(Guid id)
     {
-        List<Category> allCategories = await context.Categories.ToListAsync();
-
-        Category? category = allCategories.FirstOrDefault(c => c.Id == id);
-        if (category == null)
-            return null;
-
-        category.Subcategories = BuildSubcategories(category.Id, allCategories);
-
-        return category;
+        return await context.Categories
+            .Include(c => c.Subcategories)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
     
     public async Task CreateCategoryAsync(Category category)

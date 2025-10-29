@@ -7,5 +7,5 @@ public class Category
     public string Code { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public Guid? ParentCategoryId { get; set; }
-    public List<Category> Subcategories { get; set; } = [];
+    public List<Category> Subcategories { get; init; } = [];
 }
