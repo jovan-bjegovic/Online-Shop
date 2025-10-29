@@ -17,3 +17,7 @@ obj/
 
 # env
 .env
+
+#appsetting
+/OnlineShop.Api/appsettings.json
+/OnlineShop.Api/appsettings.*.json

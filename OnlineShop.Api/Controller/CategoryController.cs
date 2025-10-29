@@ -14,11 +14,11 @@ namespace OnlineShop.Controller;
 public class CategoryController : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAllCategories(
+    public async Task<IActionResult> GetAllCategories(
         [FromServices] IUseCase<GetAllCategoriesResponse> useCase
         )
     {
-        GetAllCategoriesResponse response = useCase.Execute();
+        GetAllCategoriesResponse response = await useCase.Execute();
 
         if (response.Categories.Count == 0)
         {
@@ -36,12 +36,12 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult GetCategory(
+    public async Task<IActionResult> GetCategory(
         [FromRoute] Guid id, 
         [FromServices] IUseCase<GetCategoryRequest, GetCategoryResponse> useCase
         )
     {
-        GetCategoryResponse response = useCase.Execute(new GetCategoryRequest { Id = id });
+        GetCategoryResponse response = await useCase.Execute(new GetCategoryRequest { Id = id });
 
         if (response.Category == null)
         {
@@ -59,14 +59,14 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(
+    public async Task<IActionResult> Create(
         [FromBody] CreateCategoryRequest request,
         [FromServices] IUseCase<CreateCategoryRequest, CreateCategoryResponse> useCase
         )
     {
         try
         {
-            var response = useCase.Execute(request);
+            CreateCategoryResponse response = await useCase.Execute(request);
             
             return Created(
                 $"/admin/category/{response.Id}",
@@ -102,7 +102,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public IActionResult Update(
+    public async Task<IActionResult> Update(
         [FromRoute] Guid id,
         [FromBody] UpdateCategoryRequest request,
         [FromServices] IUseCase<UpdateCategoryRequest, UpdateCategoryResponse> useCase)
@@ -110,7 +110,7 @@ public class CategoryController : ControllerBase
         try
         {
             request.Id = id;
-            var response = useCase.Execute(request);
+            UpdateCategoryResponse response = await useCase.Execute(request);
             
             return Ok(new Response<UpdateCategoryResponse>(
                 StatusCodes.Status200OK,
@@ -128,11 +128,11 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public IActionResult Delete(
+    public async Task<IActionResult> Delete(
         [FromRoute] Guid id,
         [FromServices] IUseCase<DeleteCategoryRequest, DeleteCategoryResponse> useCase)
     {
-        var response = useCase.Execute(new DeleteCategoryRequest { Id = id });
+        DeleteCategoryResponse response = await useCase.Execute(new DeleteCategoryRequest { Id = id });
         
         if (!response.Success)
         {

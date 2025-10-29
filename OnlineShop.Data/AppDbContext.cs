@@ -16,15 +16,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             category.HasKey(c => c.Id);
 
             category.Property(c => c.Title)
-                .IsRequired()
-                .HasMaxLength(100);
+                .IsRequired();
 
             category.Property(c => c.Code)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            category.Property(c => c.Description)
-                .HasMaxLength(500);
+                .IsRequired();
 
             category.HasMany(c => c.Subcategories)
                 .WithOne()

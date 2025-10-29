@@ -4,13 +4,12 @@ using OnlineShop.Core.Models;
 namespace OnlineShop.Core.UseCases.Categories.GetAll;
 
 public class GetAllCategoriesUseCase(
-    ICategoryRepository repository,
-    IUnitOfWork unitOfWork)
+    ICategoryRepository repository)
     : IUseCase<GetAllCategoriesResponse>
 {
-    public GetAllCategoriesResponse Execute()
+    public async Task<GetAllCategoriesResponse> Execute()
     {
-        List<Category> categories = repository.GetAll();
+        List<Category> categories = await repository.GetAllAsync();
 
         return new GetAllCategoriesResponse
         {

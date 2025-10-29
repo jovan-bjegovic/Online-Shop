@@ -1,22 +1,20 @@
-﻿using OnlineShop.Core.Helpers;
-using OnlineShop.Core.Interfaces;
+﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 
 namespace OnlineShop.Core.UseCases.Categories.Create;
 
 public class CreateCategoryUseCase(
     ICategoryRepository repository,
-    IUnitOfWork unitOfWork, 
-    CategoryHelper categoryHelper)
+    IUnitOfWork unitOfWork)
     : IUseCase<CreateCategoryRequest, CreateCategoryResponse>
 {
-    public CreateCategoryResponse Execute(CreateCategoryRequest request)
+    public async Task<CreateCategoryResponse> Execute(CreateCategoryRequest request)
     {
-        if (categoryHelper.CodeExists(request.Code))
+        if (await repository.CodeExistsAsync(request.Code))
         {
             throw new ArgumentException($"A category with code '{request.Code}' already exists.");
         }
-        
+
         Category category = new Category
         {
             Id = Guid.NewGuid(),
@@ -26,8 +24,8 @@ public class CreateCategoryUseCase(
             ParentCategoryId = request.ParentCategoryId
         };
 
-        repository.CreateCategory(category);
-        unitOfWork.CommitAsync().GetAwaiter().GetResult();
+        await repository.CreateCategoryAsync(category);
+        await unitOfWork.CommitAsync();
 
         return new CreateCategoryResponse
         {

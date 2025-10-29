@@ -6,32 +6,76 @@ namespace OnlineShop.Data.Repositories;
 
 public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
 {
-    public List<Category> GetAll()
+    public async Task<List<Category>> GetAllAsync()
     {
-        return context.Categories
+        return await context.Categories
+            .Where(c => c.ParentCategoryId == null)
             .Include(c => c.Subcategories)
-            .ToList();
+            .ToListAsync();
     }
 
-    public Category? FindCategory(Guid id)
+    public async Task<Category?> FindCategoryAsync(Guid id)
     {
-        return context.Categories
+        return await context.Categories
             .Include(c => c.Subcategories)
-            .FirstOrDefault(c => c.Id == id);
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
-
-    public void CreateCategory(Category category)
+    
+    public async Task CreateCategoryAsync(Category category)
     {
-        context.Categories.Add(category);
+        await context.Categories.AddAsync(category);
     }
 
-    public void UpdateCategory(Category category)
+    public Task UpdateCategoryAsync(Category category)
     {
         context.Categories.Update(category);
+        
+        return Task.CompletedTask;
     }
 
-    public void RemoveCategory(Category category)
+    public Task RemoveCategoryAsync(Category category)
     {
         context.Categories.Remove(category);
+        
+        return Task.CompletedTask;
+    }
+    
+    public async Task<bool> CodeExistsAsync(string code, Guid? excludeId = null)
+    {
+        var query = context.Categories.AsQueryable();
+
+        if (excludeId.HasValue)
+        {
+            query = query.Where(c => c.Id != excludeId.Value);
+        }
+
+        return await query.AnyAsync(c => c.Code.ToLower() == code.ToLower());
+    }
+
+    public async Task<bool> IsCircularParentAsync(Guid categoryId, Guid newParentId)
+    {
+        Guid parentId = newParentId;
+
+        while (true)
+        {
+            if (parentId == categoryId)
+            {
+                return true;
+            }
+
+            Guid id = parentId;
+            Guid? parent = await context.Categories
+                .Where(c => c.Id == id)
+                .Select(c => c.ParentCategoryId)
+                .FirstOrDefaultAsync();
+
+            if (!parent.HasValue)
+            {
+                break;
+            }
+            parentId = parent.Value;
+        }
+
+        return false;
     }
 }

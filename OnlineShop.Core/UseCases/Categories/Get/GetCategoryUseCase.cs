@@ -4,13 +4,12 @@ using OnlineShop.Core.Models;
 namespace OnlineShop.Core.UseCases.Categories.Get;
 
 public class GetCategoryUseCase(
-    ICategoryRepository repository,
-    IUnitOfWork unitOfWork)
+    ICategoryRepository repository)
     : IUseCase<GetCategoryRequest, GetCategoryResponse>
 {
-    public GetCategoryResponse Execute(GetCategoryRequest request)
+    public async Task<GetCategoryResponse> Execute(GetCategoryRequest request)
     {
-        Category? category = repository.FindCategory(request.Id);
+        Category? category = await repository.FindCategoryAsync(request.Id);
 
         return new GetCategoryResponse
         {
