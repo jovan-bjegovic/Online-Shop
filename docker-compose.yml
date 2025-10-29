@@ -36,12 +36,31 @@ services:
       context: . 
       dockerfile: OnlineShop.Api/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - ./OnlineShop.Api/appsettings.Development.json:/app/appsettings.Development.json:ro
     depends_on:
       migrator:
         condition: service_completed_successfully
     ports:
       - "5000:8080"
 
+  worker:
+    build:
+      context: .
+      dockerfile: OnlineShop.CategoryCleanup/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: [
+      "${POSTGRES_HOST}",
+      "${POSTGRES_PORT}",
+      "${POSTGRES_DB}",
+      "${POSTGRES_USER}",
+      "${POSTGRES_PASSWORD}"
+    ]
+    
 volumes:
   pg_data:

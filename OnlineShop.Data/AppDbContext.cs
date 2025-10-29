@@ -25,6 +25,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .WithOne()
                 .HasForeignKey(sc => sc.ParentCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            category.HasQueryFilter(c => !c.IsDeleted);
         });
     }
 }

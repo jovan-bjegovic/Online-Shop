@@ -35,9 +35,18 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
 
     public Task RemoveCategoryAsync(Category category)
     {
-        context.Categories.Remove(category);
-        
+        category.IsDeleted = true;
+        category.DeletedAt = DateTime.UtcNow;
+        context.Categories.Update(category);
         return Task.CompletedTask;
+    }
+    
+    public async Task<int> RemoveExpiredAsync(DateTime threshold)
+    {
+        return await context.Categories
+            .IgnoreQueryFilters()
+            .Where(c => c.IsDeleted && c.DeletedAt <= threshold)
+            .ExecuteDeleteAsync();
     }
     
     public async Task<bool> CodeExistsAsync(string code, Guid? excludeId = null)
