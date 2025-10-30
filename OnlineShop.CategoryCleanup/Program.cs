@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.CategoryCleanup.Workers;
 using OnlineShop.Core.Interfaces;
+using OnlineShop.Core.UseCases.Categories.DeleteExpired;
 using OnlineShop.Data;
 using OnlineShop.Data.Repositories;
 
@@ -29,6 +30,7 @@ var hostBuilder = Host.CreateDefaultBuilder()
 
         services.AddScoped<ICategoryRepository, DbCategoryRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<DeleteExpiredCategoriesUseCase>();
         services.AddHostedService<CategoryCleanupWorker>();
     })
     .Build();

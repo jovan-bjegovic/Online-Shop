@@ -41,13 +41,24 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         return Task.CompletedTask;
     }
     
-    public async Task<int> RemoveExpiredAsync(DateTime threshold)
+    public async Task<List<Category>> GetAndRemoveExpiredAsync(DateTime cutoffDate)
     {
-        return await context.Categories
+        var expiredCategories = await context.Categories
             .IgnoreQueryFilters()
-            .Where(c => c.IsDeleted && c.DeletedAt <= threshold)
-            .ExecuteDeleteAsync();
+            .Where(c => c.IsDeleted && c.DeletedAt <= cutoffDate)
+            .ToListAsync();
+
+        if (expiredCategories.Count > 0)
+        {
+            await context.Categories
+                .IgnoreQueryFilters()
+                .Where(c => expiredCategories.Select(x => x.Id).Contains(c.Id))
+                .ExecuteDeleteAsync();
+        }
+
+        return expiredCategories;
     }
+
     
     public async Task<bool> CodeExistsAsync(string code, Guid? excludeId = null)
     {

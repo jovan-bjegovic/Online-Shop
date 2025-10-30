@@ -11,5 +11,5 @@ public interface ICategoryRepository
     Task UpdateCategoryAsync(Category category);
     Task<bool> CodeExistsAsync(string code, Guid? excludeId = null);
     Task<bool> IsCircularParentAsync(Guid categoryId, Guid newParentId);
-    Task<int> RemoveExpiredAsync(DateTime threshold);
+    Task<List<Category>> GetAndRemoveExpiredAsync(DateTime cutoffDate);
 }
