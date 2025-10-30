@@ -1,12 +1,24 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OnlineShop.Core.UseCases.Categories.DeleteExpired;
 
 namespace OnlineShop.CategoryCleanup.Workers;
 
-public class CategoryCleanupWorker(IServiceProvider serviceProvider) : BackgroundService
+public class CategoryCleanupWorker : BackgroundService
 {
-    private readonly TimeSpan interval = TimeSpan.FromMinutes(1);
+    private readonly IServiceProvider serviceProvider;
+    private readonly TimeSpan workerInterval;
+    private readonly TimeSpan deletionThreshold;
+
+    public CategoryCleanupWorker(IServiceProvider serviceProvider, IConfiguration configuration)
+    {
+        this.serviceProvider = serviceProvider;
+
+        var section = configuration.GetSection("CategoryCleanup");
+        workerInterval = TimeSpan.FromSeconds(section.GetValue<int>("WorkerInterval"));
+        deletionThreshold = TimeSpan.FromSeconds(section.GetValue<int>("DeletionThreshold"));
+    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -18,7 +30,7 @@ public class CategoryCleanupWorker(IServiceProvider serviceProvider) : Backgroun
 
             DeleteExpiredCategoriesRequest request = new DeleteExpiredCategoriesRequest
             {
-                CutoffDate = DateTime.UtcNow.AddMinutes(-2)
+                CutoffDate = DateTime.UtcNow - deletionThreshold
             };
 
             var response = await useCase.Execute(request);
@@ -32,7 +44,7 @@ public class CategoryCleanupWorker(IServiceProvider serviceProvider) : Backgroun
                 }
             }
 
-            await Task.Delay(interval, stoppingToken);
+            await Task.Delay(workerInterval, stoppingToken);
         }
     }
 }

@@ -18,6 +18,12 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="appsettings*.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
