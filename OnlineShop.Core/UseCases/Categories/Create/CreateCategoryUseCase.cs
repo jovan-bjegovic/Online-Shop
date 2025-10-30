@@ -14,6 +14,15 @@ public class CreateCategoryUseCase(
         {
             throw new ArgumentException($"A category with code '{request.Code}' already exists.");
         }
+        
+        if (request.ParentCategoryId.HasValue)
+        {
+            Category? parent = await repository.FindCategoryAsync(request.ParentCategoryId.Value);
+            if (parent == null)
+            {
+                throw new KeyNotFoundException($"Parent category with ID '{request.ParentCategoryId}' not found.");
+            }
+        }
 
         Category category = new Category
         {

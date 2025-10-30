@@ -33,31 +33,37 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         return Task.CompletedTask;
     }
 
-    public Task RemoveCategoryAsync(Category category)
+    public async Task RemoveCategoryAsync(Category category)
     {
+        bool hasChildren = await context.Categories
+            .AnyAsync(c => c.ParentCategoryId == category.Id && !c.IsDeleted);
+
+        if (hasChildren)
+        {
+            throw new InvalidOperationException(
+                $"Cannot delete category '{category.Title}' with id '{category.Id}' because it has subcategories."
+            );
+        }
         category.IsDeleted = true;
         category.DeletedAt = DateTime.UtcNow;
         context.Categories.Update(category);
-        return Task.CompletedTask;
     }
     
     public async Task<List<Category>> GetAndRemoveExpiredAsync(DateTime cutoffDate)
     {
-        var expiredCategories = await context.Categories
+        List<Category> expiredCategories = await context.Categories
             .IgnoreQueryFilters()
             .Where(c => c.IsDeleted && c.DeletedAt <= cutoffDate)
             .ToListAsync();
 
-        if (expiredCategories.Count > 0)
+        foreach (var category in expiredCategories)
         {
-            await context.Categories
-                .IgnoreQueryFilters()
-                .Where(c => expiredCategories.Select(x => x.Id).Contains(c.Id))
-                .ExecuteDeleteAsync();
+            context.Categories.Remove(category);
         }
-
+        
         return expiredCategories;
     }
+
 
     
     public async Task<bool> CodeExistsAsync(string code, Guid? excludeId = null)
