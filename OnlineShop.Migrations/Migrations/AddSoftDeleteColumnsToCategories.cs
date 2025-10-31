@@ -7,17 +7,10 @@ public class AddSoftDeleteColumnsToCategories : Migration
 {
     public override void Up()
     {
-        if (!Schema.Table("Categories").Column("IsDeleted").Exists())
-        {
-            Alter.Table("Categories")
-                .AddColumn("IsDeleted").AsBoolean().WithDefaultValue(false).NotNullable();
-        }
-
-        if (!Schema.Table("Categories").Column("DeletedAt").Exists())
-        {
-            Alter.Table("Categories")
+        Alter.Table("Categories")
+            .AddColumn("IsDeleted").AsBoolean().WithDefaultValue(false).NotNullable();
+        Alter.Table("Categories")
                 .AddColumn("DeletedAt").AsDateTime().Nullable();
-        }
     }
 
     public override void Down()

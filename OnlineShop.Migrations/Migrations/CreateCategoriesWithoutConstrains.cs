@@ -9,15 +9,9 @@ public class CreateCategoriesTableWithoutConstraints : Migration
     {
         Alter.Column("Title").OnTable("Categories").AsString().NotNullable();
 
-        if (!Schema.Table("Categories").Column("Code").Exists())
-        {
-            Alter.Table("Categories").AddColumn("Code").AsString().NotNullable();
-        }
+        Alter.Table("Categories").AddColumn("Code").AsString().NotNullable();
 
-        if (!Schema.Table("Categories").Column("Description").Exists())
-        {
-            Alter.Table("Categories").AddColumn("Description").AsString().Nullable();
-        }
+        Alter.Table("Categories").AddColumn("Description").AsString().Nullable();
     }
 
     public override void Down()
