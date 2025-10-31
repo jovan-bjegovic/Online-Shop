@@ -64,8 +64,6 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         return expiredCategories;
     }
 
-
-    
     public async Task<bool> CodeExistsAsync(string code, Guid? excludeId = null)
     {
         var query = context.Categories.AsQueryable();
