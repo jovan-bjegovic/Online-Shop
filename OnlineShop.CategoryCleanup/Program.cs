@@ -9,16 +9,16 @@ using OnlineShop.Core.UseCases.Categories.DeleteExpired;
 using OnlineShop.Data;
 using OnlineShop.Data.Repositories;
 
-var hostBuilder = Host.CreateDefaultBuilder()
+var hostBuilder = Host.CreateDefaultBuilder(args)
+    .UseEnvironment(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production")
     .ConfigureServices((context, services) =>
     {
         var configuration = context.Configuration;
-        
         var connectionString = configuration.GetConnectionString("DefaultConnection");
-        
+
         services.Configure<CategoryCleanupOptions>(
             configuration.GetSection("CategoryCleanup"));
-    
+
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
 

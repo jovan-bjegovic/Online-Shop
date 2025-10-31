@@ -33,7 +33,14 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         return Task.CompletedTask;
     }
 
-    public async Task RemoveCategoryAsync(Category category)
+    public Task RemoveCategoryAsync(Category category)
+    {
+        context.Categories.Remove(category);
+
+        return Task.CompletedTask;
+    }
+
+    public async Task SoftRemoveCategoryAsync(Category category)
     {
         bool hasChildren = await context.Categories
             .AnyAsync(c => c.ParentCategoryId == category.Id && !c.IsDeleted);
@@ -49,17 +56,12 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         context.Categories.Update(category);
     }
     
-    public async Task<List<Category>> GetAndRemoveExpiredAsync(DateTime cutoffDate)
+    public async Task<List<Category>> GetExpiredAsync(DateTime cutoffDate)
     {
         List<Category> expiredCategories = await context.Categories
             .IgnoreQueryFilters()
             .Where(c => c.IsDeleted && c.DeletedAt <= cutoffDate)
             .ToListAsync();
-
-        foreach (var category in expiredCategories)
-        {
-            context.Categories.Remove(category);
-        }
         
         return expiredCategories;
     }

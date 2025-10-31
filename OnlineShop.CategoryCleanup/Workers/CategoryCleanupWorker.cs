@@ -22,6 +22,7 @@ public class CategoryCleanupWorker : BackgroundService
         var opt = options.Value;
         workerInterval = TimeSpan.FromSeconds(opt.WorkerInterval);
         deletionThreshold = TimeSpan.FromSeconds(opt.DeletionThreshold);
+        Console.WriteLine("worker interval: " + workerInterval + "deletion threshold: " + deletionThreshold);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -30,7 +31,7 @@ public class CategoryCleanupWorker : BackgroundService
         {
             using var scope = serviceProvider.CreateScope();
 
-            IUseCase<DeleteExpiredCategoriesRequest, DeleteExpiredCategoriesResponse> useCase = scope.ServiceProvider.GetRequiredService<DeleteExpiredCategoriesUseCase>();
+            IUseCase<DeleteExpiredCategoriesRequest, DeleteExpiredCategoriesResponse> useCase = scope.ServiceProvider.GetRequiredService<IUseCase<DeleteExpiredCategoriesRequest, DeleteExpiredCategoriesResponse>>();
 
             DeleteExpiredCategoriesRequest request = new DeleteExpiredCategoriesRequest
             {

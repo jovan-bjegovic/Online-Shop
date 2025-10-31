@@ -10,9 +10,7 @@ public class DeleteExpiredCategoriesUseCase(
 {
     public async Task<DeleteExpiredCategoriesResponse> Execute(DeleteExpiredCategoriesRequest request)
     {
-        List<Category> expiredCategories = await repository.GetAndRemoveExpiredAsync(request.CutoffDate);
-
-        await unitOfWork.CommitAsync();
+        List<Category> expiredCategories = await repository.GetExpiredAsync(request.CutoffDate);
 
         List<DeletedCategoryInfo> deletedInfos = expiredCategories.Select(c => new DeletedCategoryInfo
         {
@@ -21,6 +19,13 @@ public class DeleteExpiredCategoriesUseCase(
             Code = c.Code,
             DeletedAt = c.DeletedAt
         }).ToList();
+        
+        foreach (Category c in expiredCategories)
+        {
+            await repository.RemoveCategoryAsync(c);
+        }
+        
+        await unitOfWork.CommitAsync();
 
         return new DeleteExpiredCategoriesResponse
         {
