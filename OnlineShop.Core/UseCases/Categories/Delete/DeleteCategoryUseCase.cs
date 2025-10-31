@@ -16,7 +16,7 @@ public class DeleteCategoryUseCase(
             return new DeleteCategoryResponse { Success = false };
         }
 
-        await repository.RemoveCategoryAsync(category);
+        await repository.SoftRemoveCategoryAsync(category);
         await unitOfWork.CommitAsync();
 
         return new DeleteCategoryResponse { Success = true };

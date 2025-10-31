@@ -132,20 +132,39 @@ public class CategoryController : ControllerBase
         [FromRoute] Guid id,
         [FromServices] IUseCase<DeleteCategoryRequest, DeleteCategoryResponse> useCase)
     {
-        DeleteCategoryResponse response = await useCase.Execute(new DeleteCategoryRequest { Id = id });
-        
-        if (!response.Success)
+        try
         {
-            return NotFound(new Response<object>(
-                StatusCodes.Status404NotFound,
-                "Category not found and cannot be deleted"
+            DeleteCategoryResponse response = await useCase.Execute(new DeleteCategoryRequest { Id = id });
+
+            if (!response.Success)
+            {
+                return NotFound(new Response<object>(
+                    StatusCodes.Status404NotFound,
+                    "Category not found and cannot be deleted"
+                ));
+            }
+
+            return Ok(new Response<object>(
+                StatusCodes.Status200OK,
+                $"Category with id: {id} deleted successfully."
             ));
         }
-            
-        return Ok(new Response<object>(
-            StatusCodes.Status200OK,
-            $"Category with id: {id} deleted successfully."
-        ));
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
+            ));
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new Response<object>(
+                    StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred while deleting the category."
+                ));
+        }
     }
+
         
 }
