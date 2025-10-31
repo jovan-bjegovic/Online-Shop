@@ -19,10 +19,9 @@ public class CategoryCleanupWorker : BackgroundService
     {
         this.serviceProvider = serviceProvider;
 
-        var opt = options.Value;
+        CategoryCleanupOptions opt = options.Value;
         workerInterval = TimeSpan.FromSeconds(opt.WorkerInterval);
         deletionThreshold = TimeSpan.FromSeconds(opt.DeletionThreshold);
-        Console.WriteLine("worker interval: " + workerInterval + "deletion threshold: " + deletionThreshold);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

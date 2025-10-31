@@ -36,7 +36,7 @@ services:
       context: . 
       dockerfile: OnlineShop.Api/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
     volumes:
       - ./OnlineShop.Api/appsettings.Development.json:/app/appsettings.Development.json:ro
     depends_on:
