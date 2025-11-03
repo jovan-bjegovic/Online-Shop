@@ -13,6 +13,7 @@ builder.Services.AddDataAccess(builder.Configuration)
     .AddControllers();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSingleton<TokenService>();
 
 builder.Services.AddEndpointsApiExplorer();

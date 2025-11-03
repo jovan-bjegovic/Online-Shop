@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 using OnlineShop.Core.UseCases.Categories.Create;
@@ -6,8 +7,6 @@ using OnlineShop.Core.UseCases.Categories.Delete;
 using OnlineShop.Core.UseCases.Categories.Get;
 using OnlineShop.Core.UseCases.Categories.GetAll;
 using OnlineShop.Core.UseCases.Categories.Update;
-using OnlineShop.Core.DTOs;
-using OnlineShop.Services;
 
 namespace OnlineShop.Controller;
 
@@ -60,6 +59,7 @@ public class CategoryController : ControllerBase
         ));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateCategoryRequest request,
@@ -103,6 +103,7 @@ public class CategoryController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid id,
@@ -129,6 +130,7 @@ public class CategoryController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid id,
