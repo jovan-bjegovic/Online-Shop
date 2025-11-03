@@ -20,12 +20,11 @@ public class TokenService(IOptions<JwtOptions> jwtOptions)
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
+            Subject = new ClaimsIdentity([
                 new Claim("Id", user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.Role)
-            }),
+            ]),
             Expires = DateTime.UtcNow.AddMinutes(jwtOptions.AccessTokenExpirationMinutes),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
