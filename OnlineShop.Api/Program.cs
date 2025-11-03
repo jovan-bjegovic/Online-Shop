@@ -1,20 +1,19 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using OnlineShop.Core;
-using OnlineShop.Core.Validators;
+using OnlineShop.Extensions;
 using OnlineShop.Data;
+using OnlineShop.Options;
+using OnlineShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddFluentValidationAutoValidation()
-    .AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
+builder.Services.AddFluentValidationServices();
 
-builder.Services
-    .AddDataAccess(builder.Configuration)
+builder.Services.AddDataAccess(builder.Configuration)
     .AddApplicationServices()
     .AddControllers();
+
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+builder.Services.AddSingleton<TokenService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,5 +27,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

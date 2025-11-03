@@ -6,6 +6,8 @@ using OnlineShop.Core.UseCases.Categories.Delete;
 using OnlineShop.Core.UseCases.Categories.Get;
 using OnlineShop.Core.UseCases.Categories.GetAll;
 using OnlineShop.Core.UseCases.Categories.Update;
+using OnlineShop.Core.DTOs;
+using OnlineShop.Services;
 
 namespace OnlineShop.Controller;
 
@@ -165,6 +167,5 @@ public class CategoryController : ControllerBase
                 ));
         }
     }
-
         
 }
