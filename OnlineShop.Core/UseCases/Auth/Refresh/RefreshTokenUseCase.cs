@@ -1,17 +1,18 @@
-﻿using OnlineShop.Core.Interfaces;
+﻿using Microsoft.Extensions.Options;
+using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.Services;
-using OnlineShop.Core.UseCases.Auth.Login;
+using OnlineShop.Core.Options;
 
 namespace OnlineShop.Core.UseCases.Auth.Refresh;
 
-public class RefreshUseCase(
+public class RefreshTokenUseCase(
     IUserRepository userRepository,
     IUnitOfWork unitOfWork,
-    ITokenService tokenService
-) : IUseCase<RefreshRequest, LoginResponse>
+    ITokenService tokenService,
+    IOptions<JwtOptions> jwtOptions
+) : IUseCase<RefreshTokenRequest, RefreshTokenResponse>
 {
-    public async Task<LoginResponse> Execute(RefreshRequest request)
+    public async Task<RefreshTokenResponse> Execute(RefreshTokenRequest request)
     {
         User? user = await userRepository.GetUserByRefreshTokenAsync(request.RefreshToken);
 
@@ -24,14 +25,12 @@ public class RefreshUseCase(
         string newRefreshToken = tokenService.GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
-
-        user.CreatedAt = DateTime.SpecifyKind(user.CreatedAt, DateTimeKind.Utc);
+        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpirationDays);
         
         await userRepository.UpdateUserAsync(user);
         await unitOfWork.CommitAsync();
 
-        return new LoginResponse
+        return new RefreshTokenResponse
         {
             AccessToken = newAccessToken,
             RefreshToken = newRefreshToken

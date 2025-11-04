@@ -3,25 +3,24 @@ using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 using OnlineShop.Core.UseCases.Auth.Login;
 using OnlineShop.Core.UseCases.Auth.Refresh;
-using LoginRequest = OnlineShop.Core.UseCases.Auth.Login.LoginRequest;
 
 namespace OnlineShop.Controller;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController : ControllerBase
+public class LoginController : ControllerBase
 {
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(
-        [FromBody] LoginRequest request,
-        [FromServices] IUseCase<LoginRequest, LoginResponse> useCase
+    [HttpPost("")]
+    public async Task<IActionResult> GenerateToken(
+        [FromBody] GenerateTokenRequest request,
+        [FromServices] IUseCase<GenerateTokenRequest, GenerateTokenResponse> useCase
         )
     {
         try
         {
-            LoginResponse response = await useCase.Execute(request);
+            GenerateTokenResponse response = await useCase.Execute(request);
             
-            return Ok(new Response<LoginResponse>(
+            return Ok(new Response<GenerateTokenResponse>(
                 StatusCodes.Status200OK, 
                 "Login successful", response
                 ));
@@ -36,16 +35,16 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(
-        [FromBody] RefreshRequest request,
-        [FromServices] IUseCase<RefreshRequest, LoginResponse> useCase
+    public async Task<IActionResult> RefreshToken(
+        [FromBody] RefreshTokenRequest request,
+        [FromServices] IUseCase<RefreshTokenRequest, RefreshTokenResponse> useCase
         )
     {
         try
         {
-            LoginResponse response = await useCase.Execute(request);
+            RefreshTokenResponse response = await useCase.Execute(request);
             
-            return Ok(new Response<LoginResponse>(
+            return Ok(new Response<RefreshTokenResponse>(
                 StatusCodes.Status200OK, 
                 "Refresh login successful", 
                 response

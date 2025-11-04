@@ -1,19 +1,22 @@
-﻿using OnlineShop.Core.Interfaces;
+﻿using Microsoft.Extensions.Options;
+using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.Services;
+using OnlineShop.Core.Options;
 
 namespace OnlineShop.Core.UseCases.Auth.Login;
 
-public class LoginUseCase(
+public class GenerateTokenUseCase(
     IUserRepository userRepository,
     IUnitOfWork unitOfWork,
-    ITokenService tokenService
-) : IUseCase<LoginRequest, LoginResponse>
+    ITokenService tokenService,
+    IPasswordHasher passwordHasher,
+    IOptions<JwtOptions> jwtOptions
+) : IUseCase<GenerateTokenRequest, GenerateTokenResponse>
 {
-    public async Task<LoginResponse> Execute(LoginRequest request)
+    public async Task<GenerateTokenResponse> Execute(GenerateTokenRequest request)
     {
         User? user = await userRepository.GetUserByUsernameAsync(request.Username);
-        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        if (user == null || !passwordHasher.Verify(request.Password, user.PasswordHash))
         {
             throw new UnauthorizedAccessException("Invalid username or password");
         }
@@ -22,14 +25,12 @@ public class LoginUseCase(
         string refreshToken = tokenService.GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
-
-        user.CreatedAt = DateTime.SpecifyKind(user.CreatedAt, DateTimeKind.Utc);
+        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpirationDays);
         
         await userRepository.UpdateUserAsync(user);
         await unitOfWork.CommitAsync();
 
-        return new LoginResponse
+        return new GenerateTokenResponse
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken

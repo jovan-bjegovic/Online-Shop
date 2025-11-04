@@ -8,7 +8,7 @@ public class AddRefreshTokenToUsers : Migration
     public override void Up()
     {
         Alter.Table("Users")
-            .AddColumn("RefreshToken").AsString(256).Nullable()
+            .AddColumn("RefreshToken").AsString().Nullable()
             .AddColumn("RefreshTokenExpiry").AsDateTime().Nullable();
     }
 

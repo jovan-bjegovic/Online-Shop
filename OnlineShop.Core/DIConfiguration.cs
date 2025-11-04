@@ -22,8 +22,9 @@ public static class DIConfiguration
         services.AddScoped<IUseCase<GetCategoryRequest, GetCategoryResponse>, GetCategoryUseCase>();
 
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IUseCase<LoginRequest, LoginResponse>, LoginUseCase>();
-        services.AddScoped<IUseCase<RefreshRequest,  LoginResponse>, RefreshUseCase>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IUseCase<GenerateTokenRequest, GenerateTokenResponse>, GenerateTokenUseCase>();
+        services.AddScoped<IUseCase<RefreshTokenRequest,  RefreshTokenResponse>, RefreshTokenUseCase>();
 
         return services;
     }
