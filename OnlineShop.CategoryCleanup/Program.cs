@@ -10,7 +10,7 @@ using OnlineShop.Data;
 using OnlineShop.Data.Repositories;
 
 var hostBuilder = Host.CreateDefaultBuilder(args)
-    .UseEnvironment(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production")
+    .UseEnvironment(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development")
     .ConfigureServices((context, services) =>
     {
         var configuration = context.Configuration;
@@ -21,7 +21,7 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
-
+        
         services.AddScoped<ICategoryRepository, DbCategoryRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUseCase<DeleteExpiredCategoriesRequest, DeleteExpiredCategoriesResponse>, DeleteExpiredCategoriesUseCase>();

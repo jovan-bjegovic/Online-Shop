@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OnlineShop.Core.Interfaces;
+using OnlineShop.Core.Services;
+using OnlineShop.Core.UseCases.Auth.Login;
+using OnlineShop.Core.UseCases.Auth.Refresh;
 using OnlineShop.Core.UseCases.Categories.Create;
 using OnlineShop.Core.UseCases.Categories.Delete;
 using OnlineShop.Core.UseCases.Categories.Get;
@@ -17,6 +20,11 @@ public static class DIConfiguration
         services.AddScoped<IUseCase<UpdateCategoryRequest, UpdateCategoryResponse>, UpdateCategoryUseCase>();
         services.AddScoped<IUseCase<DeleteCategoryRequest, DeleteCategoryResponse>, DeleteCategoryUseCase>();
         services.AddScoped<IUseCase<GetCategoryRequest, GetCategoryResponse>, GetCategoryUseCase>();
+
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IUseCase<GenerateTokenRequest, GenerateTokenResponse>, GenerateTokenUseCase>();
+        services.AddScoped<IUseCase<RefreshTokenRequest,  RefreshTokenResponse>, RefreshTokenUseCase>();
 
         return services;
     }

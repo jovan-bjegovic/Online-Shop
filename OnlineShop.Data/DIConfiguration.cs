@@ -24,6 +24,8 @@ public static class DIConfiguration
         });
 
         services.AddScoped<ICategoryRepository, DbCategoryRepository>();
+        services.AddScoped<IUserRepository, DbUserRepository>();
+        
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
