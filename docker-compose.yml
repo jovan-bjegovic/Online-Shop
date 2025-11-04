@@ -19,7 +19,7 @@ services:
       context: .
       dockerfile: OnlineShop.Migrations/Dockerfile
     env_file:
-      - .env
+      - ./OnlineShop.Migrations/.env
     depends_on:
       db:
         condition: service_healthy
@@ -28,7 +28,7 @@ services:
       "${POSTGRES_PORT}",
       "${POSTGRES_DB}",
       "${POSTGRES_USER}",
-      "${POSTGRES_PASSWORD}"
+      "${POSTGRES_PASSWORD}",
     ]
 
   api:
