@@ -1,6 +1,9 @@
-﻿namespace OnlineShop.Core.Interfaces;
+﻿using OnlineShop.Core.Models;
 
-public class ITokenService
+namespace OnlineShop.Core.Interfaces;
+
+public interface ITokenService
 {
-    
+    string GenerateAccessToken(User user);
+    string GenerateRefreshToken();
 }

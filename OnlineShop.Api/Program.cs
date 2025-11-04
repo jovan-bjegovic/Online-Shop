@@ -1,8 +1,8 @@
 using OnlineShop.Core;
+using OnlineShop.Core.Options;
+using OnlineShop.Core.Services;
 using OnlineShop.Extensions;
 using OnlineShop.Data;
-using OnlineShop.Options;
-using OnlineShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,4 @@
-﻿namespace OnlineShop.Options;
+﻿namespace OnlineShop.Core.Options;
 
 public class JwtOptions
 {

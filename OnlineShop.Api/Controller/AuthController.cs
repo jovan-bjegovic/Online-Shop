@@ -1,77 +1,62 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OnlineShop.Core.DTOs;
+using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Data;
-using OnlineShop.Services;
+using OnlineShop.Core.UseCases.Auth.Login;
+using OnlineShop.Core.UseCases.Auth.Refresh;
+using LoginRequest = OnlineShop.Core.UseCases.Auth.Login.LoginRequest;
 
 namespace OnlineShop.Controller;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(
-    TokenService tokenService, 
-    AppDbContext dbContext
-    ) : ControllerBase
+public class AuthController : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login(
-        [FromBody] LoginRequest request)
+        [FromBody] LoginRequest request,
+        [FromServices] IUseCase<LoginRequest, LoginResponse> useCase
+        )
     {
-        User? user = await dbContext.Users.SingleOrDefaultAsync(u => u.Username == request.Username);
-        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        try
+        {
+            LoginResponse response = await useCase.Execute(request);
+            
+            return Ok(new Response<LoginResponse>(
+                StatusCodes.Status200OK, 
+                "Login successful", response
+                ));
+        }
+        catch (UnauthorizedAccessException ex)
         {
             return Unauthorized(new Response<object>(
                 StatusCodes.Status401Unauthorized,
-                "Invalid username or password"
-            ));
+                ex.Message
+                ));
         }
-
-        string accessToken = tokenService.GenerateAccessToken(user);
-        string refreshToken = tokenService.GenerateRefreshToken();
-
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
-        await dbContext.SaveChangesAsync();
-
-        return Ok(new Response<object>(
-            StatusCodes.Status200OK,
-            "Login successful",
-            new
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            }
-        ));
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+    public async Task<IActionResult> Refresh(
+        [FromBody] RefreshRequest request,
+        [FromServices] IUseCase<RefreshRequest, LoginResponse> useCase
+        )
     {
-        User? user = await dbContext.Users.SingleOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
-        if (user == null || user.RefreshTokenExpiry < DateTime.UtcNow)
+        try
+        {
+            LoginResponse response = await useCase.Execute(request);
+            
+            return Ok(new Response<LoginResponse>(
+                StatusCodes.Status200OK, 
+                "Refresh login successful", 
+                response
+                ));
+        }
+        catch (UnauthorizedAccessException ex)
         {
             return Unauthorized(new Response<object>(
                 StatusCodes.Status401Unauthorized,
-                "Invalid or expired refresh token"
-            ));
+                ex.Message
+                ));
         }
-
-        string newAccessToken = tokenService.GenerateAccessToken(user);
-        string newRefreshToken = tokenService.GenerateRefreshToken();
-
-        user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
-        await dbContext.SaveChangesAsync();
-
-        return Ok(new Response<object>(
-            StatusCodes.Status200OK,
-            "Refresh login successful",
-            new
-            {
-                AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
-            }
-        ));
     }
 }

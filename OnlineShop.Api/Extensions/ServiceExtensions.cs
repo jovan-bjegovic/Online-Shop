@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using OnlineShop.Options;
+using OnlineShop.Core.Options;
 
 namespace OnlineShop.Extensions;
 
@@ -11,9 +11,9 @@ public static class ServiceExtensions
 {
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtOptions = configuration.GetSection("Jwt").Get<JwtOptions>()
+        JwtOptions jwtOptions = configuration.GetSection("Jwt").Get<JwtOptions>()
                          ?? throw new InvalidOperationException("JWT Secret not configured");
-        var key = Encoding.UTF8.GetBytes(jwtOptions.Secret);
+        byte[] key = Encoding.UTF8.GetBytes(jwtOptions.Secret);
 
         services.AddAuthentication(options =>
             {
@@ -35,6 +35,7 @@ public static class ServiceExtensions
             });
 
         services.AddAuthorization();
+        
         return services;
     }
 
@@ -43,6 +44,7 @@ public static class ServiceExtensions
         services.AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters();
         services.AddValidatorsFromAssemblyContaining<OnlineShop.Core.Validators.CategoryValidator>();
+        
         return services;
     }
 }

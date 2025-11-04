@@ -4,18 +4,19 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Options;
+using OnlineShop.Core.Options;
 
-namespace OnlineShop.Services;
+namespace OnlineShop.Core.Services;
 
-public class TokenService(IOptions<JwtOptions> jwtOptions)
+public class TokenService(IOptions<JwtOptions> jwtOptions) : ITokenService
 {
     private readonly JwtOptions jwtOptions = jwtOptions.Value;
 
     public string GenerateAccessToken(User user)
     {
-        var key = Encoding.UTF8.GetBytes(jwtOptions.Secret);
+        byte[] key = Encoding.UTF8.GetBytes(jwtOptions.Secret);
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -26,10 +27,12 @@ public class TokenService(IOptions<JwtOptions> jwtOptions)
                 new Claim(ClaimTypes.Role, user.Role)
             ]),
             Expires = DateTime.UtcNow.AddMinutes(jwtOptions.AccessTokenExpirationMinutes),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
+        
         return tokenHandler.WriteToken(token);
     }
 
