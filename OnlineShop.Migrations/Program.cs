@@ -1,4 +1,5 @@
-﻿using FluentMigrator.Runner;
+﻿using DotNetEnv;
+using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace OnlineShop.Migrations;
@@ -7,6 +8,8 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        Env.Load();
+        
         if (args.Length < 5)
         {
             Console.WriteLine("Usage: dotnet OnlineShop.Migrations.dll <host> <port> <db> <user> <password>");

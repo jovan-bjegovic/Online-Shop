@@ -8,6 +8,12 @@ using OnlineShop.Core.UseCases.Categories.Delete;
 using OnlineShop.Core.UseCases.Categories.Get;
 using OnlineShop.Core.UseCases.Categories.GetAll;
 using OnlineShop.Core.UseCases.Categories.Update;
+using OnlineShop.Core.UseCases.Products.Create;
+using OnlineShop.Core.UseCases.Products.Delete;
+using OnlineShop.Core.UseCases.Products.Get;
+using OnlineShop.Core.UseCases.Products.GetAll;
+using OnlineShop.Core.UseCases.Products.Toggle;
+using OnlineShop.Core.UseCases.Products.Update;
 
 namespace OnlineShop.Core;
 
@@ -25,6 +31,13 @@ public static class DIConfiguration
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IUseCase<GenerateTokenRequest, GenerateTokenResponse>, GenerateTokenUseCase>();
         services.AddScoped<IUseCase<RefreshTokenRequest,  RefreshTokenResponse>, RefreshTokenUseCase>();
+        
+        services.AddScoped<IUseCase<GetAllProductsRequest, GetAllProductsResponse>, GetAllProductsUseCase>();
+        services.AddScoped<IUseCase<GetProductRequest, GetProductResponse>, GetProductUseCase>();
+        services.AddScoped<IUseCase<CreateProductRequest,  CreateProductResponse>, CreateProductUseCase>();
+        services.AddScoped<IUseCase<UpdateProductRequest,   UpdateProductResponse>, UpdateProductUseCase>();
+        services.AddScoped<IUseCase<DeleteProductsRequest, DeleteProductsResponse>, DeleteProductsUseCase>();
+        services.AddScoped<IUseCase<ToggleProductsRequest, ToggleProductsResponse>, ToggleProductsUseCase>();
 
         return services;
     }

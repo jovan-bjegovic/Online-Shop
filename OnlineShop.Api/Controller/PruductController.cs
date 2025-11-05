@@ -1,0 +1,211 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Core.Interfaces;
+using OnlineShop.Core.Models;
+using OnlineShop.Core.UseCases.Products.Create;
+using OnlineShop.Core.UseCases.Products.Delete;
+using OnlineShop.Core.UseCases.Products.Get;
+using OnlineShop.Core.UseCases.Products.GetAll;
+using OnlineShop.Core.UseCases.Products.Update;
+using OnlineShop.Core.UseCases.Products.Toggle;
+
+namespace OnlineShop.Controller;
+
+[ApiController]
+[Route("admin/[controller]")]
+public class ProductController : ControllerBase
+{
+    [HttpGet]
+    public async Task<IActionResult> GetAllProducts(
+        [FromServices] IUseCase<GetAllProductsRequest, GetAllProductsResponse> useCase,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        var request = new GetAllProductsRequest
+        {
+            Page = page,
+            PageSize = pageSize
+        };
+
+        GetAllProductsResponse response = await useCase.Execute(request);
+
+        if (response.Products.Count == 0)
+        {
+            return Ok(new Response<GetAllProductsResponse>(
+                StatusCodes.Status200OK,
+                "No products available",
+                response
+            ));
+        }
+
+        return Ok(new Response<List<Product>>(
+            StatusCodes.Status200OK,
+            "Products retrieved successfully",
+            response.Products
+        ));
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetProduct(
+        [FromRoute] Guid id,
+        [FromServices] IUseCase<GetProductRequest, GetProductResponse> useCase)
+    {
+        GetProductResponse response = await useCase.Execute(new GetProductRequest { Id = id });
+
+        if (response.Product == null)
+        {
+            return NotFound(new Response<object>(
+                StatusCodes.Status404NotFound,
+                "Product not found"
+            ));
+        }
+
+        return Ok(new Response<Product>(
+            StatusCodes.Status200OK,
+            "Product retrieved successfully",
+            response.Product
+        ));
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<IActionResult> CreateProduct(
+        [FromBody] CreateProductRequest request,
+        [FromServices] IUseCase<CreateProductRequest, CreateProductResponse> useCase)
+    {
+        try
+        {
+            CreateProductResponse response = await useCase.Execute(request);
+
+            return Created(
+                $"/admin/products/{response.Id}",
+                new Response<CreateProductResponse>(
+                    StatusCodes.Status201Created,
+                    "Product created successfully",
+                    response
+                )
+            );
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
+            ));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status404NotFound,
+                ex.Message
+            ));
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new Response<object>(
+                    StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred while creating the product."
+                ));
+        }
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateProduct(
+        [FromRoute] Guid id,
+        [FromBody] UpdateProductRequest request,
+        [FromServices] IUseCase<UpdateProductRequest, UpdateProductResponse> useCase)
+    {
+        try
+        {
+            request.Id = id;
+            UpdateProductResponse response = await useCase.Execute(request);
+
+            return Ok(new Response<UpdateProductResponse>(
+                StatusCodes.Status200OK,
+                "Product updated successfully",
+                response
+            ));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new Response<object>(
+                StatusCodes.Status404NotFound,
+                ex.Message
+            ));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
+            ));
+        }   
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new Response<object>(
+                    StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred while updating the product."
+                ));
+        }
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteProducts(
+        [FromBody] DeleteProductsRequest request,
+        [FromServices] IUseCase<DeleteProductsRequest, DeleteProductsResponse> useCase)
+    {
+        try
+        {
+            DeleteProductsResponse response = await useCase.Execute(request);
+
+            if (!response.Success)
+                return NotFound(new Response<object>(
+                    StatusCodes.Status404NotFound,
+                    "Some or all products not found and cannot be deleted"
+                ));
+
+            return Ok(new Response<object>(
+                StatusCodes.Status200OK,
+                "Products deleted successfully"
+            ));
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new Response<object>(
+                    StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred while deleting products."
+                ));
+        }
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("toggle")]
+    public async Task<IActionResult> ToggleProducts(
+        [FromBody] ToggleProductsRequest request,
+        [FromServices] IUseCase<ToggleProductsRequest, ToggleProductsResponse> useCase)
+    {
+        try
+        {
+            ToggleProductsResponse response = await useCase.Execute(request);
+
+            return Ok(new Response<ToggleProductsResponse>(
+                StatusCodes.Status200OK,
+                "Products toggled successfully",
+                response
+            ));
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new Response<object>(
+                    StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred while toggling products."
+                ));
+        }
+    }
+}
