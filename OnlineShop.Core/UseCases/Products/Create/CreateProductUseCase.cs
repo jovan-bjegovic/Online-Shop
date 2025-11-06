@@ -32,7 +32,8 @@ public class CreateProductUseCase(
             LongDescription = request.LongDescription,
             Price = request.Price,
             Image = request.Image,
-            Enabled = true
+            Enabled = request.Enabled,
+            Featured = request.Featured
         };
 
         await repository.CreateProductAsync(product);
@@ -49,7 +50,8 @@ public class CreateProductUseCase(
             LongDescription = product.LongDescription,
             Price = product.Price,
             Image = product.Image,
-            Enabled = product.Enabled
+            Enabled = product.Enabled,
+            Featured = product.Featured
         };
     }
 }
