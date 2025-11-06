@@ -55,6 +55,19 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
         
         return Task.CompletedTask;
     }
+    public Task SoftDeleteProductsAsync(List<Product> products)
+    {
+        context.Products.RemoveRange(products);
+
+        foreach (Product product in products)
+        {
+            product.IsDeleted = true;
+            product.DeletedAt = DateTime.UtcNow;
+            context.Products.Update(product);
+        }
+        
+        return Task.CompletedTask;
+    }
     public async Task<bool> SkuExistsAsync(string sku)
     {
         return await context.Products.AnyAsync(p => p.Sku == sku);
@@ -71,4 +84,14 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
             .Where(p => ids.Contains(p.Id))
             .ToListAsync();
     }
+    public async Task<List<Product>> GetExpiredAsync(DateTime cutoffDate)
+    {
+        List<Product> expiredProducts = await context.Products
+            .IgnoreQueryFilters()
+            .Where(p => p.IsDeleted && p.DeletedAt <= cutoffDate)
+            .ToListAsync();
+
+        return expiredProducts;
+    }
+
 }

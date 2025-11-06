@@ -1,6 +1,5 @@
 ﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.UseCases.Products.SetProductImage;
 
 namespace OnlineShop.Core.UseCases.Categories.DeleteExpired;
 
@@ -23,7 +22,7 @@ public class DeleteExpiredCategoriesUseCase(
         
         foreach (Category c in expiredCategories)
         {
-            await repository.RemoveCategoryAsync(c);
+            await repository.DeleteCategoryAsync(c);
         }
         
         await unitOfWork.CommitAsync();

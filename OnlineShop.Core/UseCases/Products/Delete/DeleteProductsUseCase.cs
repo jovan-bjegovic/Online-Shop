@@ -23,7 +23,7 @@ public class DeleteProductsUseCase(
             return new DeleteProductsResponse { Success = false };
         }
         
-        await repository.DeleteProductsAsync(products);
+        await repository.SoftDeleteProductsAsync(products);
         await unitOfWork.CommitAsync();
 
         return new DeleteProductsResponse { Success = true };

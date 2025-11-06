@@ -12,5 +12,7 @@ public class Product
     public int Price { get; set; }
     public string? Image { get; set; }
     public bool Enabled { get; set; } = true;
-    public bool Featured { get; set; } = false;
+    public bool Featured { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

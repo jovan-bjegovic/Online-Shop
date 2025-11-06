@@ -28,9 +28,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             category.HasMany(c => c.Subcategories)
                 .WithOne()
                 .HasForeignKey(sc => sc.ParentCategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
             
             category.HasQueryFilter(c => !c.IsDeleted);
+        });
+
+        modelBuilder.Entity<Product>(product =>
+        {
+            product.HasKey(p => p.Id);
+            
+            product.Property(p => p.Title)
+                .IsRequired();
+
+            product.Property(p => p.Sku)
+                .IsRequired();
+            
+            product.HasQueryFilter(p => !p.IsDeleted);
         });
     }
 }
