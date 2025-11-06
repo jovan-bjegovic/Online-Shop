@@ -21,12 +21,16 @@ public class UploadProductImageUseCase
     {
         Product? product = await repository.FindBySkuAsync(request.Sku);
         if (product == null)
+        {
             throw new ArgumentException($"Product with SKU '{request.Sku}' not found.");
-
+        }
+        
         if (request.File == null || request.File.Length == 0)
         {
             throw new ArgumentException("File is empty.");
-        }        if (!request.File.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        }        
+        
+        if (!request.File.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
         {
             throw new ArgumentException("Invalid file type. Only images are allowed.");
         }
@@ -39,8 +43,9 @@ public class UploadProductImageUseCase
         {
             throw new ArgumentException("Image width must be at least 600px.");
         }
+        
         double ratio = (double)width / height;
-        if (ratio < 4.0 / 3 || ratio > 16.0 / 9)
+        if (ratio is < 4.0 / 3 or > 16.0 / 9)
         {
             throw new ArgumentException("Image aspect ratio must be between 4:3 and 16:9.");
         }

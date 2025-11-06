@@ -15,7 +15,7 @@ namespace OnlineShop.Controller;
 
 [ApiController]
 [Route("admin/[controller]")]
-public class ProductController : ControllerBase
+public class ProductsController : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllProducts(
