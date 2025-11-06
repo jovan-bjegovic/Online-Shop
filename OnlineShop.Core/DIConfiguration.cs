@@ -12,8 +12,10 @@ using OnlineShop.Core.UseCases.Products.Create;
 using OnlineShop.Core.UseCases.Products.Delete;
 using OnlineShop.Core.UseCases.Products.Get;
 using OnlineShop.Core.UseCases.Products.GetAll;
+using OnlineShop.Core.UseCases.Products.SetProductImage;
 using OnlineShop.Core.UseCases.Products.Toggle;
 using OnlineShop.Core.UseCases.Products.Update;
+using OnlineShop.Core.UseCases.Products.UploadImage;
 
 namespace OnlineShop.Core;
 
@@ -38,6 +40,8 @@ public static class DIConfiguration
         services.AddScoped<IUseCase<UpdateProductRequest,   UpdateProductResponse>, UpdateProductUseCase>();
         services.AddScoped<IUseCase<DeleteProductsRequest, DeleteProductsResponse>, DeleteProductsUseCase>();
         services.AddScoped<IUseCase<ToggleProductsRequest, ToggleProductsResponse>, ToggleProductsUseCase>();
+        services.AddScoped<IUseCase<UploadProductImageRequest, UploadProductImageResponse>, UploadProductImageUseCase>();
+        services.AddScoped<IUseCase<SetProductImageRequest, SetProductImageResponse>, SetProductImageUseCase>();
 
         return services;
     }

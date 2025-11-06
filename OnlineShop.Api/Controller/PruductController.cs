@@ -6,8 +6,10 @@ using OnlineShop.Core.UseCases.Products.Create;
 using OnlineShop.Core.UseCases.Products.Delete;
 using OnlineShop.Core.UseCases.Products.Get;
 using OnlineShop.Core.UseCases.Products.GetAll;
+using OnlineShop.Core.UseCases.Products.SetProductImage;
 using OnlineShop.Core.UseCases.Products.Update;
 using OnlineShop.Core.UseCases.Products.Toggle;
+using OnlineShop.Core.UseCases.Products.UploadImage;
 
 namespace OnlineShop.Controller;
 
@@ -205,6 +207,47 @@ public class ProductController : ControllerBase
                 new Response<object>(
                     StatusCodes.Status500InternalServerError,
                     "An unexpected error occurred while toggling products."
+                ));
+        }
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpPost("{id}/image")]
+    public async Task<IActionResult> UploadImage(
+        [FromRoute] Guid id,
+        [FromForm] IFormFile file,
+        [FromServices] IUseCase<UploadProductImageRequest, UploadProductImageResponse> uploadUseCase,
+        [FromServices] IUseCase<SetProductImageRequest, SetProductImageResponse> setImageUseCase)
+    {
+        try
+        {
+            UploadProductImageResponse uploadResponse = await uploadUseCase.Execute(
+                new UploadProductImageRequest { Id = id, File = file }
+            );
+
+            SetProductImageResponse setImageResponse = await setImageUseCase.Execute(
+                new SetProductImageRequest { ProductId = id, ImagePath = uploadResponse.FilePath }
+            );
+
+            return Ok(new Response<SetProductImageResponse>(
+                StatusCodes.Status200OK,
+                "Image uploaded and set on product successfully",
+                setImageResponse
+            ));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
+            ));
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new Response<object>(
+                    StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred while uploading the image."
                 ));
         }
     }

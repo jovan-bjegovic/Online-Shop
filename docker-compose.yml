@@ -39,6 +39,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     volumes:
       - ./OnlineShop.Api/appsettings.Development.json:/app/appsettings.Development.json:ro
+      - ./OnlineShop.Api/uploads:/app/uploads
     depends_on:
       migrator:
         condition: service_completed_successfully

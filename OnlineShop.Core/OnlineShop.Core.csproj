@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="UseCases\Products\DeleteExpired\" />
-      <Folder Include="UseCases\Products\UploadImage\" />
     </ItemGroup>
 
 </Project>
