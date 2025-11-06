@@ -5,6 +5,7 @@ namespace OnlineShop.Core.Interfaces;
 public interface IProductRepository
 {
     Task<Product?> FindByIdAsync(Guid id);
+    Task<Product?> FindBySkuAsync(string sku);
     Task<List<Product>> GetAllPaginatedAsync(int page, int pageSize);
     Task<int> CountAsync();
     Task CreateProductAsync(Product product);

@@ -10,6 +10,11 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
     {
         return await context.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
+    
+    public async Task<Product?> FindBySkuAsync(string sku)
+    {
+        return await context.Products.FirstOrDefaultAsync(p => p.Sku == sku);
+    }
 
     public async Task<List<Product>> GetAllPaginatedAsync(int page, int pageSize)
     {

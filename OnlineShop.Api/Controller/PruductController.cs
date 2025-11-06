@@ -113,15 +113,15 @@ public class ProductController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("{id:guid}")]
+    [HttpPut("{sku}")]
     public async Task<IActionResult> UpdateProduct(
-        [FromRoute] Guid id,
+        [FromRoute] string sku,
         [FromBody] UpdateProductRequest request,
         [FromServices] IUseCase<UpdateProductRequest, UpdateProductResponse> useCase)
     {
         try
         {
-            request.Id = id;
+            request.Sku = sku;
             UpdateProductResponse response = await useCase.Execute(request);
 
             return Ok(new Response<UpdateProductResponse>(
@@ -212,9 +212,9 @@ public class ProductController : ControllerBase
     }
     
     [Authorize(Roles = "Admin")]
-    [HttpPost("{id}/image")]
+    [HttpPost("{sku}/image")]
     public async Task<IActionResult> UploadImage(
-        [FromRoute] Guid id,
+        [FromRoute] string sku,
         [FromForm] IFormFile file,
         [FromServices] IUseCase<UploadProductImageRequest, UploadProductImageResponse> uploadUseCase,
         [FromServices] IUseCase<SetProductImageRequest, SetProductImageResponse> setImageUseCase)
@@ -222,11 +222,11 @@ public class ProductController : ControllerBase
         try
         {
             UploadProductImageResponse uploadResponse = await uploadUseCase.Execute(
-                new UploadProductImageRequest { Id = id, File = file }
+                new UploadProductImageRequest { Sku = sku, File = file }
             );
 
             SetProductImageResponse setImageResponse = await setImageUseCase.Execute(
-                new SetProductImageRequest { ProductId = id, ImagePath = uploadResponse.FilePath }
+                new SetProductImageRequest { ProductSku = sku, ImagePath = uploadResponse.FilePath }
             );
 
             return Ok(new Response<SetProductImageResponse>(

@@ -1,6 +1,5 @@
 ﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.UseCases.Products.SetProductImage;
 
 namespace OnlineShop.Core.UseCases.Products.Update
 {
@@ -11,11 +10,22 @@ namespace OnlineShop.Core.UseCases.Products.Update
     {
         public async Task<UpdateProductResponse> Execute(UpdateProductRequest request)
         {
-            Product? product = await repository.FindByIdAsync(request.Id);
+            Product? product = await repository.FindBySkuAsync(request.Sku);
 
             if (product == null)
             {
                 throw new KeyNotFoundException($"Product with ID '{request.Id}' not found.");
+            }
+            
+            if (!string.IsNullOrWhiteSpace(request.Sku) && request.Sku != product.Sku)
+            {
+                bool skuExists = await repository.SkuExistsAsync(request.Sku);
+                if (skuExists)
+                {
+                    throw new InvalidOperationException($"SKU '{request.Sku}' already exists.");
+                }
+
+                product.Sku = request.Sku;
             }
             
             bool categoryExists = await repository.CategoryExistsAsync(request.CategoryId);
@@ -41,6 +51,7 @@ namespace OnlineShop.Core.UseCases.Products.Update
                 Id = product.Id,
                 Title = product.Title,
                 Brand = product.Brand,
+                Sku = product.Sku,
                 CategoryId = product.CategoryId,
                 ShortDescription = product.ShortDescription,
                 LongDescription = product.LongDescription,
