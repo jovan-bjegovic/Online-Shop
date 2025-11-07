@@ -3,6 +3,7 @@ using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 using OnlineShop.Core.UseCases.Auth.Login;
 using OnlineShop.Core.UseCases.Auth.Refresh;
+using OnlineShop.Models;
 
 namespace OnlineShop.Controller;
 

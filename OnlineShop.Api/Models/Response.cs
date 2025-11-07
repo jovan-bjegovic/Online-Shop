@@ -1,4 +1,4 @@
-﻿namespace OnlineShop.Core.Models;
+﻿namespace OnlineShop.Models;
 
 public class Response<T>(int statusCode, string message, T? data = default)
 {

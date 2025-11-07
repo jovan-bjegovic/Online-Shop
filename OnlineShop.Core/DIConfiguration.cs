@@ -10,10 +10,11 @@ using OnlineShop.Core.UseCases.Categories.GetAll;
 using OnlineShop.Core.UseCases.Categories.Update;
 using OnlineShop.Core.UseCases.Products.Create;
 using OnlineShop.Core.UseCases.Products.Delete;
+using OnlineShop.Core.UseCases.Products.Disable;
+using OnlineShop.Core.UseCases.Products.Enable;
 using OnlineShop.Core.UseCases.Products.Get;
 using OnlineShop.Core.UseCases.Products.GetAll;
 using OnlineShop.Core.UseCases.Products.SetProductImage;
-using OnlineShop.Core.UseCases.Products.Toggle;
 using OnlineShop.Core.UseCases.Products.Update;
 using OnlineShop.Core.UseCases.Products.UploadImage;
 
@@ -39,7 +40,8 @@ public static class DIConfiguration
         services.AddScoped<IUseCase<CreateProductRequest,  CreateProductResponse>, CreateProductUseCase>();
         services.AddScoped<IUseCase<UpdateProductRequest,   UpdateProductResponse>, UpdateProductUseCase>();
         services.AddScoped<IUseCase<DeleteProductsRequest, DeleteProductsResponse>, DeleteProductsUseCase>();
-        services.AddScoped<IUseCase<ToggleProductsRequest, ToggleProductsResponse>, ToggleProductsUseCase>();
+        services.AddScoped<IUseCase<EnableProductsRequest, EnableProductsResponse>, EnableProductsUseCase>();
+        services.AddScoped<IUseCase<DisableProductsRequest, DisableProductsResponse>,  DisableProductsUseCase>();
         services.AddScoped<IUseCase<UploadProductImageRequest, UploadProductImageResponse>, UploadProductImageUseCase>();
         services.AddScoped<IUseCase<SetProductImageRequest, SetProductImageResponse>, SetProductImageUseCase>();
 
