@@ -1,10 +1,8 @@
 ﻿namespace OnlineShop.Core.Models;
 
-public class ProductImage
+public class Image : BaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string FileName { get; set; } = string.Empty;
-    public string FilePath { get; set; } = string.Empty;
-    public long Size { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public string FileName { get; init; } = string.Empty;
+    public string FilePath { get; init; } = string.Empty;
+    public long Size { get; init; }
 }

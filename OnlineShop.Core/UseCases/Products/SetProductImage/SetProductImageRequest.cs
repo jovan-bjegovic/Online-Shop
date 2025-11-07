@@ -2,6 +2,6 @@
 
 public class SetProductImageRequest
 {
-    public Guid Id { get; init; }
-    public required Guid ImageId { get; set; }
+    public Guid Id { get; set; }
+    public required Guid ImageId { get; init; }
 }

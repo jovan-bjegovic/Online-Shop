@@ -8,7 +8,9 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
 {
     public async Task<Product?> FindByIdAsync(Guid id)
     {
-        return await context.Products.FirstOrDefaultAsync(p => p.Id == id);
+        return await context.Products
+            .Include(p => p.Image)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<List<Product>> GetAllPaginatedAsync(int page, int pageSize)
@@ -17,12 +19,13 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
             .OrderBy(p => p.Title)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Include(p => p.Image)
             .ToListAsync();
     }
 
-    public async Task<int> CountAsync()
+    public Task<int> CountAsync()
     {
-        return await context.Products.CountAsync();
+        return context.Products.CountAsync();
     }
 
     public async Task CreateProductAsync(Product product)
@@ -74,13 +77,7 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
 
         return await query.AnyAsync(p => p.Sku.ToLower() == sku.ToLower());
     }
-
-
-    public async Task<bool> CategoryExistsAsync(Guid categoryId)
-    {
-        return await context.Categories.AnyAsync(c => c.Id == categoryId);
-    }
-
+    
     public async Task<List<Product>> FindByIdsAsync(List<Guid> ids)
     {
         return await context.Products

@@ -14,6 +14,5 @@ public interface IProductRepository
     Task SoftDeleteProductsAsync(List<Product> products);
     Task DeleteProductsAsync(List<Product> products);
     Task<bool> SkuExistsAsync(string sku, Guid? excludeId = null);
-    Task<bool> CategoryExistsAsync(Guid categoryId);
     Task<List<Product>> FindByIdsAsync(List<Guid> ids);
 }

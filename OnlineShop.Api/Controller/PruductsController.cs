@@ -10,8 +10,6 @@ using OnlineShop.Core.UseCases.Products.Get;
 using OnlineShop.Core.UseCases.Products.GetAll;
 using OnlineShop.Core.UseCases.Products.SetProductImage;
 using OnlineShop.Core.UseCases.Products.Update;
-using OnlineShop.Core.UseCases.Products.UploadImage;
-using OnlineShop.Core.UseCases.Upload;
 using OnlineShop.Models;
 
 namespace OnlineShop.Controller;
@@ -66,12 +64,12 @@ public class ProductsController : ControllerBase
                 ex.Message
             ));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new Response<object>(
                     StatusCodes.Status500InternalServerError,
-                    "An unexpected error occurred while retrieving products."
+                    $"An unexpected error occurred while retrieving products: {ex.Message}"
                 ));
         }
     }
@@ -317,34 +315,21 @@ public class ProductsController : ControllerBase
         }
     }
     
-    [HttpPost("{id:guid}/image")]
-    public async Task<IActionResult> UploadProductImage(
+    [HttpPatch("{id:guid}/image")]
+    public async Task<IActionResult> SetProductImage(
         [FromRoute] Guid id,
-        [FromForm] IFormFile? file,
-        [FromServices] IUseCase<UploadProductImageRequest, UploadProductImageResponse> uploadImageUseCase,
-        [FromServices] IUseCase<SetProductImageRequest, SetProductImageResponse> setImageUseCase)
+        [FromBody] SetProductImageRequest request,
+        [FromServices] IUseCase<SetProductImageRequest, SetProductImageResponse> useCase)
     {
         try
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No file provided");
-
-            UploadProductImageResponse uploadResponse = await uploadImageUseCase.Execute(
-                new UploadProductImageRequest { File = file }
-            );
-
-            SetProductImageResponse setImageResponse = await setImageUseCase.Execute(
-                new SetProductImageRequest
-                {
-                    Id = id,
-                    ImageId = uploadResponse.Id
-                }
-            );
+            request.Id = id;
+            SetProductImageResponse response = await useCase.Execute(request);
 
             return Ok(new Response<SetProductImageResponse>(
                 StatusCodes.Status200OK,
-                "Image uploaded and linked to product successfully",
-                setImageResponse
+                "Image linked to product successfully",
+                response
             ));
         }
         catch (ArgumentException ex)
@@ -361,13 +346,14 @@ public class ProductsController : ControllerBase
                 ex.Message
             ));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new Response<object>(
                     StatusCodes.Status500InternalServerError,
-                    "An unexpected error occurred while uploading the image."
+                    $"An unexpected error occurred: {ex.Message}"
                 ));
         }
     }
+
 }

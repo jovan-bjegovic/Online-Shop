@@ -4,13 +4,14 @@ using OnlineShop.Core.Models;
 namespace OnlineShop.Core.UseCases.Products.Update;
 
 public class UpdateProductUseCase(
-    IProductRepository repository,
+    IProductRepository productRepository,
+    ICategoryRepository categoryRepository,
     IUnitOfWork unitOfWork
 ) : IUseCase<UpdateProductRequest, UpdateProductResponse>
 {
     public async Task<UpdateProductResponse> Execute(UpdateProductRequest request)
     {
-        Product? product = await repository.FindByIdAsync(request.Id);
+        Product? product = await productRepository.FindByIdAsync(request.Id);
 
         if (product == null)
         {
@@ -19,7 +20,7 @@ public class UpdateProductUseCase(
             
         if (!string.IsNullOrWhiteSpace(request.Sku))
         {
-            bool skuExists = await repository.SkuExistsAsync(request.Sku, request.Id);
+            bool skuExists = await productRepository.SkuExistsAsync(request.Sku, request.Id);
             if (skuExists)
             {
                 throw new InvalidOperationException($"SKU '{request.Sku}' already exists.");
@@ -28,8 +29,8 @@ public class UpdateProductUseCase(
             product.Id = request.Id;
         }
             
-        bool categoryExists = await repository.CategoryExistsAsync(request.CategoryId);
-        if (!categoryExists)
+        Category? categoryExists = await categoryRepository.FindCategoryAsync(request.CategoryId);
+        if (categoryExists == null)
         {
             throw new KeyNotFoundException($"Category '{request.CategoryId}' not found.");
         }
@@ -44,7 +45,7 @@ public class UpdateProductUseCase(
         product.ImageId = request.ImageId;
         product.Enabled = request.Enabled;
 
-        await repository.UpdateProductAsync(product);
+        await productRepository.UpdateProductAsync(product);
         await unitOfWork.CommitAsync();
 
         return new UpdateProductResponse

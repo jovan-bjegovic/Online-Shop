@@ -5,18 +5,19 @@ using OnlineShop.Core.UseCases.Products.SetProductImage;
 namespace OnlineShop.Core.UseCases.Products.Create;
 
 public class CreateProductUseCase(
-    IProductRepository repository,
+    IProductRepository productRepository,
+    ICategoryRepository categoryRepository,
     IUnitOfWork unitOfWork
 ) : IUseCase<CreateProductRequest, CreateProductResponse>
 {
     public async Task<CreateProductResponse> Execute(CreateProductRequest request)
     {
-        if (await repository.SkuExistsAsync(request.Sku))
+        if (await productRepository.SkuExistsAsync(request.Sku))
         {
             throw new ArgumentException($"A product with SKU '{request.Sku}' already exists.");
         }
 
-        if (!await repository.CategoryExistsAsync(request.CategoryId))
+        if (await categoryRepository.FindCategoryAsync(request.CategoryId) is null)
         {
             throw new KeyNotFoundException($"Category with ID '{request.CategoryId}' not found.");
         }
@@ -36,7 +37,7 @@ public class CreateProductUseCase(
             Featured = request.Featured
         };
 
-        await repository.CreateProductAsync(product);
+        await productRepository.CreateProductAsync(product);
         await unitOfWork.CommitAsync();
 
         return new CreateProductResponse

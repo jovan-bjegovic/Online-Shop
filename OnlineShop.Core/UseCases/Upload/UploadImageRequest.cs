@@ -2,7 +2,7 @@
 
 namespace OnlineShop.Core.UseCases.Upload;
 
-public class UploadFileRequest
+public class UploadImageRequest
 {
-    public IFormFile File { get; set; } = default!;
+    public IFormFile? Image { get; init; }
 }

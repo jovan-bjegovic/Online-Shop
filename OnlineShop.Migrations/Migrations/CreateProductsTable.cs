@@ -13,7 +13,7 @@ namespace OnlineShop.Migrations.Migrations
                 .WithColumn("Sku").AsString().NotNullable().Unique()
                 .WithColumn("Brand").AsString().NotNullable()
                 .WithColumn("CategoryId").AsGuid().NotNullable()
-                .ForeignKey("FK_Products_Categories", "Categories", "Id") // <-- here
+                .ForeignKey("FK_Products_Categories", "Categories", "Id")
                 .WithColumn("ShortDescription").AsString().NotNullable()
                 .WithColumn("LongDescription").AsString().NotNullable()
                 .WithColumn("Price").AsInt32().NotNullable()
