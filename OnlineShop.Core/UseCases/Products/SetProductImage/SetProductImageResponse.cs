@@ -4,5 +4,5 @@ namespace OnlineShop.Core.UseCases.Products.SetProductImage;
 
 public class SetProductImageResponse
 {
-    public Product Product { get; set; }
+    public required Product Product { get; set; }
 }

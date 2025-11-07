@@ -2,5 +2,5 @@
 
 public class DeleteProductsResponse
 {
-    public bool Success { get; set; } = false;
+    public bool Success { get; set; }
 }

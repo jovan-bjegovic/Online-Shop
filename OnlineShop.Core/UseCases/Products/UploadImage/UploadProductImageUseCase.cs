@@ -19,16 +19,16 @@ public class UploadProductImageUseCase
 
     public async Task<UploadProductImageResponse> Execute(UploadProductImageRequest request)
     {
-        Product? product = await repository.FindBySkuAsync(request.Sku);
+        Product? product = await repository.FindByIdAsync(request.Id);
         if (product == null)
         {
-            throw new ArgumentException($"Product with SKU '{request.Sku}' not found.");
+            throw new ArgumentException($"Product with Id '{request.Id}' not found.");
         }
         
         if (request.File == null || request.File.Length == 0)
         {
             throw new ArgumentException("File is empty.");
-        }        
+        }
         
         if (!request.File.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
         {
@@ -45,10 +45,12 @@ public class UploadProductImageUseCase
         }
         
         double ratio = (double)width / height;
+        
         if (ratio is < 4.0 / 3 or > 16.0 / 9)
         {
             throw new ArgumentException("Image aspect ratio must be between 4:3 and 16:9.");
         }
+        
         string fileName = $"{Guid.NewGuid()}{Path.GetExtension(request.File.FileName)}";
         string filePath = Path.Combine(uploadsFolder, fileName);
 

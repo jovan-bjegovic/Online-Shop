@@ -113,21 +113,28 @@ public class ProductsController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("{sku}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateProduct(
-        [FromRoute] string sku,
+        [FromRoute] Guid id,
         [FromBody] UpdateProductRequest request,
         [FromServices] IUseCase<UpdateProductRequest, UpdateProductResponse> useCase)
     {
         try
         {
-            request.Sku = sku;
+            request.Id = id;
             UpdateProductResponse response = await useCase.Execute(request);
 
             return Ok(new Response<UpdateProductResponse>(
                 StatusCodes.Status200OK,
                 "Product updated successfully",
                 response
+            ));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
             ));
         }
         catch (KeyNotFoundException ex)
@@ -165,10 +172,12 @@ public class ProductsController : ControllerBase
             DeleteProductsResponse response = await useCase.Execute(request);
 
             if (!response.Success)
+            {
                 return NotFound(new Response<object>(
                     StatusCodes.Status404NotFound,
                     "Some or all products not found and cannot be deleted"
                 ));
+            }
 
             return Ok(new Response<object>(
                 StatusCodes.Status200OK,
@@ -212,9 +221,9 @@ public class ProductsController : ControllerBase
     }
     
     [Authorize(Roles = "Admin")]
-    [HttpPost("{sku}/image")]
+    [HttpPost("{id:guid}/image")]
     public async Task<IActionResult> UploadImage(
-        [FromRoute] string sku,
+        [FromRoute] Guid id,
         [FromForm] IFormFile file,
         [FromServices] IUseCase<UploadProductImageRequest, UploadProductImageResponse> uploadUseCase,
         [FromServices] IUseCase<SetProductImageRequest, SetProductImageResponse> setImageUseCase)
@@ -222,11 +231,11 @@ public class ProductsController : ControllerBase
         try
         {
             UploadProductImageResponse uploadResponse = await uploadUseCase.Execute(
-                new UploadProductImageRequest { Sku = sku, File = file }
+                new UploadProductImageRequest { Id = id, File = file }
             );
 
             SetProductImageResponse setImageResponse = await setImageUseCase.Execute(
-                new SetProductImageRequest { ProductSku = sku, ImagePath = uploadResponse.FilePath }
+                new SetProductImageRequest { Id = id, Image = uploadResponse.FilePath }
             );
 
             return Ok(new Response<SetProductImageResponse>(

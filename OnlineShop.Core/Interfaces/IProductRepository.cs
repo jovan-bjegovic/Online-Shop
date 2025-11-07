@@ -5,7 +5,6 @@ namespace OnlineShop.Core.Interfaces;
 public interface IProductRepository
 {
     Task<Product?> FindByIdAsync(Guid id);
-    Task<Product?> FindBySkuAsync(string sku);
     Task<List<Product>> GetAllPaginatedAsync(int page, int pageSize);
     Task<List<Product>> GetExpiredAsync(DateTime cutoffDate);
     Task<int> CountAsync();
@@ -14,7 +13,7 @@ public interface IProductRepository
     Task UpdateProductsAsync(List<Product> products);
     Task SoftDeleteProductsAsync(List<Product> products);
     Task DeleteProductsAsync(List<Product> products);
-    Task<bool> SkuExistsAsync(string sku);
+    Task<bool> SkuExistsAsync(string sku, Guid? excludeId = null);
     Task<bool> CategoryExistsAsync(Guid categoryId);
     Task<List<Product>> FindByIdsAsync(List<Guid> ids);
 }

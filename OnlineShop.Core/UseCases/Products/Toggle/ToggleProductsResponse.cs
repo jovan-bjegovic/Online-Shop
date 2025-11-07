@@ -2,7 +2,7 @@
 
 public class ToggleProductsResponse
 {
-    public List<ToggleProductItem> Products { get; set; }
+    public List<ToggleProductItem> Products { get; set; } = [];
 }
 
 public class ToggleProductItem

@@ -2,6 +2,6 @@
 
 public class SetProductImageRequest
 {
-    public string ProductSku { get; set; }
-    public string ImagePath { get; set; }
+    public Guid Id { get; set; }
+    public string Image { get; set; } = String.Empty;
 }

@@ -10,11 +10,6 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
     {
         return await context.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
-    
-    public async Task<Product?> FindBySkuAsync(string sku)
-    {
-        return await context.Products.FirstOrDefaultAsync(p => p.Sku == sku);
-    }
 
     public async Task<List<Product>> GetAllPaginatedAsync(int page, int pageSize)
     {
@@ -68,10 +63,18 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
         
         return Task.CompletedTask;
     }
-    public async Task<bool> SkuExistsAsync(string sku)
+    public async Task<bool> SkuExistsAsync(string sku, Guid? excludeId = null)
     {
-        return await context.Products.AnyAsync(p => p.Sku == sku);
+        var query = context.Products.AsQueryable();
+
+        if (excludeId.HasValue)
+        {
+            query = query.Where(p => p.Id != excludeId.Value);
+        }
+
+        return await query.AnyAsync(p => p.Sku.ToLower() == sku.ToLower());
     }
+
 
     public async Task<bool> CategoryExistsAsync(Guid categoryId)
     {
@@ -84,6 +87,7 @@ public class DbProductRepository(AppDbContext context) : IProductRepository
             .Where(p => ids.Contains(p.Id))
             .ToListAsync();
     }
+    
     public async Task<List<Product>> GetExpiredAsync(DateTime cutoffDate)
     {
         List<Product> expiredProducts = await context.Products

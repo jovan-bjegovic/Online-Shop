@@ -11,13 +11,13 @@ public class SetProductImageUseCase(
 {
     public async Task<SetProductImageResponse> Execute(SetProductImageRequest request)
     {
-        Product? product = await productRepository.FindBySkuAsync(request.ProductSku);
+        Product? product = await productRepository.FindByIdAsync(request.Id);
         if (product == null)
         {
-            throw new ArgumentException("Product not found");
+            throw new ArgumentException($"Product with '{request.Id}' not found");
         }
 
-        product.Image = request.ImagePath;
+        product.Image = request.Image;
         await productRepository.UpdateProductAsync(product);
         
         await unitOfWork.CommitAsync();

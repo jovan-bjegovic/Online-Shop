@@ -2,11 +2,11 @@
 
 public class User
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string Username { get; set; }
-    public string PasswordHash { get; set; }
-    public string Role { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public required string Username { get; init; }
+    public required string PasswordHash { get; init; }
+    public required string Role { get; init; }
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiry { get; set; }
 }

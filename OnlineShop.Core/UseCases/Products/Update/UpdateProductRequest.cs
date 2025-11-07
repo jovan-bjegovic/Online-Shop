@@ -1,5 +1,4 @@
-﻿
-namespace OnlineShop.Core.UseCases.Products.Update;
+﻿namespace OnlineShop.Core.UseCases.Products.Update;
 
 public class UpdateProductRequest
 {

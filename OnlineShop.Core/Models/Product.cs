@@ -1,6 +1,8 @@
-﻿namespace OnlineShop.Core.Models;
+﻿using OnlineShop.Core.Interfaces;
 
-public class Product
+namespace OnlineShop.Core.Models;
+
+public class Product: ISoftDelete
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Title { get; set; } = string.Empty;
