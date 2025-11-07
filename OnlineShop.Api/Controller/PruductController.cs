@@ -26,51 +26,95 @@ public class ProductsController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
-        var request = new GetAllProductsRequest
+        try
         {
-            Page = page,
-            PageSize = pageSize
-        };
+            var request = new GetAllProductsRequest
+            {
+                Page = page,
+                PageSize = pageSize
+            };
 
-        GetAllProductsResponse response = await useCase.Execute(request);
+            GetAllProductsResponse response = await useCase.Execute(request);
 
-        if (response.Products.Count == 0)
-        {
-            return Ok(new Response<GetAllProductsResponse>(
+            if (response.Products.Count == 0)
+            {
+                return Ok(new Response<GetAllProductsResponse>(
+                    StatusCodes.Status200OK,
+                    "No products available",
+                    response
+                ));
+            }
+
+            return Ok(new Response<List<Product>>(
                 StatusCodes.Status200OK,
-                "No products available",
-                response
+                "Products retrieved successfully",
+                response.Products
             ));
         }
-
-        return Ok(new Response<List<Product>>(
-            StatusCodes.Status200OK,
-            "Products retrieved successfully",
-            response.Products
-        ));
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
+            ));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new Response<object>(
+                StatusCodes.Status404NotFound,
+                ex.Message
+            ));
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new Response<object>(
+                    StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred while retrieving products."
+                ));
+        }
     }
+
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProduct(
         [FromRoute] Guid id,
         [FromServices] IUseCase<GetProductRequest, GetProductResponse> useCase)
     {
-        GetProductResponse response = await useCase.Execute(new GetProductRequest { Id = id });
+        try
+        {
+            var response = await useCase.Execute(new GetProductRequest { Id = id });
 
-        if (response.Product == null)
+            return Ok(new Response<Product>(
+                StatusCodes.Status200OK,
+                "Product retrieved successfully",
+                response.Product
+            ));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
+            ));
+        }
+        catch (KeyNotFoundException ex)
         {
             return NotFound(new Response<object>(
                 StatusCodes.Status404NotFound,
-                "Product not found"
+                ex.Message
             ));
         }
-
-        return Ok(new Response<Product>(
-            StatusCodes.Status200OK,
-            "Product retrieved successfully",
-            response.Product
-        ));
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new Response<object>(
+                    StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred while retrieving the product."
+                ));
+        }
     }
+
 
     [HttpPost]
     public async Task<IActionResult> CreateProduct(
@@ -145,13 +189,6 @@ public class ProductsController : ControllerBase
                 ex.Message
             ));
         }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new Response<object>(
-                StatusCodes.Status400BadRequest,
-                ex.Message
-            ));
-        }   
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
@@ -182,6 +219,13 @@ public class ProductsController : ControllerBase
             return Ok(new Response<object>(
                 StatusCodes.Status200OK,
                 "Products deleted successfully"
+            ));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
             ));
         }
         catch (Exception)

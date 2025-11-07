@@ -8,6 +8,16 @@ public class GetAllProductsUseCase(
 {
     public async Task<GetAllProductsResponse> Execute(GetAllProductsRequest request)
     {
+        if (request.Page <= 0)
+        {
+            throw new ArgumentException("Page must be greater than 0.");
+        }
+
+        if (request.PageSize <= 0)
+        {
+            throw new ArgumentException("PageSize must be greater than 0.");
+        }
+        
         int totalItems = await repository.CountAsync();
         int totalPages = (int)Math.Ceiling(totalItems / (double)request.PageSize);
 

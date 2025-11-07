@@ -1,6 +1,5 @@
 ﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
-using OnlineShop.Core.UseCases.Products.SetProductImage;
 
 namespace OnlineShop.Core.UseCases.Products.Get;
 
@@ -10,6 +9,11 @@ public class GetProductUseCase(
 {
     public async Task<GetProductResponse> Execute(GetProductRequest request)
     {
+        if (request.Id == Guid.Empty)
+        {
+            throw new ArgumentException("Product ID must be provided.");
+        }
+        
         Product? product = await repository.FindByIdAsync(request.Id);
 
         if (product == null)
