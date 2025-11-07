@@ -31,7 +31,7 @@ public class CreateProductUseCase(
             ShortDescription = request.ShortDescription,
             LongDescription = request.LongDescription,
             Price = request.Price,
-            Image = request.Image,
+            ImageId = request.ImageId,
             Enabled = request.Enabled,
             Featured = request.Featured
         };
@@ -49,7 +49,7 @@ public class CreateProductUseCase(
             ShortDescription = product.ShortDescription,
             LongDescription = product.LongDescription,
             Price = product.Price,
-            Image = product.Image,
+            ImageId = product.ImageId,
             Enabled = product.Enabled,
             Featured = product.Featured
         };

@@ -10,6 +10,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users { get; set; }
     
     public DbSet<Product> Products { get; set; }
+    
+    public DbSet<ProductImage> ProductImages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,14 +38,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Product>(product =>
         {
             product.HasKey(p => p.Id);
-            
-            product.Property(p => p.Title)
-                .IsRequired();
 
-            product.Property(p => p.Sku)
-                .IsRequired();
-            
+            product.Property(p => p.Title).IsRequired();
+            product.Property(p => p.Sku).IsRequired();
             product.HasQueryFilter(p => !p.IsDeleted);
+
+            product.HasOne<ProductImage>()     
+                .WithMany()
+                .HasForeignKey(p => p.ImageId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+        
+        modelBuilder.Entity<ProductImage>(image =>
+        {
+            image.HasKey(i => i.Id);
         });
     }
 }

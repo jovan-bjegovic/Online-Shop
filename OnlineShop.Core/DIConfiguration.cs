@@ -17,6 +17,7 @@ using OnlineShop.Core.UseCases.Products.GetAll;
 using OnlineShop.Core.UseCases.Products.SetProductImage;
 using OnlineShop.Core.UseCases.Products.Update;
 using OnlineShop.Core.UseCases.Products.UploadImage;
+using OnlineShop.Core.UseCases.Upload;
 
 namespace OnlineShop.Core;
 
@@ -45,6 +46,8 @@ public static class DIConfiguration
         services.AddScoped<IUseCase<UploadProductImageRequest, UploadProductImageResponse>, UploadProductImageUseCase>();
         services.AddScoped<IUseCase<SetProductImageRequest, SetProductImageResponse>, SetProductImageUseCase>();
 
+        services.AddScoped<IUseCase<UploadFileRequest, UploadFileResponse>, UploadFileUseCase>();
+        
         return services;
     }
 }

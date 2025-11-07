@@ -1,71 +1,72 @@
-﻿using SixLabors.ImageSharp;
-using OnlineShop.Core.Interfaces;
+﻿using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
+using OnlineShop.Core.UseCases.Upload;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace OnlineShop.Core.UseCases.Products.UploadImage;
 
-public class UploadProductImageUseCase
+public class UploadProductImageUseCase(
+    IProductImageRepository imageRepository,
+    IUseCase<UploadFileRequest, UploadFileResponse> uploadFileUseCase)
     : IUseCase<UploadProductImageRequest, UploadProductImageResponse>
 {
-    private readonly string uploadsFolder;
-    private readonly IProductRepository repository;
-
-    public UploadProductImageUseCase(IProductRepository repository)
-    {
-        this.repository = repository;
-        uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "images");
-        Directory.CreateDirectory(uploadsFolder);
-    }
-
     public async Task<UploadProductImageResponse> Execute(UploadProductImageRequest request)
     {
-        Product? product = await repository.FindByIdAsync(request.Id);
-        if (product == null)
-        {
-            throw new ArgumentException($"Product with Id '{request.Id}' not found.");
-        }
-        
         if (request.File == null || request.File.Length == 0)
-        {
             throw new ArgumentException("File is empty.");
-        }
-        
+
         if (!request.File.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-        {
             throw new ArgumentException("Invalid file type. Only images are allowed.");
-        }
-        using var image = await Image.LoadAsync(request.File.OpenReadStream());
 
-        int width = image.Width;
-        int height = image.Height;
+        var uploadResponse = await uploadFileUseCase.Execute(
+            new UploadFileRequest { File = request.File }
+        );
 
-        if (width < 600)
+        Image<Rgba32> image;
+        try
         {
-            throw new ArgumentException("Image width must be at least 600px.");
+            image = await Image.LoadAsync<Rgba32>(uploadResponse.FilePath);
         }
-        
-        double ratio = (double)width / height;
-        
-        if (ratio is < 4.0 / 3 or > 16.0 / 9)
+        catch (Exception)
         {
-            throw new ArgumentException("Image aspect ratio must be between 4:3 and 16:9.");
+            File.Delete(uploadResponse.FilePath);
+            throw new ArgumentException("Failed to process the uploaded image. Ensure it is a valid image format.");
         }
-        
-        string fileName = $"{Guid.NewGuid()}{Path.GetExtension(request.File.FileName)}";
-        string filePath = Path.Combine(uploadsFolder, fileName);
 
-        await using (var stream = new FileStream(filePath, FileMode.Create))
+        using (image)
         {
-            await request.File.CopyToAsync(stream);
+            if (image.Width < 600)
+            {
+                File.Delete(uploadResponse.FilePath);
+                throw new ArgumentException("Image width must be at least 600px.");
+            }
+
+            double ratio = (double)image.Width / image.Height;
+            if (ratio < 4.0 / 3 || ratio > 16.0 / 9)
+            {
+                File.Delete(uploadResponse.FilePath);
+                throw new ArgumentException("Image aspect ratio must be between 4:3 and 16:9.");
+            }
         }
-        
+
+        var productImage = new ProductImage
+        {
+            FileName = uploadResponse.FileName,
+            FilePath = uploadResponse.FilePath,
+            Size = uploadResponse.Size,
+            CreatedAt = uploadResponse.CreatedAt
+        };
+
+        await imageRepository.AddAsync(productImage);
+
         return new UploadProductImageResponse
         {
-            Id = Guid.NewGuid(),
-            FileName = fileName,
-            FilePath = filePath,
-            Size = request.File.Length,
-            CreatedAt = DateTime.UtcNow
+            Id = productImage.Id,
+            FileName = productImage.FileName,
+            FilePath = productImage.FilePath,
+            Size = productImage.Size,
+            CreatedAt = productImage.CreatedAt
         };
     }
 }

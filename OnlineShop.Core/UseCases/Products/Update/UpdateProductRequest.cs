@@ -1,4 +1,6 @@
-﻿namespace OnlineShop.Core.UseCases.Products.Update;
+﻿using OnlineShop.Core.Models;
+
+namespace OnlineShop.Core.UseCases.Products.Update;
 
 public class UpdateProductRequest
 {
@@ -10,6 +12,6 @@ public class UpdateProductRequest
     public string ShortDescription { get; set; } = string.Empty;
     public string LongDescription { get; set; } = string.Empty;
     public int Price { get; set; }
-    public string Image { get; set; } = string.Empty;
+    public Guid? ImageId { get; set; }
     public bool Enabled { get; set; } = true;
 }

@@ -1,4 +1,6 @@
-﻿namespace OnlineShop.Core.UseCases.Products.Create;
+﻿using OnlineShop.Core.Models;
+
+namespace OnlineShop.Core.UseCases.Products.Create;
 
 public class CreateProductResponse
 {
@@ -10,7 +12,7 @@ public class CreateProductResponse
     public string ShortDescription { get; set; } = string.Empty;
     public string LongDescription { get; set; } = string.Empty;
     public int Price { get; set; }
-    public string? Image { get; set; }
+    public Guid? ImageId { get; set; }
     public bool Enabled { get; set; } = true;
     public bool Featured { get; set; } = false;
 }

@@ -41,7 +41,7 @@ public class UpdateProductUseCase(
         product.ShortDescription = request.ShortDescription;
         product.LongDescription = request.LongDescription;
         product.Price = request.Price;
-        product.Image = request.Image;
+        product.ImageId = request.ImageId;
         product.Enabled = request.Enabled;
 
         await repository.UpdateProductAsync(product);
@@ -57,7 +57,7 @@ public class UpdateProductUseCase(
             ShortDescription = product.ShortDescription,
             LongDescription = product.LongDescription,
             Price = product.Price,
-            Image = product.Image,
+            ImageId = product.ImageId,
             Enabled = product.Enabled
         };
     }

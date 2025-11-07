@@ -26,6 +26,7 @@ public static class DIConfiguration
         services.AddScoped<ICategoryRepository, DbCategoryRepository>();
         services.AddScoped<IUserRepository, DbUserRepository>();
         services.AddScoped<IProductRepository, DbProductRepository>();
+        services.AddScoped<IProductImageRepository, DbProductImageRepository>();
         
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -11,6 +11,7 @@ using OnlineShop.Core.UseCases.Products.GetAll;
 using OnlineShop.Core.UseCases.Products.SetProductImage;
 using OnlineShop.Core.UseCases.Products.Update;
 using OnlineShop.Core.UseCases.Products.UploadImage;
+using OnlineShop.Core.UseCases.Upload;
 using OnlineShop.Models;
 
 namespace OnlineShop.Controller;
@@ -317,25 +318,32 @@ public class ProductsController : ControllerBase
     }
     
     [HttpPost("{id:guid}/image")]
-    public async Task<IActionResult> UploadImage(
+    public async Task<IActionResult> UploadProductImage(
         [FromRoute] Guid id,
-        [FromForm] IFormFile file,
-        [FromServices] IUseCase<UploadProductImageRequest, UploadProductImageResponse> uploadUseCase,
+        [FromForm] IFormFile? file,
+        [FromServices] IUseCase<UploadProductImageRequest, UploadProductImageResponse> uploadImageUseCase,
         [FromServices] IUseCase<SetProductImageRequest, SetProductImageResponse> setImageUseCase)
     {
         try
         {
-            UploadProductImageResponse uploadResponse = await uploadUseCase.Execute(
-                new UploadProductImageRequest { Id = id, File = file }
+            if (file == null || file.Length == 0)
+                return BadRequest("No file provided");
+
+            UploadProductImageResponse uploadResponse = await uploadImageUseCase.Execute(
+                new UploadProductImageRequest { File = file }
             );
 
             SetProductImageResponse setImageResponse = await setImageUseCase.Execute(
-                new SetProductImageRequest { Id = id, Image = uploadResponse.FilePath }
+                new SetProductImageRequest
+                {
+                    Id = id,
+                    ImageId = uploadResponse.Id
+                }
             );
 
             return Ok(new Response<SetProductImageResponse>(
                 StatusCodes.Status200OK,
-                "Image uploaded and set on product successfully",
+                "Image uploaded and linked to product successfully",
                 setImageResponse
             ));
         }
@@ -343,6 +351,13 @@ public class ProductsController : ControllerBase
         {
             return BadRequest(new Response<object>(
                 StatusCodes.Status400BadRequest,
+                ex.Message
+            ));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new Response<object>(
+                StatusCodes.Status404NotFound,
                 ex.Message
             ));
         }
