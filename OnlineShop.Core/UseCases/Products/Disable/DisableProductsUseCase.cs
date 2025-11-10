@@ -22,7 +22,7 @@ public class DisableProductsUseCase(
             throw new KeyNotFoundException("No products found with the provided IDs.");
         }
         
-        foreach (var product in products)
+        foreach (Product product in products)
         {
             product.Enabled = false;
         }
