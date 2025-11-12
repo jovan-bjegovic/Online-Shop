@@ -8,6 +8,15 @@ using OnlineShop.Core.UseCases.Categories.Delete;
 using OnlineShop.Core.UseCases.Categories.Get;
 using OnlineShop.Core.UseCases.Categories.GetAll;
 using OnlineShop.Core.UseCases.Categories.Update;
+using OnlineShop.Core.UseCases.Products.Create;
+using OnlineShop.Core.UseCases.Products.Delete;
+using OnlineShop.Core.UseCases.Products.Disable;
+using OnlineShop.Core.UseCases.Products.Enable;
+using OnlineShop.Core.UseCases.Products.Get;
+using OnlineShop.Core.UseCases.Products.GetAll;
+using OnlineShop.Core.UseCases.Products.SetProductImage;
+using OnlineShop.Core.UseCases.Products.Update;
+using OnlineShop.Core.UseCases.Upload;
 
 namespace OnlineShop.Core;
 
@@ -25,7 +34,17 @@ public static class DIConfiguration
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IUseCase<GenerateTokenRequest, GenerateTokenResponse>, GenerateTokenUseCase>();
         services.AddScoped<IUseCase<RefreshTokenRequest,  RefreshTokenResponse>, RefreshTokenUseCase>();
-
+        
+        services.AddScoped<IUseCase<GetAllProductsRequest, GetAllProductsResponse>, GetAllProductsUseCase>();
+        services.AddScoped<IUseCase<GetProductRequest, GetProductResponse>, GetProductUseCase>();
+        services.AddScoped<IUseCase<CreateProductRequest,  CreateProductResponse>, CreateProductUseCase>();
+        services.AddScoped<IUseCase<UpdateProductRequest,   UpdateProductResponse>, UpdateProductUseCase>();
+        services.AddScoped<IUseCase<DeleteProductsRequest, DeleteProductsResponse>, DeleteProductsUseCase>();
+        services.AddScoped<IUseCase<EnableProductsRequest, EnableProductsResponse>, EnableProductsUseCase>();
+        services.AddScoped<IUseCase<DisableProductsRequest, DisableProductsResponse>,  DisableProductsUseCase>();
+        services.AddScoped<IUseCase<UploadImageRequest, UploadImageResponse>, UploadImageUseCase>();
+        services.AddScoped<IUseCase<SetProductImageRequest, SetProductImageResponse>, SetProductImageUseCase>();
+        
         return services;
     }
 }

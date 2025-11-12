@@ -22,7 +22,7 @@ public class DeleteExpiredCategoriesUseCase(
         
         foreach (Category c in expiredCategories)
         {
-            await repository.RemoveCategoryAsync(c);
+            await repository.DeleteCategoryAsync(c);
         }
         
         await unitOfWork.CommitAsync();

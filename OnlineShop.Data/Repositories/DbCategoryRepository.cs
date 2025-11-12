@@ -33,14 +33,14 @@ public class DbCategoryRepository(AppDbContext context) : ICategoryRepository
         return Task.CompletedTask;
     }
 
-    public Task RemoveCategoryAsync(Category category)
+    public Task DeleteCategoryAsync(Category category)
     {
         context.Categories.Remove(category);
 
         return Task.CompletedTask;
     }
 
-    public async Task SoftRemoveCategoryAsync(Category category)
+    public async Task SoftDeleteCategoryAsync(Category category)
     {
         bool hasChildren = await context.Categories
             .AnyAsync(c => c.ParentCategoryId == category.Id && !c.IsDeleted);

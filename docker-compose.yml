@@ -39,6 +39,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     volumes:
       - ./OnlineShop.Api/appsettings.Development.json:/app/appsettings.Development.json:ro
+      - ./OnlineShop.Api/uploads:/app/files
     depends_on:
       migrator:
         condition: service_completed_successfully
@@ -53,6 +54,18 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     volumes:
       - ./OnlineShop.CategoryCleanup/appsettings.Development.json:/app/appsettings.Development.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+        
+  product_cleanup_worker:
+    build:
+      context: .
+      dockerfile: OnlineShop.ProductCleanup/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - ./OnlineShop.ProductCleanup/appsettings.Development.json:/app/appsettings.Development.json:ro
     depends_on:
       db:
         condition: service_healthy

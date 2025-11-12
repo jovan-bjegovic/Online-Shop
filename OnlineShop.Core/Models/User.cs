@@ -1,12 +1,10 @@
 ﻿namespace OnlineShop.Core.Models;
 
-public class User
+public class User : BaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string Username { get; set; }
-    public string PasswordHash { get; set; }
-    public string Role { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public required string Username { get; init; }
+    public required string PasswordHash { get; init; } 
+    public required string Role { get; init; }
     public string? RefreshToken { get; set; }
-    public DateTime? RefreshTokenExpiry { get; set; } = DateTime.UtcNow;
+    public DateTime? RefreshTokenExpiry { get; set; }
 }

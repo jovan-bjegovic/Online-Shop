@@ -7,10 +7,12 @@ using OnlineShop.Core.UseCases.Categories.Delete;
 using OnlineShop.Core.UseCases.Categories.Get;
 using OnlineShop.Core.UseCases.Categories.GetAll;
 using OnlineShop.Core.UseCases.Categories.Update;
+using OnlineShop.Models;
 
 namespace OnlineShop.Controller;
 
 [ApiController]
+[Authorize(Roles = "Admin")]
 [Route("admin/[controller]")]
 public class CategoryController : ControllerBase
 {
@@ -58,8 +60,7 @@ public class CategoryController : ControllerBase
             response.Category
         ));
     }
-
-    [Authorize(Roles = "Admin")]
+    
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateCategoryRequest request,
@@ -103,7 +104,6 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid id,
@@ -130,7 +130,6 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid id,

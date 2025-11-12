@@ -44,6 +44,8 @@ public static class ServiceExtensions
         services.AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters();
         services.AddValidatorsFromAssemblyContaining<OnlineShop.Core.Validators.CategoryValidator>();
+        services.AddValidatorsFromAssemblyContaining<OnlineShop.Core.Validators.ProductValidator>();
+        services.AddValidatorsFromAssemblyContaining<OnlineShop.Core.Validators.UserValidator>();
         
         return services;
     }

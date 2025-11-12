@@ -2,9 +2,8 @@
 
 namespace OnlineShop.Core.Models;
 
-public class Category : ISoftDelete
+public class Category : BaseEntity, ISoftDelete
 {
-    public Guid Id { get; init; }
     public string Title { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

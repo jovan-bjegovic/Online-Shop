@@ -21,3 +21,7 @@ obj/
 #appsetting
 **/appsettings.json
 **/appsettings.Development.json
+
+#images
+OnlineShop.Api/landscape.jpg
+OnlineShop.Api/uploads/
