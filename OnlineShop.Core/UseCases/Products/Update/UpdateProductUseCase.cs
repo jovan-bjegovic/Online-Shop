@@ -18,18 +18,20 @@ public class UpdateProductUseCase(
             throw new KeyNotFoundException($"Product with ID '{request.Id}' not found.");
         }
             
-        if (!string.IsNullOrWhiteSpace(request.Sku))
+        if (string.IsNullOrWhiteSpace(request.Sku))
         {
-            bool skuExists = await productRepository.SkuExistsAsync(request.Sku, request.Id);
-            if (skuExists)
-            {
-                throw new InvalidOperationException($"SKU '{request.Sku}' already exists.");
-            }
-
-            product.Id = request.Id;
+            throw new ArgumentException("SKU cannot be empty.");
         }
-            
+        
+        bool skuExists = await productRepository.SkuExistsAsync(request.Sku, request.Id);
+        
+        if (skuExists)
+        {
+            throw new InvalidOperationException($"SKU '{request.Sku}' already exists.");
+        }
+        
         Category? categoryExists = await categoryRepository.FindCategoryAsync(request.CategoryId);
+        
         if (categoryExists == null)
         {
             throw new KeyNotFoundException($"Category '{request.CategoryId}' not found.");

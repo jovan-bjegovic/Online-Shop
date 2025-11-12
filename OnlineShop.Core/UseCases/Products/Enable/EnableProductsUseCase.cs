@@ -35,6 +35,7 @@ public class EnableProductsUseCase(
             Products = products.Select(p => new ProductStatusItem
             {
                 Id = p.Id,
+                Title = p.Title,
                 Enabled = p.Enabled
             }).ToList()
         };

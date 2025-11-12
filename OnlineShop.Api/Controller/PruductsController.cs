@@ -188,6 +188,13 @@ public class ProductsController : ControllerBase
                 ex.Message
             ));
         }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new Response<object>(
+                StatusCodes.Status400BadRequest,
+                ex.Message
+            ));
+        }
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
